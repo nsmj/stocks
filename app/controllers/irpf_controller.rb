@@ -3,6 +3,8 @@ class IrpfController < ApplicationController
   def reports
     @accumulated_loss_last_year = {}
 
+    @swing_trade = swing_trade
+
     render json: {
       profit_from_sales_below_20k:,
       swing_trade:,
