@@ -1,36 +1,123 @@
-<div class="container-flouid">
-  <nav class="navbar navbar-expand-lg bg-light">
-    <div class="container">
-      <a class="navbar-brand" href="/">
-        <h3>Your Logo</h3>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Member</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="#">Courses</a>
-          </li>
+<%= turbo_frame_tag 'report' do %>
 
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Blog</a>
-          </li>
+  <%= form_with method: :get do |form| %>
 
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Event</a>
-          </li>
+    <%= form.search_field :year, class: 'form-control', value: params[:year] %>
 
-        </ul>
-        <form class="">
-          <a class="btn btn-outline-primary mr-2" href="#">Login</a>
-          <a class="btn btn-outline-success" href="#">Become member</a>
-        </form>
+    <%= form.submit "Carregar dados", class: 'btn btn-primary' %>
 
-      </div>
+  <% end %>
+
+  <% if @swing_trade.present? %>
+    <div class='table-responsive'>
+      <table class='table'>
+        <thead>
+          <tr>
+            <th />
+            <th class='text-start' scope='col' colspan="4">
+              Operações Comuns
+            </th>
+            <th class='text-start' scope='col' colspan="4">
+              Day Trade
+            </th>
+            <th class='text-start' scope='col' colspan="4">
+              FIIs
+            </th>
+          </tr>
+          <tr>
+            <th />
+            <th class='text-end' scope='col'>
+              Total
+            </th>
+            <th class='text-end' scope='col'>
+              Imposto Pago
+            </th>
+            <th class='text-end' scope='col'>
+              IRRF
+            </th>
+            <th class='text-end' scope='col'>
+              Prejuízo Acumulado
+            </th>
+            <th class='text-end' scope='col'>
+              Total
+            </th>
+            <th class='text-end' scope='col'>
+              Imposto Pago
+            </th>
+            <th class='text-end' scope='col'>
+              IRRF
+            </th>
+            <th class='text-end' scope='col'>
+              Prejuízo Acumulado
+            </th>
+            <th class='text-end' scope='col'>
+              Total
+            </th>
+            <th class='text-end' scope='col'>
+              Imposto Pago
+            </th>
+            <th class='text-end' scope='col'>
+              IRRF
+            </th>
+            <th class='text-end' scope='col'>
+              Prejuízo Acumulado
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th colspan="4" class="text-end">
+              Prejuízo acumulado no ano anterior
+            </th>
+            <td class="text-end">
+              <%= @accumulated_loss_last_year['swing_trade'] %>
+            </td>
+            <td />
+            <td />
+            <td />
+            <th colspan="4" class="text-end">
+              Prejuízo acumulado no ano anterior
+            </th>
+            <td class="text-end">
+              <%= @accumulated_loss_last_year['fiis'] %>
+            </td>
+          </tr>
+          <% (1..12).each do |month_number| %>
+            <% month = month_number.to_s.rjust(2, '0') %>
+            <tr>
+              <th><%= @months[month_number] %></th>
+              <td class="text-end" style="background-color: #ADD8E6">
+                <%= @swing_trade.find { |i| i['month'] == month }.try(:[], 'value').to_d %>
+              </td>
+              <td style="background-color: #ADD8E6" />
+              <td class="text-end" style="background-color: #ADD8E6">
+                <%= @irrf.find { |i| i['month'] == month &&
+                                  i['trade_type'] == 'Swing Trade' }.try(:[], 'value') %>
+              </td>
+              <td class="text-end" style="background-color: #ADD8E6" >
+                <%= @swing_trade.find { |i| i['month'] == month }.try(:[], 'accumulated_loss').to_d.round(2) %>
+              </td>
+              <td class="text-end" style="background-color: #ADD8E6">
+                <%= @day_trade.find { |i| i['month'] == month }.try(:[], 'value').to_d %>
+              </td>
+              <td />
+              <td />
+              <td />
+              <td class="text-end" style="background-color: #F9E79F">
+              <%= @fiis.find { |i| i['month'] == month }.try(:[], 'value').to_d %>
+              </td>
+              <td style="background-color: #F9E79F" />
+              <td class="text-end" style="background-color: #F9E79F">
+                <%= @irrf.find { |i| i['month'] == month &&
+                                  i['trade_type'] == 'FII' }.try(:[], 'value') %>
+              </td>
+              <td class="text-end" style="background-color: #F9E79F">
+                <%= @fiis.find { |i| i['month'] == month }.try(:[], 'accumulated_loss').to_d.round(2) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
-  </nav>
-</div>
+    <% end %>
+  <% end %>

@@ -1,9 +1,37 @@
 # All stuff directly related to IRPF.
 class IrpfController < ApplicationController
+
+  def index
+
+    if filter_params[:year].present?
+
+      @months = {
+        1 => 'Janeiro',
+        2 => 'Fevereiro',
+        3 => 'Março',
+        4 => 'Abril',
+        5 => 'Maio',
+        6 => 'Junho',
+        7 => 'Julho',
+        8 => 'Agosto',
+        9 => 'Setembro',
+        10 => 'Outubro',
+        11 => 'Novembro',
+        12 => 'Dezembro'
+      }
+
+      @accumulated_loss_last_year = {}
+
+      @swing_trade = swing_trade
+      @day_trade = day_trade
+      @irrf = irrf
+      @fiis = fiis
+      puts @swing_trade
+    end
+  end
+
   def reports
     @accumulated_loss_last_year = {}
-
-    @swing_trade = swing_trade
 
     render json: {
       profit_from_sales_below_20k:,
@@ -196,7 +224,7 @@ class IrpfController < ApplicationController
   private
 
   def filter_params
-    params.permit(:year)
+    params.permit(:year, :commit)
   end
 
   def calculate_accumulated_loss(result, trade_type, year)
