@@ -87,7 +87,11 @@
           <% (1..12).each do |month_number| %>
             <% month = month_number.to_s.rjust(2, '0') %>
             <tr>
-              <th><%= @months[month_number] %></th>
+              <th>
+                <%= turbo_frame_tag target: 'monthly_results' do %>
+                  <%= link_to @months[month_number], monthly_results_reports_path(params[:year], month_number) %>
+                <% end %>
+              </th>
               <td class="text-end" style="background-color: #ADD8E6">
                 <%= @swing_trade.find { |i| i['month'] == month }.try(:[], 'value').to_d %>
               </td>
@@ -99,7 +103,7 @@
               <td class="text-end" style="background-color: #ADD8E6" >
                 <%= @swing_trade.find { |i| i['month'] == month }.try(:[], 'accumulated_loss').to_d.round(2) %>
               </td>
-              <td class="text-end" style="background-color: #ADD8E6">
+              <td class="text-end">
                 <%= @day_trade.find { |i| i['month'] == month }.try(:[], 'value').to_d %>
               </td>
               <td />
@@ -120,6 +124,10 @@
           <% end %>
         </tbody>
       </table>
+
+      <%= turbo_frame_tag 'monthly_results' do %>
+
+      <% end %>
 
       <table class='table'>
         <thead>
