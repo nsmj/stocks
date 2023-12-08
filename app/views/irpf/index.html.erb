@@ -1,3 +1,5 @@
+<div data-controller="irpf">
+
 <%= turbo_frame_tag 'report' do %>
 
   <%= form_with method: :get do |form| %>
@@ -118,6 +120,28 @@
           <% end %>
         </tbody>
       </table>
+
+      <table class='table'>
+        <thead>
+          <tr>
+            <th colspan="3">Posições Ano Anterior</th>
+          </tr>
+          <tr>
+            <th scope='col'>Código</th>
+            <th scope='col'>Texto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @end_year_positions.each do |end_year_position| %>
+            <tr>
+              <td><%= end_year_position['code'] %></td>
+              <td data-action="click->irpf#copiar" data-irpf-target="eyp_text" class='text-start'><%= end_year_position['text'] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
     </div>
     <% end %>
   <% end %>
+  </div>

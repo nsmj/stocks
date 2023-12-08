@@ -26,7 +26,8 @@ class IrpfController < ApplicationController
       @day_trade = day_trade
       @irrf = irrf
       @fiis = fiis
-      puts @swing_trade
+      @end_year_positions = end_year_positions
+
     end
   end
 
