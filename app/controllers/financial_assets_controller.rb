@@ -1,6 +1,10 @@
 # Class related to Asset table.
 class FinancialAssetsController < ApplicationController
   def new_average_price
+
+  end
+
+  def calculate_new_average_price
     asset = FinancialAsset.find_by(code: filter_params[:code].upcase)
 
     render json: asset.new_average_price(

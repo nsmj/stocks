@@ -1,0 +1,28 @@
+<div data-controller="financialassets">
+
+  <%= form_with method: :get do |form| %>
+
+    Código do ativo:
+    <%= form.text_field :ticker,
+      { data:
+        { financialassets_target: 'ticker',
+          action: 'blur->financialassets#load_curr_avg_price'}
+      } %><br />
+
+    Preço médio atual: <%= form.text_field :current_average_price,
+      { data:
+        { financialassets_target: 'curr_avg_price'
+        }} %><br />
+
+    Valor a aportar: <%= form.text_field :invested_amount,
+      { data:
+        { financialassets_target: 'invested_amount'
+      }} %><br />
+
+  <% end %>
+
+  <button class="btn btn-primary" data-action="click->financialassets#calculate_average_price">Calcular</button>
+
+  <div data-financialassets-target="calculated_average_price"></div>
+
+</div>

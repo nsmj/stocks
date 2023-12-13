@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   # root "articles#index"
   resources :financial_assets, param: :code, only: [] do
     member do
-      get 'new_average_price/:invested_amount', action: 'new_average_price'
+      get 'calculate_new_average_price/:invested_amount', action: 'calculate_new_average_price'
     end
   end
 
@@ -31,4 +31,6 @@ Rails.application.routes.draw do
 
   get 'import_files', to: 'files#import'
   post 'import_files', to: 'files#import_do'
+
+  get 'new_average_price', to: 'financial_assets#new_average_price'
 end
