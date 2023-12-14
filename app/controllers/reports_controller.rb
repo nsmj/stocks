@@ -13,7 +13,7 @@ class ReportsController < ApplicationController
                             net_profit')
                    .joins(:financial_asset)
                    .where(date: Date.civil(filter_params[:year].to_i, filter_params[:month].to_i,
-                                           1)..Date.civil(2023, filter_params[:month].to_i, -1))
+                                           1)..Date.civil(filter_params[:year].to_i, filter_params[:month].to_i, -1))
                    .order(:date, :ticker).map { |i| i.attributes.except('id') }
     # TODO: Encapsulate the "remove ID" logic
 
