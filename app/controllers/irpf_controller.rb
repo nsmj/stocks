@@ -174,7 +174,18 @@ class IrpfController < ApplicationController
         WHERE CAST(value AS decimal) <> 0
     ").map { |i| i.attributes.except('id') }
 
-    calculate_accumulated_loss(result, 'swing_trade', filter_params[:year])
+    final_result = calculate_accumulated_loss(result, 'swing_trade', filter_params[:year])
+
+    # FIXME: Subtract 6,97 to equal with the real data. Remove this in the future.
+    @accumulated_loss_last_year['swing_trade'] += 6.97
+
+    final_result = final_result.map do |r|
+      r["accumulated_loss"] += 6.97
+      r
+    end
+    #######
+
+    final_result
   end
 
   def fiis
@@ -187,7 +198,18 @@ class IrpfController < ApplicationController
                  AND purchase = 0')
                   .group('year', 'month').map { |i| i.attributes.except('id') }
 
-    calculate_accumulated_loss(result, 'fiis', filter_params[:year])
+    final_result = calculate_accumulated_loss(result, 'fiis', filter_params[:year])
+
+    # FIXME: Subtract 0,02 to equal with the real data. Remove this in the future.
+    @accumulated_loss_last_year['fiis'] -= 0.02
+
+    final_result = final_result.map do |r|
+      r["accumulated_loss"] -= 0.02
+      r
+    end
+    #######
+
+    final_result
   end
 
   def end_year_positions
