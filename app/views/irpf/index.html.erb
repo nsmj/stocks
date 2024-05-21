@@ -72,7 +72,7 @@
               Prejuízo acumulado no ano anterior
             </th>
             <td class="text-end">
-              <%= @accumulated_loss_last_year['swing_trade'] if @accumulated_loss != nil %>
+              <%= @accumulated_loss_last_year['swing_trade'] if @accumulated_loss_last_year != nil %>
             </td>
             <td />
             <td />
@@ -81,7 +81,7 @@
               Prejuízo acumulado no ano anterior
             </th>
             <td class="text-end">
-              <%= @accumulated_loss_last_year['fiis'] if @accumulated_loss != nil %>
+              <%= @accumulated_loss_last_year['fiis'] if @accumulated_loss_last_year != nil %>
             </td>
           </tr>
           <% (1..12).each do |month_number| %>
