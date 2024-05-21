@@ -10,6 +10,7 @@
 
   <% end %>
 
+  <% if params[:year].present? %>
     <div class='table-responsive'>
       <table class='table'>
         <thead>
@@ -71,7 +72,7 @@
               Prejuízo acumulado no ano anterior
             </th>
             <td class="text-end">
-              <%= @accumulated_loss_last_year['swing_trade'] %>
+              <%= @accumulated_loss_last_year['swing_trade'] if @accumulated_loss != nil %>
             </td>
             <td />
             <td />
@@ -80,7 +81,7 @@
               Prejuízo acumulado no ano anterior
             </th>
             <td class="text-end">
-              <%= @accumulated_loss_last_year['fiis'] %>
+              <%= @accumulated_loss_last_year['fiis'] if @accumulated_loss != nil %>
             </td>
           </tr>
           <% (1..12).each do |month_number| %>
@@ -147,6 +148,7 @@
           <% end %>
         </tbody>
       </table>
+    <% end %>
 
     </div>
     <% end %>
