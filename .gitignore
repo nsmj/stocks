@@ -33,10 +33,9 @@
 /config/master.key
 
 db/*.db
-files
 .byebug_history
 
-files/*
+/files/*
 txt/
 
 .env
