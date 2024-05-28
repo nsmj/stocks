@@ -1,0 +1,7 @@
+<h1>Files#import</h1>
+<p>Find me in app/views/files/import.html.erb</p>
+
+<%= form_with url: "/import_files", method: :post do |form| %>
+  <%= form.file_field :file  %>
+  <%= form.submit 'Enviar' %>
+<% end %>
