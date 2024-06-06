@@ -98,8 +98,7 @@ class FilesController < ApplicationController
 
           if trade['purchase'] == 1
             actual_position = previous_position + trade['quantity']
-            average_purchase_price = ((last_app_price * previous_position) +
-              trade['total_amount'] + trade['fees'].to_d) / actual_position
+            average_purchase_price = (((last_app_price * previous_position) + trade['total_amount'] + trade['fees'].to_d) / actual_position).round(4)
             last_app_price = average_purchase_price
           else
             actual_position = previous_position - trade['quantity']
