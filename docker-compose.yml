@@ -1,0 +1,7 @@
+services:
+  web:
+    build: .
+    environment:
+      - PDF_PASSWORD_1
+      - PDF_PASSWORD_2
+      - BRAPI_DEV_TOKEN
