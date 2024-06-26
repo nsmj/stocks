@@ -39,5 +39,3 @@ db/*.db
 txt/
 
 .env
-.vscode/settings.json
-.vscode/launch.json
