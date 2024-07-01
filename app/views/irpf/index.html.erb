@@ -72,7 +72,7 @@
               Prejuízo acumulado no ano anterior
             </th>
             <td class="text-end">
-              <%= @accumulated_loss_last_year['swing_trade'] if @accumulated_loss_last_year != nil %>
+              <%= to_currency(@accumulated_loss_last_year['swing_trade']) if @accumulated_loss_last_year != nil %>
             </td>
             <td />
             <td />
@@ -81,7 +81,7 @@
               Prejuízo acumulado no ano anterior
             </th>
             <td class="text-end">
-              <%= @accumulated_loss_last_year['fiis'] if @accumulated_loss_last_year != nil %>
+              <%= to_currency(@accumulated_loss_last_year['fiis']) if @accumulated_loss_last_year != nil %>
             </td>
           </tr>
           <% (1..12).each do |month_number| %>
@@ -93,32 +93,32 @@
                 <% end %>
               </th>
               <td class="text-end" style="background-color: #ADD8E6">
-                <%= @swing_trade.find { |i| i['month'] == month }.try(:[], 'value').to_d %>
+                <%= to_currency(@swing_trade.find { |i| i['month'] == month }.try(:[], 'value')) %>
               </td>
               <td style="background-color: #ADD8E6" />
               <td class="text-end" style="background-color: #ADD8E6">
-                <%= @irrf.find { |i| i['month'] == month &&
-                                  i['trade_type'] == 'Swing Trade' }.try(:[], 'value') %>
+                <%= to_currency(@irrf.find { |i| i['month'] == month &&
+                                  i['trade_type'] == 'Swing Trade' }.try(:[], 'value')) %>
               </td>
               <td class="text-end" style="background-color: #ADD8E6" >
-                <%= @swing_trade.find { |i| i['month'] == month }.try(:[], 'accumulated_loss').to_d.round(2) %>
+                <%= to_currency(@swing_trade.find { |i| i['month'] == month }.try(:[], 'accumulated_loss')) %>
               </td>
               <td class="text-end">
-                <%= @day_trade.find { |i| i['month'] == month }.try(:[], 'value').to_d %>
+                <%= to_currency(@day_trade.find { |i| i['month'] == month }.try(:[], 'value')) %>
               </td>
               <td />
               <td />
               <td />
               <td class="text-end" style="background-color: #F9E79F">
-              <%= @fiis.find { |i| i['month'] == month }.try(:[], 'value').to_d %>
+              <%= to_currency(@fiis.find { |i| i['month'] == month }.try(:[], 'value')) %>
               </td>
               <td style="background-color: #F9E79F" />
               <td class="text-end" style="background-color: #F9E79F">
-                <%= @irrf.find { |i| i['month'] == month &&
-                                  i['trade_type'] == 'FII' }.try(:[], 'value') %>
+                <%= to_currency(@irrf.find { |i| i['month'] == month &&
+                                  i['trade_type'] == 'FII' }.try(:[], 'value')) %>
               </td>
               <td class="text-end" style="background-color: #F9E79F">
-                <%= @fiis.find { |i| i['month'] == month }.try(:[], 'accumulated_loss').to_d.round(2) %>
+                <%= to_currency(@fiis.find { |i| i['month'] == month }.try(:[], 'accumulated_loss')) %>
               </td>
             </tr>
           <% end %>
