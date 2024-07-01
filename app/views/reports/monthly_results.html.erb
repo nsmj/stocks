@@ -21,7 +21,7 @@
                 <td class="text-end"><%= result['quantity'] %></td>
                 <td class="text-end"><%= result['asset_price'].to_d %></td>
                 <td class="text-end"><%= result['fees'].to_d %></td>
-                <td class="text-end"><%= result['total_amount'].to_d %></td>
+                <td class="text-end"><%= to_currency(result['total_amount']) %></td>
                 <td class="text-end"><%= result['net_profit'].to_d %></td>
             </tr>
             <% end %>
