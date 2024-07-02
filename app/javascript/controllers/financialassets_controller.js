@@ -12,7 +12,7 @@ export default class extends Controller {
   async load_curr_avg_price() {
     const request = new FetchRequest(
       'get',
-      `http://localhost:3001/financial_assets/by_code/${this.tickerTarget.value}`
+      `financial_assets/by_code/${this.tickerTarget.value}`
     )
 
     const response = await request.perform()
@@ -27,7 +27,7 @@ export default class extends Controller {
 
     const request = new FetchRequest(
       'get',
-      `http://localhost:3001/financial_assets/${this.tickerTarget.value}/calculate_new_average_price/${this.invested_amountTarget.value}`
+      `financial_assets/${this.tickerTarget.value}/calculate_new_average_price/${this.invested_amountTarget.value}`
     )
 
     const response = await request.perform()
