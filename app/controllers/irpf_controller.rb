@@ -27,7 +27,7 @@ class IrpfController < ApplicationController
         @swing_trade,
         filter_params[:year])
 
-      # FIXME: Subtract 6,97 to equal with the real data. Remove this in the future.
+      # FIXME: Subtract 6,94 to equal with the real data. Remove this in the future.
       @accumulated_loss_last_year['swing_trade'] += 6.94
 
       @swing_trade = @swing_trade.map do |r|
@@ -47,7 +47,7 @@ class IrpfController < ApplicationController
         @fiis,
         filter_params[:year])
 
-      # FIXME: Subtract 0,02 to equal with the real data. Remove this in the future.
+      # FIXME: Subtract 0,01 to equal with the real data. Remove this in the future.
       @accumulated_loss_last_year['fiis'] += 0.01
 
       @fiis = @fiis.map do |r|
