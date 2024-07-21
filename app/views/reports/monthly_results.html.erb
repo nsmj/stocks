@@ -19,16 +19,16 @@
                 <td><%= result['purchase'] == 1 ? "Compra" : "Venda" %></td>
                 <td><%= result['ticker'] %></td>
                 <td class="text-end"><%= result['quantity'] %></td>
-                <td class="text-end"><%= result['asset_price'].to_d %></td>
-                <td class="text-end"><%= result['fees'].to_d %></td>
+                <td class="text-end"><%= to_currency(result['asset_price']) %></td>
+                <td class="text-end"><%= to_currency(result['fees']) %></td>
                 <td class="text-end"><%= to_currency(result['total_amount']) %></td>
-                <td class="text-end"><%= result['net_profit'].to_d %></td>
+                <td class="text-end"><%= to_currency(result['net_profit']) %></td>
             </tr>
             <% end %>
         <tr>
             <td colSpan="7" class="text-end" style="padding: 5px">Total</td>
             <td>
-                <%= @total %>
+                <%= to_currency(@total) %>
             </td>
         </tr>
         </tbody>
