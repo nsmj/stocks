@@ -11,6 +11,12 @@
   <% end %>
 
   <% if params[:year].present? %>
+    <section style="text-align: right">
+      <b>
+        Lucro com vendas abaixo de 20 mil reais:
+      </b>
+      <%= to_currency(@profit_from_sales_below_20k) %>
+    </section>
     <div class='table-responsive'>
       <table class='table'>
         <thead>
