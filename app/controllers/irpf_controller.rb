@@ -22,23 +22,23 @@ class IrpfController < ApplicationController
 
       @accumulated_loss_last_year = {}
 
-      @swing_trade = Irpf::SwingTradeQuery.call
+      @swing_trade = SwingTradeQuery.call
       @swing_trade, @accumulated_loss_last_year['swing_trade'] = AccumulatedLossCalculator.call(
         @swing_trade,
         filter_params[:year])
 
-      @day_trade = Irpf::DayTradeQuery.call(params: filter_params)
+      @day_trade = DayTradeQuery.call(params: filter_params)
 
-      @profit_from_sales_below_20k = Irpf::ProfitSalesBelow20kQuery.call(params: filter_params)
+      @profit_from_sales_below_20k = ProfitSalesBelow20kQuery.call(params: filter_params)
 
-      @irrf = Irpf::IrrfQuery.call(params: filter_params)
+      @irrf = IrrfQuery.call(params: filter_params)
 
-      @fiis = Irpf::FiisQuery.call
+      @fiis = FiisQuery.call
       @fiis, @accumulated_loss_last_year['fiis'] = AccumulatedLossCalculator.call(
         @fiis,
         filter_params[:year])
 
-      @end_year_positions = Irpf::EndYearPositionQuery.call(params: filter_params)
+      @end_year_positions = EndYearPositionQuery.call(params: filter_params)
     end
   end
 
