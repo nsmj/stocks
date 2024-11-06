@@ -17,6 +17,8 @@ class FilesController < ApplicationController
     JsonFilesProcessor.call
     ResultsCalculator.call
 
+    FileUtils.rm_rf(Dir.glob('files/*'))
+
     redirect_to import_files_path
   end
 

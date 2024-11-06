@@ -73,48 +73,50 @@ class BrokerNote
       # Swing Trade and FIIs.
       obj = k.match @broker.irrf_expression
 
-      next unless obj
+      if obj
 
-      base_value = replacements(obj[1]).to_d
+        base_value = replacements(obj[1]).to_d
 
-      next unless base_value.positive?
+        next unless base_value.positive?
 
-      irrf_value = replacements(note_data[i + @broker.irrf_position_adjust]).to_d
+        irrf_value = replacements(note_data[i + @broker.irrf_position_adjust]).to_d
 
-      next unless irrf_value.positive?
+        next unless irrf_value.positive?
 
-      irrf = Irrf.new
+        irrf = Irrf.new
 
-      irrf.value = irrf_value
-      irrf.date = @date
+        irrf.value = irrf_value
+        irrf.date = @date
 
-      case base_value
-      when trades_irrf_base.swing_trade_base
-        irrf.trade_type = TradeType.find_by(name: 'Swing Trade')
-      when trades_irrf_base.fiis_base
-        irrf.trade_type = TradeType.find_by(name: 'FII')
-      else
-        undefined_irrf = true
+        case base_value
+        when trades_irrf_base.swing_trade_base
+          irrf.trade_type = TradeType.find_by(name: 'Swing Trade')
+        when trades_irrf_base.fiis_base
+          irrf.trade_type = TradeType.find_by(name: 'FII')
+        else
+          undefined_irrf = true
+        end
+
+        irrfs << irrf unless undefined_irrf == true
       end
-
-      irrfs << irrf unless undefined_irrf == true
 
       # Day Trade
       obj = k.match @broker.irrf_expression_day_trade
 
-      next unless obj
+      if obj
 
-      value = replacements(obj[3]).to_d
+        value = replacements(obj[3]).to_d
 
-      next unless value.positive?
+        next unless value.positive?
 
-      irrf = Irrf.new
+        irrf = Irrf.new
 
-      irrf.trade_type = Trade.find_by(name: 'FII')
-      irrf.value = value
-      irrf.date = @date
+        irrf.trade_type = TradeType.find_by(name: 'Day Trade')
+        irrf.value = value
+        irrf.date = @date
 
-      irrfs << irrf
+        irrfs << irrf
+      end
     end
 
     irrfs
