@@ -34,6 +34,7 @@ class Clear
       match_obj = note_data[asset_name_position].match(/(.*?)(\s{10})(\w{2,6})/)
 
       tipo_acao = match_obj[3]
+      note_description = match_obj[1]
 
       # If it is a subscription right sale, ignore it — so many IRPF problems!
       next if tipo_acao == 'DO'
@@ -47,6 +48,7 @@ class Clear
         asset_type = AssetType.find_by(name: conversion[market_type])
 
         match_obj_option = note_data[asset_name_position].match(%r{\d{2}/\d{2} \w{5}\d{3}})
+        note_description =  match_obj_option[0]
 
         financial_asset = FinancialAsset.find_or_create_by(
           code: match_obj_option[0],
@@ -55,10 +57,18 @@ class Clear
           asset_type:,
           cnpj: ''
         )
+      end
 
-        financial_asset = FinancialAsset.find_by(code: match_obj_option[0]) if financial_asset.nil?
+      financial_assets = FinancialAsset.where(note_description:)
+
+      # Alguns ativos têm o mesmo valor no campo DescricaoNota, por isso nesses casos
+      # é necessário filtrar também pelo tipo_acao. Não dá pra filtrar direto pelo
+      # tipo_acao porque às vezes o arquivo PDF traz um valor em branco no que deveria
+      # ser o tipo_acao.
+      if financial_assets.length > 1
+        financial_asset = financial_assets.where(share_type: tipo_acao).first
       else
-        financial_asset = FinancialAsset.find_by(note_description: match_obj[1])
+        financial_asset = financial_assets.first
       end
 
       trade.financial_asset = financial_asset
