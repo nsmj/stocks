@@ -1,6 +1,6 @@
 class Irrf < ApplicationRecord
-  belongs_to :trade_type
+  belongs_to :tipo_operacao
 
-  validates :date, presence: true
-  validates :value, numericality: true
+  validates :data, presence: true
+  validates :valor, numericality: true
 end

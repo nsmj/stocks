@@ -1,55 +1,54 @@
 class SwingTradeQuery < ApplicationService
-
   def call
     Trade.find_by_sql("
       SELECT
-        year,
-        month,
-        CASE WHEN CAST(stock_sales AS decimal) > 20000 THEN
-          stock_profit + options_profit + etf_profit + loss
+        ano,
+        mes,
+        CASE WHEN CAST(vendas_acoes AS decimal) > 20000 THEN
+          lucro_acoes + lucro_opcoes + lucro_etf + prejuizo
         ELSE
-          etf_profit + options_profit + loss
-        END value
+          lucro_etf + lucro_opcoes + prejuizo
+        END valor
         FROM
         (
           SELECT
-            STRFTIME('%Y', date) year,
-            STRFTIME('%m', date) month,
-          PRINTF(\"%.2f\", SUM(CASE WHEN a.asset_type_id = 1 THEN
-            total_amount
+            STRFTIME('%Y', data) ano,
+            STRFTIME('%m', data) mes,
+          PRINTF(\"%.2f\", SUM(CASE WHEN a.tipo_ativo_id = 1 THEN
+            valor_total
           ELSE
             0
-          END)) AS stock_sales,
-          PRINTF(\"%.2f\", SUM(CASE WHEN net_profit > 0 AND a.asset_type_id = 1 THEN
-                net_profit
+          END)) AS vendas_acoes,
+          PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 1 THEN
+                lucro_liquido
             ELSE
                 0
-            END)) AS stock_profit,
-            PRINTF(\"%.2f\", SUM(CASE WHEN net_profit > 0 AND a.asset_type_id IN (4, 5) THEN
-                net_profit
+            END)) AS lucro_acoes,
+            PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id IN (4, 5) THEN
+                lucro_liquido
             ELSE
                 0
-            END)) AS options_profit,
-            PRINTF(\"%.2f\", SUM(CASE WHEN net_profit > 0 AND a.asset_type_id = 3 THEN
-                net_profit
+            END)) AS lucro_opcoes,
+            PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 3 THEN
+                lucro_liquido
             ELSE
                 0
-            END)) AS etf_profit,
-            PRINTF(\"%.2f\", SUM(CASE WHEN net_profit < 0 THEN
-                net_profit
+            END)) AS lucro_etf,
+            PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido < 0 THEN
+                lucro_liquido
             ELSE
                 0
-            END)) AS loss
+            END)) AS prejuizo
           FROM
             trade t
-          LEFT JOIN asset a ON t.asset_id = a.id
+          LEFT JOIN ativo a ON t.ativo_id = a.id
           WHERE
-            t.trade_type_id = 1
-            AND purchase = 0
-            AND a.asset_type_id <> 2
-            GROUP BY year, month
+            t.tipo_operacao_id = 1
+            AND compra = 0
+            AND a.tipo_ativo_id <> 2
+            GROUP BY ano, mes
         )
-        WHERE CAST(value AS decimal) <> 0
+        WHERE CAST(valor AS decimal) <> 0
     ")
   end
 end

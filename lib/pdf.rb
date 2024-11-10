@@ -1,27 +1,27 @@
-# Handle PDF stuff.
+# Manipular coisas de PDF.
 module Pdf
-  def self.extract_pdf_data(file_path)
-    file_name = File.basename(file_path).gsub('.pdf', '.txt')
+  def self.extrai_dados_pdf(caminho_arquivo)
+    nome_arquivo = File.basename(caminho_arquivo).gsub('.pdf', '.txt')
 
-    system(self.build_command(ENV.fetch('PDF_PASSWORD_1'), file_name, file_path))
+    system(montar_comando(ENV.fetch('PDF_PASSWORD_1'), nome_arquivo, caminho_arquivo))
 
-    result = self.get_data(file_name)
+    resultado = obter_dados(nome_arquivo)
 
-    if result.empty?
-      system(self.build_command(ENV.fetch('PDF_PASSWORD_2'), file_name, file_path))
-      result = self.get_data(file_name)
+    if resultado.empty?
+      system(montar_comando(ENV.fetch('PDF_PASSWORD_2'), nome_arquivo, caminho_arquivo))
+      resultado = obter_dados(nome_arquivo)
     end
 
-    result
+    resultado
   end
 
   private
 
-  def self.build_command(pdf_password, file_name, file_path)
-    "mutool convert -p #{pdf_password} -F text -o txt/#{file_name} #{file_path} 2> /dev/null"
+  def self.montar_comando(senha_pdf, nome_arquivo, caminho_arquivo)
+    "mutool convert -p #{senha_pdf} -F text -o txt/#{nome_arquivo} #{caminho_arquivo} 2> /dev/null"
   end
 
-  def self.get_data(file_name)
-    File.readlines(File.join('txt', file_name)).map(&:strip)
+  def self.obter_dados(nome_arquivo)
+    File.readlines(File.join('txt', nome_arquivo)).map(&:strip)
   end
 end

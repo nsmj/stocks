@@ -1,101 +1,101 @@
-CREATE TABLE IF NOT EXISTS "trade_type" (
+CREATE TABLE IF NOT EXISTS "tipo_operacao" (
 	"id"	integer,
-	"name"	text NOT NULL UNIQUE,
+	"nome"	text NOT NULL UNIQUE,
 	PRIMARY KEY("id")
 );
-CREATE TABLE IF NOT EXISTS "event_type" (
+CREATE TABLE IF NOT EXISTS "tipo_evento" (
 	"id"	integer,
-	"name"	text NOT NULL UNIQUE,
+	"nome"	text NOT NULL UNIQUE,
 	PRIMARY KEY("id")
 );
-CREATE TABLE IF NOT EXISTS "asset_type" (
+CREATE TABLE IF NOT EXISTS "tipo_ativo" (
 	"id"	integer,
-	"name"	text NOT NULL UNIQUE,
+	"nome"	text NOT NULL UNIQUE,
 	PRIMARY KEY("id")
 );
-CREATE TABLE IF NOT EXISTS "asset" (
+CREATE TABLE IF NOT EXISTS "ativo" (
 	"id"	integer,
-	"code"	text NOT NULL UNIQUE,
-	"name"	text NOT NULL,
-	"note_description"	text NOT NULL,
-	"share_type"	text,
-	"average_price"	DECIMAL(10, 5),
-	"position"	integer,
+	"codigo"	text NOT NULL UNIQUE,
+	"nome"	text NOT NULL,
+	"descricao_nota"	text NOT NULL,
+	"tipo_acao"	text,
+	"preco_medio"	DECIMAL(10, 5),
+	"posicao"	integer,
 	"cnpj"	text,
-	"paying_source_cnpj"	text,
-	"ceiling_price_factor" DECIMAL(10, 5),
-    "average_ceiling_price" DECIMAL(10, 5),
-    "projective_ceiling_price" DECIMAL(10, 5),
-	"asset_type_id"	integer NOT NULL,
-	CONSTRAINT "fk_asset_asset_type" FOREIGN KEY("asset_type_id") REFERENCES "asset_type"("id"),
+	"cnpj_fonte_pagadora"	text,
+	"fator_preco_teto" DECIMAL(10, 5),
+    "preco_teto_medio" DECIMAL(10, 5),
+    "preco_teto_projetivo" DECIMAL(10, 5),
+	"tipo_ativo_id"	integer NOT NULL,
+	CONSTRAINT "fk_ativo_tipo_ativo" FOREIGN KEY("tipo_ativo_id") REFERENCES "tipo_ativo"("id"),
 	PRIMARY KEY("id")
 );
-CREATE TABLE IF NOT EXISTS "event" (
+CREATE TABLE IF NOT EXISTS "evento" (
 	"id"	integer,
-	"date"	datetime NOT NULL,
-	"factor"	integer NOT NULL,
-	"value" DECIMAL(10, 5),
-	"event_type_id"	integer NOT NULL,
-	"asset_id"	integer NOT NULL,
-	CONSTRAINT "fk_event_event_type" FOREIGN KEY("event_type_id") REFERENCES "event_type"("id"),
-	CONSTRAINT "fk_event_asset" FOREIGN KEY("asset_id") REFERENCES "asset"("id"),
+	"data"	datetime NOT NULL,
+	"fator"	integer NOT NULL,
+	"valor" DECIMAL(10, 5),
+	"tipo_evento_id"	integer NOT NULL,
+	"ativo_id"	integer NOT NULL,
+	CONSTRAINT "fk_evento_tipo_evento" FOREIGN KEY("tipo_evento_id") REFERENCES "tipo_evento"("id"),
+	CONSTRAINT "fk_evento_ativo" FOREIGN KEY("ativo_id") REFERENCES "ativo"("id"),
 	PRIMARY KEY("id")
 );
-CREATE TABLE IF NOT EXISTS "earning" (
+CREATE TABLE IF NOT EXISTS "rendimento" (
 	"id"	integer,
-	"value"	DECIMAL(10, 5) NOT NULL,
-	"date"	datetime NOT NULL,
-	"asset_id"	integer NOT NULL,
-	CONSTRAINT "fk_earning_asset" FOREIGN KEY("asset_id") REFERENCES "asset"("id"),
+	"valor"	DECIMAL(10, 5) NOT NULL,
+	"data"	datetime NOT NULL,
+	"ativo_id"	integer NOT NULL,
+	CONSTRAINT "fk_rendimento_ativo" FOREIGN KEY("ativo_id") REFERENCES "ativo"("id"),
 	PRIMARY KEY("id")
 );
 CREATE TABLE IF NOT EXISTS "irrf" (
 	"id"	integer,
-	"value"	DECIMAL(10, 5) NOT NULL,
-	"date"	datetime NOT NULL,
-	"trade_type_id"	integer NOT NULL,
-	CONSTRAINT "fk_irrf_trade_type" FOREIGN KEY("trade_type_id") REFERENCES "trade_type"("id"),
+	"valor"	DECIMAL(10, 5) NOT NULL,
+	"data"	datetime NOT NULL,
+	"tipo_operacao_id"	integer NOT NULL,
+	CONSTRAINT "fk_irrf_tipo_operacao" FOREIGN KEY("tipo_operacao_id") REFERENCES "tipo_operacao"("id"),
 	PRIMARY KEY("id")
 );
-CREATE TABLE IF NOT EXISTS "end_year_position" (
+CREATE TABLE IF NOT EXISTS "posicao_fim_ano" (
 	"id"	integer,
-	"year"	integer NOT NULL,
-	"average_price"	DECIMAL(10, 5) NOT NULL,
-	"position"	integer NOT NULL,
-    "total_cost" DECIMAL(10, 5) NOT NULL,
-	"asset_id"	integer NOT NULL,
-	CONSTRAINT "fk_end_year_position_asset" FOREIGN KEY("asset_id") REFERENCES "asset"("id"),
+	"ano"	integer NOT NULL,
+	"preco_medio"	DECIMAL(10, 5) NOT NULL,
+	"posicao"	integer NOT NULL,
+    "custo_total" DECIMAL(10, 5) NOT NULL,
+	"ativo_id"	integer NOT NULL,
+	CONSTRAINT "fk_posicao_fim_ano_ativo" FOREIGN KEY("ativo_id") REFERENCES "ativo"("id"),
 	PRIMARY KEY("id")
 );
-CREATE TABLE IF NOT EXISTS "trade" (
+CREATE TABLE IF NOT EXISTS "operacao" (
 	"id"	integer,
-	"date"	datetime NOT NULL,
-	"quantity"	integer,
-	"asset_price"	DECIMAL(10, 5),
-	"total_amount"	DECIMAL(10, 5),
-	"fees"	DECIMAL(10, 5),
-	"purchase"	INTEGER NOT NULL,
-	"net_profit"	DECIMAL(10, 5),
-	"asset_id"	integer NOT NULL,
-	"trade_type_id"	integer NOT NULL,
-	CONSTRAINT "fk_trade_trade_type" FOREIGN KEY("trade_type_id") REFERENCES "trade_type"("id"),
-	CONSTRAINT "fk_trade_asset" FOREIGN KEY("asset_id") REFERENCES "asset"("id"),
+	"data"	datetime NOT NULL,
+	"quantidade"	integer,
+	"preco_ativo"	DECIMAL(10, 5),
+	"valor_total"	DECIMAL(10, 5),
+	"taxas"	DECIMAL(10, 5),
+	"compra"	INTEGER NOT NULL,
+	"lucro_liquido"	DECIMAL(10, 5),
+	"ativo_id"	integer NOT NULL,
+	"tipo_operacao_id"	integer NOT NULL,
+	CONSTRAINT "fk_operacao_tipo_operacao" FOREIGN KEY("tipo_operacao_id") REFERENCES "tipo_operacao"("id"),
+	CONSTRAINT "fk_operacao_ativo" FOREIGN KEY("ativo_id") REFERENCES "ativo"("id"),
 	PRIMARY KEY("id")
 );
-INSERT INTO "trade_type" VALUES (1,'Swing Trade'),
+INSERT INTO "tipo_operacao" VALUES (1,'Swing Trade'),
  (2,'Day Trade'),
  (3,'FII');
-INSERT INTO "event_type" VALUES (1,'Desdobramento'),
+INSERT INTO "tipo_evento" VALUES (1,'Desdobramento'),
  (2,'Grupamento'),
  (3,'Bonificação');
-INSERT INTO "asset_type" VALUES (1,'Ação'),
+INSERT INTO "tipo_ativo" VALUES (1,'Ação'),
  (2,'FII'),
  (3,'ETF'),
  (4,'CALL'),
  (5,'PUT');
-INSERT INTO "asset"
-(id, code, name, note_description, share_type, average_price, position, cnpj, paying_source_cnpj,
- average_ceiling_price, projective_ceiling_price, asset_type_id)
+INSERT INTO "ativo"
+(id, codigo, nome, descricao_nota, tipo_acao, preco_medio, posicao, cnpj, cnpj_fonte_pagadora,
+ preco_teto_medio, preco_teto_projetivo, tipo_ativo_id)
 VALUES
  (1,'ITSA3','Itaúsa','ITAUSA','ON',NULL,NULL,'61.532.644/0001-15',NULL, NULL, NULL, 1),
  (2,'ITSA4','Itaúsa','ITAUSA','PN',NULL,NULL,'61.532.644/0001-15',NULL, NULL, NULL, 1),

@@ -13,9 +13,9 @@ class FilesController < ApplicationController
     Stocks::Application.load_tasks
     Rake::Task['db:reset'].invoke
 
-    BrokerNotesProcessor.call
-    JsonFilesProcessor.call
-    ResultsCalculator.call
+    ProcessadorNotasCorretagem.call
+    ProcessadorArquivosJson.call
+    CalculadoraResultados.call
 
     FileUtils.rm_rf(Dir.glob('files/*'))
 

@@ -1,162 +1,161 @@
 class Clear
-  def extract_broker_note_date(note_data)
-    date_position = note_data.find_index('Data pregão') + 2
+  def extrai_data_nota_corretagem(dados_nota)
+    posicao_data = dados_nota.find_index('Data pregão') + 2
 
-    note_data[date_position].to_date
+    dados_nota[posicao_data].to_date
   end
 
-  def extract_trades_broker_note(note_data)
-    trades = []
+  def extrai_operacoes_nota_corretagem(dados_nota)
+    operacoes = []
 
-    trades_entry = note_data.each_index.select { |i| note_data[i] == '1-BOVESPA' }
+    operacoes_entry = dados_nota.each_index.select { |i| dados_nota[i] == '1-BOVESPA' }
 
-    trades_entry.each do |position|
-      # What is in
+    operacoes_entry.each do |posicao|
+      # O que está em
       # noteData[position + 1]
-      # should be "C" or "V". However, sometimes it is something like "C FRACIONARIO". In other
-      # words, it mixes with the information that should come imediately after.
-      # Because of that, the verification below is done to fix the problem when it happens.
+      # deve ser "C" ou "V". No entanto, às vezes é algo como "C FRACIONARIO". Em outras
+      # palavras, mistura-se com a informação que deveria vir imediatamente depois.
+      # Por causa disso, a verificação abaixo é feita para corrigir o problema quando isso acontece.
 
-      purchase = ''
-      asset_name_position = nil
-      market_type = ''
+      compra = ''
+      posicao_nome_ativo = nil
+      tipo_mercado = ''
 
-      if note_data[position + 1].length > 1
-        asset_name_position = position + 2
-        market_type = note_data[position + 1][2..]
-        purchase = note_data[position + 1][0]
+      if dados_nota[posicao + 1].length > 1
+        posicao_nome_ativo = posicao + 2
+        tipo_mercado = dados_nota[posicao + 1][2..]
+        compra = dados_nota[posicao + 1][0]
       else
-        asset_name_position = position + 3
-        market_type = note_data[position + 2]
-        purchase = note_data[position + 1]
+        posicao_nome_ativo = posicao + 3
+        tipo_mercado = dados_nota[posicao + 2]
+        compra = dados_nota[posicao + 1]
       end
 
-      match_obj = note_data[asset_name_position].match(/(.*?)(\s{10})(\w{2,6})/)
+      match_obj = dados_nota[posicao_nome_ativo].match(/(.*?)(\s{10})(\w{2,6})/)
 
       tipo_acao = match_obj[3]
-      note_description = match_obj[1]
+      descricao_nota = match_obj[1]
 
-      # If it is a subscription right sale, ignore it — so many IRPF problems!
+      # Se for uma venda de direito de subscrição, ignore - muitos problemas no IRPF.
       next if tipo_acao == 'DO'
 
-      trade = Trade.new
-      # asset = Asset.new
+      operacao = Operacao.new
 
-      if ['OPCAO DE COMPRA', 'OPCAO DE VENDA'].include?(market_type)
+      if ['OPCAO DE COMPRA', 'OPCAO DE VENDA'].include?(tipo_mercado)
 
         conversion = { 'OPCAO DE COMPRA' => 'CALL', 'OPCAO DE VENDA' => 'PUT' }
-        asset_type = AssetType.find_by(name: conversion[market_type])
+        tipo_ativo = AssetType.find_by(nome: conversion[tipo_mercado])
 
-        match_obj_option = note_data[asset_name_position].match(%r{\d{2}/\d{2} \w{5}\d{3}})
-        note_description =  match_obj_option[0]
+        match_obj_option = dados_nota[posicao_nome_ativo].match(%r{\d{2}/\d{2} \w{5}\d{3}})
+        descricao_nota = match_obj_option[0]
 
-        financial_asset = FinancialAsset.find_or_create_by(
-          code: match_obj_option[0],
-          name: match_obj_option[0],
-          note_description: match_obj_option[0],
-          asset_type:,
+        Ativo.find_or_create_by(
+          codigo: match_obj_option[0],
+          nome: match_obj_option[0],
+          descricao_nota: match_obj_option[0],
+          tipo_ativo:,
           cnpj: ''
         )
       end
 
-      financial_assets = FinancialAsset.where(note_description:)
+      ativos = Ativo.where(descricao_nota:)
 
       # Alguns ativos têm o mesmo valor no campo DescricaoNota, por isso nesses casos
       # é necessário filtrar também pelo tipo_acao. Não dá pra filtrar direto pelo
       # tipo_acao porque às vezes o arquivo PDF traz um valor em branco no que deveria
       # ser o tipo_acao.
-      if financial_assets.length > 1
-        financial_asset = financial_assets.where(share_type: tipo_acao).first
-      else
-        financial_asset = financial_assets.first
+      ativo = if ativos.length > 1
+                ativos.where(tipo_acao:).first
+              else
+                ativos.first
+              end
+
+      operacao.ativo = ativo
+
+      # Compra
+      operacao.compra = compra == 'C'
+
+      # Começando a partir de 2 posições após 1-BOVESPA (para pular o campo "C" ou "V"
+      # (Compra ou Venda)), vai sequencialmente até encontrar a letra "D" (debito) ou
+      # "C" (credito), para então voltar e encontrar os campos QUANTIDADE e PRECO.
+
+      # Como os campos após o nome do ativo são incertos (às vezes tem "observacao",
+      # às vezes não), o lugar mais seguro para encontrar os outros campos é "1-BOVESPA" do
+      # próximo ativo ou, se não existir (caso estejamos no último ativo), usamos
+      # "NOTA DE NEGOCIACAO".
+
+      posicao_temporaria = posicao + 1
+
+      posicao_temporaria += 1 until ['1-BOVESPA',
+                                     'NOTA DE NEGOCIAÇÃO',
+                                     'NOTA DE CORRETAGEM'].include? dados_nota[posicao_temporaria]
+
+      # Caso haja observações — no momento é usado apenas para indicar quando é Day Trade.
+      if posicao_temporaria - 7 == posicao_nome_ativo
+        posicao_observacoes = posicao_temporaria - 6
+        observacoes = dados_nota[posicao_observacoes].gsub('#', '').gsub('2', '')
+
+        operacao.tipo_operacao = TipoOperacao.find_by(nome: 'Day Trade') if observacoes == 'D'
       end
 
-      trade.financial_asset = financial_asset
+      operacao.quantidade = dados_nota[posicao_temporaria - 5].gsub('.', '').to_d
+      operacao.preco_ativo = dados_nota[posicao_temporaria - 4].gsub(',', '.').to_d
+      operacao.valor_total = (operacao.preco_ativo * operacao.quantidade).to_f
 
-      # Purchase
-      trade.purchase = purchase == 'C'
-
-      # Starting from 2 positions after 1-BOVESPA (in order to skip the field "C" or "V"
-      # (Purchase or Sell)), goes sequentially until find the letter "D" (debit) or
-      # "C" (credit), so then to go backwards and find the fields QUANTIDADE and PREÇO.
-
-      # As the fields after the asset name are uncertain (sometimes it has "observation",
-      # sometimes doesn't), the safest place to find the other fields is "1-BOVESPA" of the
-      # next asset or, if it doesn't exist (in case we are on the last asset), we use
-      # "NOTA DE NEGOCIAÇÃO".
-
-      temp_position = position + 1
-
-      temp_position += 1 until ['1-BOVESPA',
-                                'NOTA DE NEGOCIAÇÃO',
-                                'NOTA DE CORRETAGEM'].include? note_data[temp_position]
-
-      # Case there are observations — at the moment it is used just to indicate when it is Day Trade.
-      if temp_position - 7 == asset_name_position
-        observations_position = temp_position - 6
-        observations = note_data[observations_position].gsub('#', '').gsub('2', '')
-
-        trade.trade_type = TradeType.find_by(name: 'Day Trade') if observations == 'D'
+      if ativo.tipo_ativo.nome == 'FII'
+        operacao.tipo_operacao = TipoOperacao.find_by(nome: 'FII')
+      elsif operacao.tipo_operacao != TipoOperacao.find_by(nome: 'Day Trade')
+        # Nesse caso não foi marcado como Day Trade acima pelas observações.
+        operacao.tipo_operacao = TipoOperacao.find_by(nome: 'Swing Trade')
       end
 
-      trade.quantity = note_data[temp_position - 5].gsub('.', '').to_d
-      trade.asset_price = note_data[temp_position - 4].gsub(',', '.').to_d
-      trade.total_amount = (trade.asset_price * trade.quantity).to_f
-
-      if financial_asset.asset_type.name == 'FII'
-        trade.trade_type = TradeType.find_by(name: 'FII')
-      elsif trade.trade_type != TradeType.find_by(name: 'Day Trade')
-        # In case it was not marked as Day Trade above by observations.
-        trade.trade_type = TradeType.find_by(name: 'Swing Trade')
-      end
-
-      trades << trade
+      operacoes << operacao
     end
 
-    trades
+    operacoes
   end
 
-  def extract_fees_broker_note(note_data)
+  def extrai_taxas_nota_corretagem(dados_nota)
     # TODO: Encapsulate.
-    def fix_punctuation(value)
+    def corrige_pontuacao(value)
       value.gsub(',', '.')
     end
 
-    position = note_data.index('Taxa de liquidação') - 1
-    settlement_fee = fix_punctuation(note_data[position]).to_d.abs
+    posicao = dados_nota.index('Taxa de liquidação') - 1
+    taxa_liquidacao = corrige_pontuacao(dados_nota[posicao]).to_d.abs
 
-    position = note_data.index('Taxa de Registro') - 1
-    registration_fee = fix_punctuation(note_data[position]).to_d.abs
+    posicao = dados_nota.index('Taxa de Registro') - 1
+    taxa_registro = corrige_pontuacao(dados_nota[posicao]).to_d.abs
 
-    position = note_data.index('Total Bovespa / Soma') - 1
-    bovespa_total = fix_punctuation(note_data[position]).to_d.abs
+    posicao = dados_nota.index('Total Bovespa / Soma') - 1
+    bovespa_total = corrige_pontuacao(dados_nota[posicao]).to_d.abs
 
-    date_note = extract_broker_note_date(note_data)
+    data_nota = extract_broker_note_date(dados_nota)
 
-    # Operational Costs Total
-    # Until day 23/12/2019, it was written "Total corretagem" instead of
+    # Custos Operacionais Totais
+    # Até o dia 23/12/2019, estava escrito "Total corretagem" em vez de
     # "Total Custos"
 
-    position = if date_note > '23/12/2019'.to_date
-                 note_data.index('Total Custos / Despesas') - 1
-               else
-                 note_data.index('Total corretagem / Despesas') - 1
-               end
+    posicao = if data_nota > '23/12/2019'.to_date
+                dados_nota.index('Total Custos / Despesas') - 1
+              else
+                dados_nota.index('Total corretagem / Despesas') - 1
+              end
 
-    operational_costs = fix_punctuation(note_data[position]).to_d
+    custos_operacionais = corrige_pontuacao(dados_nota[posicao]).to_d
 
-    settlement_fee + registration_fee + bovespa_total + operational_costs
+    taxa_liquidacao + taxa_registro + bovespa_total + custos_operacionais
   end
 
-  def irrf_expression
+  def expressao_irrf
     %r{I.R.R.F. s/ operações, base R\$(.*)}
   end
 
-  def irrf_expression_day_trade
+  def expressao_irrf_day_trade
     /IRRF Day Trade: Base R\$ (.*),(.*) Projeção R\$ (.*)/
   end
 
-  def irrf_position_adjust
+  def ajuste_posicao_irrf
     -1
   end
 end

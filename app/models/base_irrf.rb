@@ -1,9 +1,9 @@
 class BaseIrrf
-  attr_accessor :swing_trade_base, :day_trade_base, :fiis_base
+  attr_accessor :base_swing_trade, :base_day_trade, :base_fiis
 
   def initialize
-    @swing_trade_base = 0
-    @day_trade_base = 0
-    @fiis_base = 0
+    @base_swing_trade = 0
+    @base_day_trade = 0
+    @base_fiis = 0
   end
 end

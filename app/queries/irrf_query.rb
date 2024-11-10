@@ -1,15 +1,14 @@
 class IrrfQuery < ApplicationService
-
-  def initialize(relation: Irrf.all, params: {})
-    @relation = relation
+  def initialize(relacao: Irrf.all, params: {})
+    @relacao = relacao
     @params = params
   end
 
   def call
-    @relation.select("ROUND(SUM(value), 2) AS value, STRFTIME('%m', date) month, trade_type.name AS trade_type")
-        .joins(:trade_type)
-        .where("date >= ':year-01-01' AND date <= ':year-12-31'", { year: @params[:year].to_i })
-        .group('month, trade_type.name')
-        .order(:month)
+    @relacao.select("ROUND(SUM(valor), 2) AS valor, STRFTIME('%m', data) mes, tipo_operacao.nome AS tipo_operacao")
+            .joins(:tipo_operacao)
+            .where("data >= ':ano-01-01' AND data <= ':ano-12-31'", { ano: @params[:year].to_i })
+            .group('mes, tipo_operacao.nome')
+            .order(:mes)
   end
 end

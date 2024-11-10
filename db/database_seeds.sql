@@ -1,17 +1,17 @@
-INSERT INTO "trade_type" VALUES (1,'Swing Trade'),
+INSERT INTO "tipo_operacao" VALUES (1,'Swing Trade'),
  (2,'Day Trade'),
  (3,'FII');
-INSERT INTO "event_type" VALUES (1,'Desdobramento'),
+INSERT INTO "tipo_evento" VALUES (1,'Desdobramento'),
  (2,'Grupamento'),
  (3,'Bonificação');
-INSERT INTO "asset_type" VALUES (1,'Ação'),
+INSERT INTO "tipo_ativo" VALUES (1,'Ação'),
  (2,'FII'),
  (3,'ETF'),
  (4,'CALL'),
  (5,'PUT');
-INSERT INTO "asset"
-(id, code, name, note_description, share_type, average_price, position, cnpj, paying_source_cnpj,
- average_ceiling_price, projective_ceiling_price, asset_type_id)
+INSERT INTO "ativo"
+(id, codigo, nome, descricao_nota, tipo_acao, preco_medio, posicao, cnpj, cnpj_fonte_pagadora,
+ preco_teto_medio, preco_teto_projetivo, tipo_ativo_id)
 VALUES
  (1,'ITSA3','Itaúsa','ITAUSA','ON',NULL,NULL,'61.532.644/0001-15',NULL, NULL, NULL, 1),
  (2,'ITSA4','Itaúsa','ITAUSA','PN',NULL,NULL,'61.532.644/0001-15',NULL, NULL, NULL, 1),

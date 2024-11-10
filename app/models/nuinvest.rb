@@ -1,90 +1,90 @@
 class Nuinvest
-  def extract_broker_note_date(note_data)
-    date_position = note_data.find_index('Data Pregão') + 1
+  def extrai_data_nota_corretagem(dados_nota)
+    posicao_data = dados_nota.find_index('Data Pregão') + 1
 
-    Date.parse(note_data[date_position])
+    Date.parse(dados_nota[posicao_data])
   end
 
-  def extract_trades_broker_note(note_data)
-    trades = []
+  def extrai_operacoes_nota_corretagem(dados_nota)
+    operacoes = []
 
-    trades_entry = note_data.each_index.select { |i| note_data[i] == 'BOVESPA' }
+    entradas_operacoes = dados_nota.each_index.select { |i| dados_nota[i] == 'BOVESPA' }
 
-    trades_entry.each do |position|
-      trade = Trade.new
+    entradas_operacoes.each do |posicao|
+      operacao = Operacao.new
 
-      match_obj = note_data[position + 3].match(/(\w*) (\w{2})/)
+      match_obj = dados_nota[posicao + 3].match(/(\w*) (\w{2})/)
 
-      # Purchase
-      trade.purchase = note_data[position + 1] == 'C'
+      # Compra
+      operacao.purchase = dados_nota[posicao + 1] == 'C'
 
-      # FinancialAsset
-      asset_code = match_obj[1]
+      # Ativo
+      codigo_ativo = match_obj[1]
 
-      # Remove the "F" at the end of the asset name, if any.
-      asset_code = asset_code[..-2] if asset_code[-1] == 'F'
+      # Remove o "F" no final do nome do ativo, se houver.
+      codigo_ativo = codigo_ativo[..-2] if codigo_ativo[-1] == 'F'
 
-      financial_asset = FinancialAsset.find_by(code: asset_code)
+      ativo_financeiro = FinancialAsset.find_by(code: codigo_ativo)
 
-      trade.financial_asset = financial_asset
+      operacao.financial_asset = ativo_financeiro
 
-      # Starting from 2 positions after BOVESPA (in order to skip
-      # field C or V (Purchase or Sell). It goes sequentially
-      # until it finds a blank line, so then it begins to go back
-      # in order to find QUANTIDADE and PREÇO
+      # Começando a partir de 2 posições após BOVESPA (para pular
+      # o campo C ou V (Compra ou Venda). Vai sequencialmente
+      # até encontrar uma linha em branco, então começa a voltar
+      # para encontrar QUANTIDADE e PREÇO
 
-      temp_position = position + 2
+      posicao_temp = posicao + 2
 
-      temp_position += 1 while note_data[temp_position] != ''
+      posicao_temp += 1 while dados_nota[posicao_temp] != ''
 
-      trade.quantity = note_data[temp_position - 4].to_d
-      trade.asset_price = note_data[temp_position - 3].gsub(',', '.').to_d
-      trade.total_amount = (trade.asset_price * trade.quantity).to_f
+      operacao.quantity = dados_nota[posicao_temp - 4].to_d
+      operacao.asset_price = dados_nota[posicao_temp - 3].gsub(',', '.').to_d
+      operacao.total_amount = (operacao.asset_price * operacao.quantity).to_f
 
-      trade.trade_type = if financial_asset.asset_type.name == 'FII'
-                           TradeType.find_by(name: 'FII')
-                         elsif note_data[temp_position - 5] == 'D'
-                           TradeType.find_by(name: 'Day Trade')
-                         else
-                           TradeType.find_by(name: 'Swing Trade')
-                         end
+      operacao.trade_type = if ativo_financeiro.asset_type.name == 'FII'
+                              TradeType.find_by(name: 'FII')
+                            elsif dados_nota[posicao_temp - 5] == 'D'
+                              TradeType.find_by(name: 'Day Trade')
+                            else
+                              TradeType.find_by(name: 'Swing Trade')
+                            end
 
-      trades << trade
+      operacoes << operacao
     end
 
-    trades
+    operacoes
   end
 
-  def extract_fees_broker_note(note_data)
-    # TODO: Encapsulate.
-    def fix_punctuation(value)
-      value.gsub(',', '.')
+  def extrai_taxas_nota_corretagem(dados_nota)
+    # TODO: Encapsular.
+    def corrigir_pontuacao(valor)
+      valor.gsub(',', '.')
     end
 
-    position = note_data.index('Taxa de Liquidação') + 1
-    settlement_fee = fix_punctuation(note_data[position]).to_d.abs
+    posicao = dados_nota.index('Taxa de Liquidação') + 1
+    taxa_liquidacao = corrigir_pontuacao(dados_nota[posicao]).to_d.abs
 
-    position = note_data.index('Taxa de Registro') + 1
-    registration_fee = fix_punctuation(note_data[position]).to_d.abs
+    posicao = dados_nota.index('Taxa de Registro') + 1
+    taxa_registro = corrigir_pontuacao(dados_nota[posicao]).to_d.abs
 
-    position = note_data.index('Total Bolsa') + 2
-    bovespa_total = fix_punctuation(note_data[position]).to_d.abs
+    posicao = dados_nota.index('Total Bolsa') + 2
+    total_bovespa = corrigir_pontuacao(dados_nota[posicao]).to_d.abs
 
-    position = note_data.index('Total Corretagem/Despesas') + 2
-    operational_costs = fix_punctuation(note_data[position]).to_d.abs
+    posicao = dados_nota.index('Total Corretagem/Despesas') + 2
+    custos_operacionais = corrigir_pontuacao(dados_nota[posicao]).to_d.abs
 
-    settlement_fee + registration_fee + bovespa_total + operational_costs
+    taxa_liquidacao + taxa_registro + total_bovespa + custos_operacionais
   end
 
-  def irrf_expression
-    %r{I.R.R.F. s/ operações. Base (.*)}
+  def expressao_irrf
+    %r{I.R.R.F. s/ operacoes. Base (.*)}
   end
 
-  def irrf_expression_day_trade
-    /klfsadjlkdsajlkfasd/ # TODO: This is not implemented yet.
+  def expressao_irrf_day_trade
+    /klfsadjlkdsajlkfasd/ # TODO: Isso ainda não está implementado.
   end
 
-  def irrf_position_adjust
+  def ajuste_posicao_irrf
     1
   end
 end

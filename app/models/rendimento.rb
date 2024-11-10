@@ -1,0 +1,2 @@
+class Rendimento < ApplicationRecord
+end
