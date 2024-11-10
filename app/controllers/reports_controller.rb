@@ -6,6 +6,10 @@ class ReportsController < ApplicationController
     @results, @total = MonthlyResultsQuery.call(params: filter_params)
   end
 
+  def profit_loss
+    @results = ProfitLoss.call
+  end
+
   private
 
   def filter_params

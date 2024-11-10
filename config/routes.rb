@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :reports, only: [] do
     collection do
       get 'monthly_results/:year/:month', action: 'monthly_results', as: :monthly_results
+      get 'profit-loss', action: 'profit_loss', as: :profit_loss
     end
   end
 
