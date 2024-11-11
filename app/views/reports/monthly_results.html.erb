@@ -15,14 +15,14 @@
         <tbody>
             <% @results.each do |result| %>
             <tr>
-                <td><%= result['trade_date'] %></td>
-                <td><%= result['purchase'] == 1 ? "Compra" : "Venda" %></td>
-                <td><%= result['ticker'] %></td>
+                <td><%= result['data_operacao'] %></td>
+                <td><%= result['compra'] == 1 ? "Compra" : "Venda" %></td>
+                <td><%= result['codigo'] %></td>
                 <td class="text-end"><%= result['quantity'] %></td>
-                <td class="text-end"><%= to_currency(result['asset_price']) %></td>
-                <td class="text-end"><%= to_currency(result['fees']) %></td>
-                <td class="text-end"><%= to_currency(result['total_amount']) %></td>
-                <td class="text-end"><%= to_currency(result['net_profit']) %></td>
+                <td class="text-end"><%= to_currency(result['preco_ativo']) %></td>
+                <td class="text-end"><%= to_currency(result['taxas']) %></td>
+                <td class="text-end"><%= to_currency(result['valor_total']) %></td>
+                <td class="text-end"><%= to_currency(result['lucro_liquido']) %></td>
             </tr>
             <% end %>
         <tr>

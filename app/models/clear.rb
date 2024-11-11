@@ -44,7 +44,7 @@ class Clear
       if ['OPCAO DE COMPRA', 'OPCAO DE VENDA'].include?(tipo_mercado)
 
         conversion = { 'OPCAO DE COMPRA' => 'CALL', 'OPCAO DE VENDA' => 'PUT' }
-        tipo_ativo = AssetType.find_by(nome: conversion[tipo_mercado])
+        tipo_ativo = TipoAtivo.find_by(nome: conversion[tipo_mercado])
 
         match_obj_option = dados_nota[posicao_nome_ativo].match(%r{\d{2}/\d{2} \w{5}\d{3}})
         descricao_nota = match_obj_option[0]
@@ -130,7 +130,7 @@ class Clear
     posicao = dados_nota.index('Total Bovespa / Soma') - 1
     bovespa_total = corrige_pontuacao(dados_nota[posicao]).to_d.abs
 
-    data_nota = extract_broker_note_date(dados_nota)
+    data_nota = extrai_data_nota_corretagem(dados_nota)
 
     # Custos Operacionais Totais
     # Até o dia 23/12/2019, estava escrito "Total corretagem" em vez de

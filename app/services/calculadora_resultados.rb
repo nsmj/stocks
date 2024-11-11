@@ -1,13 +1,13 @@
 class CalculadoraResultados < ApplicationService
   def call
     sql = <<~SQL
-      SELECT t.id, 'Operacao' AS tipo, data, null AS 'fator', quantidade, preco_ativo, valor_total, compra, taxas, a.id AS ativo_id, tt.nome AS 'tipo_operacao_evento' FROM trade t
-      LEFT JOIN asset a ON t.asset_id = a.id
-      LEFT JOIN trade_type tt ON t.trade_type_id = tt.id
+      SELECT o.id, 'Operacao' AS tipo, data, null AS 'fator', quantidade, preco_ativo, valor_total, compra, taxas, a.id AS ativo_id, tope.nome AS 'tipo_operacao_evento' FROM operacao o
+      LEFT JOIN ativo a ON o.ativo_id = a.id
+      LEFT JOIN tipo_operacao tope ON o.tipo_operacao_id = tope.id
       UNION ALL
-      SELECT e.id, 'Evento', data, fator, null, valor AS 'preco_ativo', null, null, null, a.id AS ativo_id, et.nome FROM event e
-      LEFT JOIN asset a ON e.asset_id = a.id
-      LEFT JOIN event_type et ON e.event_type_id = et.id
+      SELECT e.id, 'Evento', data, fator, null, valor AS 'preco_ativo', null, null, null, a.id AS ativo_id, te.nome FROM evento e
+      LEFT JOIN ativo a ON e.ativo_id = a.id
+      LEFT JOIN tipo_evento te ON e.tipo_evento_id = te.id
       ORDER BY ativo_id, data
     SQL
 
@@ -74,7 +74,7 @@ class CalculadoraResultados < ApplicationService
 
       next unless posicao_atual.positive?
 
-      AtivoFinanceiro.find(ativo_id).update(
+      Ativo.find(ativo_id).update(
         preco_medio: ultimo_preco_medio.round(2),
         posicao: posicao_atual
       )

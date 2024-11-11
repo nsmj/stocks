@@ -21,7 +21,7 @@ class NotaCorretagem
 
     @data = @broker.extrai_data_nota_corretagem(dados_nota)
 
-    @operacoes = @broker.extract_operacoes_broker_note(dados_nota)
+    @operacoes = @broker.extrai_operacoes_nota_corretagem(dados_nota)
     @total_taxas = @broker.extrai_taxas_nota_corretagem(dados_nota)
     rateia_taxas
 
@@ -40,19 +40,19 @@ class NotaCorretagem
 
     @operacoes.each_with_index do |operacao, index|
       percentual_operacao = operacao.total / operacoes_total
-      @operacoes[index].fees = (@total_taxas * percentual_operacao).round(2)
+      @operacoes[index].taxas = (@total_taxas * percentual_operacao).round(2)
     end
   end
 
   def calcula_base_irrf
-    @operacoes.each do |trade|
-      next if operacao.purchase == 1
+    @operacoes.each do |operacao|
+      next if operacao.compra == 1
 
       case operacao.tipo_operacao.nome
       when 'Swing Trade'
-        base_irrf_operacoes.base_swing_trade += operacao.total_amount
+        base_irrf_operacoes.base_swing_trade += operacao.valor_total
       when 'FII'
-        base_irrf_operacoes.base_fiis += operacao.total_amount
+        base_irrf_operacoes.base_fiis += operacao.valor_total
       end
     end
 

@@ -16,7 +16,7 @@ class Nuinvest
       match_obj = dados_nota[posicao + 3].match(/(\w*) (\w{2})/)
 
       # Compra
-      operacao.purchase = dados_nota[posicao + 1] == 'C'
+      operacao.compra = dados_nota[posicao + 1] == 'C'
 
       # Ativo
       codigo_ativo = match_obj[1]
@@ -24,9 +24,9 @@ class Nuinvest
       # Remove o "F" no final do nome do ativo, se houver.
       codigo_ativo = codigo_ativo[..-2] if codigo_ativo[-1] == 'F'
 
-      ativo_financeiro = FinancialAsset.find_by(code: codigo_ativo)
+      ativo = Ativo.find_by(codigo: codigo_ativo)
 
-      operacao.financial_asset = ativo_financeiro
+      operacao.ativo = ativo
 
       # Começando a partir de 2 posições após BOVESPA (para pular
       # o campo C ou V (Compra ou Venda). Vai sequencialmente
@@ -37,17 +37,17 @@ class Nuinvest
 
       posicao_temp += 1 while dados_nota[posicao_temp] != ''
 
-      operacao.quantity = dados_nota[posicao_temp - 4].to_d
-      operacao.asset_price = dados_nota[posicao_temp - 3].gsub(',', '.').to_d
-      operacao.total_amount = (operacao.asset_price * operacao.quantity).to_f
+      operacao.quantidade = dados_nota[posicao_temp - 4].to_d
+      operacao.preco_ativo = dados_nota[posicao_temp - 3].gsub(',', '.').to_d
+      operacao.valor_total = (operacao.preco_ativo * operacao.quantidade).to_f
 
-      operacao.trade_type = if ativo_financeiro.asset_type.name == 'FII'
-                              TradeType.find_by(name: 'FII')
-                            elsif dados_nota[posicao_temp - 5] == 'D'
-                              TradeType.find_by(name: 'Day Trade')
-                            else
-                              TradeType.find_by(name: 'Swing Trade')
-                            end
+      operacao.tipo_operacao = if ativo.tipo_ativo.nome == 'FII'
+                                 TipoOperacao.find_by(nome: 'FII')
+                               elsif dados_nota[posicao_temp - 5] == 'D'
+                                 TipoOperacao.find_by(nome: 'Day Trade')
+                               else
+                                 TipoOperacao.find_by(nome: 'Swing Trade')
+                               end
 
       operacoes << operacao
     end
