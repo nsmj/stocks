@@ -14,15 +14,15 @@ class LucroVendasAbaixo20kQuery < ApplicationService
         SUM(lucro_liquido) lucro,
         SUM(valor_total) valor_vendas
       FROM
-        trade t
+        operacao o
       LEFT JOIN ativo a
-    ON t.ativo_id = a.id
+    ON o.ativo_id = a.id
       WHERE
         data BETWEEN ':ano-01-01' AND ':ano-12-31'
       AND compra = 0
       AND lucro_liquido > 0
       AND a.tipo_ativo_id = 1
-      AND t.tipo_operacao_id = 1
+      AND o.tipo_operacao_id = 1
       GROUP BY mes
       HAVING valor_vendas < 20000
     )

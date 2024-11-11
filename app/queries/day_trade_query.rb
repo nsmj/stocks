@@ -5,7 +5,7 @@ class DayTradeQuery < ApplicationService
 
   def call
     # TODO: Tratamento de opções.
-    Trade.find_by_sql(["
+    Operacao.find_by_sql(["
       SELECT
         mes,
         lucro_acoes + lucro_etf + prejuizo AS valor
@@ -29,11 +29,11 @@ class DayTradeQuery < ApplicationService
               0
           END)) AS prejuizo
         FROM
-          trade t
-        LEFT JOIN ativo a ON t.ativo_id = a.id
+          operacao o
+        LEFT JOIN ativo a ON o.ativo_id = a.id
         WHERE
           data BETWEEN ':ano-01-01' AND ':ano-12-31'
-        AND t.tipo_operacao_id = 2
+        AND o.tipo_operacao_id = 2
           AND compra = 0
           AND a.tipo_ativo_id IN (1, 3)
           GROUP BY mes

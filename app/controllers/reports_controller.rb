@@ -13,6 +13,6 @@ class ReportsController < ApplicationController
   private
 
   def filter_params
-    params.permit(:year, :month)
+    params.permit(:ano, :mes)
   end
 end

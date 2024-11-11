@@ -1,6 +1,6 @@
 class SwingTradeQuery < ApplicationService
   def call
-    Trade.find_by_sql("
+    Operacao.find_by_sql("
       SELECT
         ano,
         mes,
@@ -40,10 +40,10 @@ class SwingTradeQuery < ApplicationService
                 0
             END)) AS prejuizo
           FROM
-            trade t
-          LEFT JOIN ativo a ON t.ativo_id = a.id
+            operacao o
+          LEFT JOIN ativo a ON o.ativo_id = a.id
           WHERE
-            t.tipo_operacao_id = 1
+            o.tipo_operacao_id = 1
             AND compra = 0
             AND a.tipo_ativo_id <> 2
             GROUP BY ano, mes

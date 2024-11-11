@@ -1,5 +1,5 @@
 class ResultadosMensaisQuery < ApplicationService
-  def initialize(relation: Trade.all, params: {})
+  def initialize(relation: Operacao.all, params: {})
     @relation = relation
     @params = params
   end

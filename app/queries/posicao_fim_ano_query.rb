@@ -4,7 +4,7 @@ class PosicaoFimAnoQuery < ApplicationService
   end
 
   def call
-    posicoes_final_ano = EndYearPosition.select('
+    posicoes_final_ano = PosicaoFimAno.select('
                                         ativo.codigo,
                                         ativo.cnpj,
                                         ativo.nome AS nome_ativo,
@@ -12,9 +12,9 @@ class PosicaoFimAnoQuery < ApplicationService
                                         ROUND(posicao_fim_ano.preco_medio, 2) AS preco_medio,
                                         ROUND(posicao_fim_ano.custo_total, 2) AS custo_total,
                                         tipo_ativo.nome AS tipo_ativo')
-                                        .joins(financial_asset: :tipo_ativo)
-                                        .where(ano: @params[:ano])
-                                        .order('ativo.codigo')
+                                      .joins(ativo: :tipo_ativo)
+                                      .where(ano: @params[:ano])
+                                      .order('ativo.codigo')
 
     posicoes_final_ano.map do |i|
       p = i.attributes

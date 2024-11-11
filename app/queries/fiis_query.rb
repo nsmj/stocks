@@ -4,13 +4,13 @@ class FiisQuery < ApplicationService
   end
 
   def call
-    Trade.select(
+    Operacao.select(
       'STRFTIME("%Y", data) ano,
       STRFTIME("%m", data) mes,
       SUM(lucro_liquido) AS valor'
     )
-         .where('tipo_operacao = 3
+            .where('tipo_operacao_id = 3
         AND compra = 0')
-         .group('ano', 'mes')
+            .group('ano', 'mes')
   end
 end
