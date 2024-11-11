@@ -81,7 +81,7 @@ class CalculadoraResultados < ApplicationService
     end
 
     posicoes_fim_ano.each_value do |pfa|
-      pfa.save if pfa.posicao.positive?
+      pfa.save if pfa.posicao.positive? & !pfa.preco_medio.nan?
     end
   end
 end

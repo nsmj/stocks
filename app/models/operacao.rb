@@ -9,7 +9,7 @@ class Operacao < ApplicationRecord
   def self.from_json(conteudo_json)
     operacao = new
 
-    operacao.ativo_financeiro = Ativo.find_by(codigo: conteudo_json['codigo_ativo'])
+    operacao.ativo = Ativo.find_by(codigo: conteudo_json['codigo_ativo'])
     operacao.tipo_operacao = TipoOperacao.find_by(nome: conteudo_json['tipo'])
     operacao.data = conteudo_json['data']
     operacao.compra = conteudo_json['compra']
