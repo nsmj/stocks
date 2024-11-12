@@ -1,5 +1,4 @@
 class ResultsCalculator < ApplicationService
-
   def call
     sql = <<~SQL
       SELECT t.id, 'Trade' AS type, date, null AS 'factor', quantity, asset_price, total_amount, purchase, fees, a.id AS asset_id, tt.name AS 'trade_type_event' FROM trade t
@@ -82,7 +81,7 @@ class ResultsCalculator < ApplicationService
     end
 
     end_year_positions.each do |_, eyp|
-      eyp.save if eyp.position.positive?
+      eyp.save if eyp.position.positive? && !eyp.average_price.nan?
     end
   end
 end
