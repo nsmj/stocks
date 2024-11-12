@@ -7,8 +7,8 @@ Rails.application.routes.draw do
 
   resources :reports, only: [] do
     collection do
-      get 'monthly_results/:ano/:mes', action: 'monthly_results', as: :monthly_results
-      get 'profit-loss', action: 'profit_loss', as: :profit_loss
+      get 'resultados_mensais/:ano/:mes', action: 'resultados_mensais', as: :resultados_mensais
+      get 'lucro-prejuizo', action: 'lucro_prejuizo', as: :lucro_prejuizo
     end
   end
 
@@ -16,13 +16,13 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  resources :financial_assets, param: :code, only: [] do
+  resources :financial_assets, param: :codigo, only: [] do
     member do
       get 'calculate_new_average_price/:invested_amount', action: 'calculate_new_average_price'
     end
   end
 
-  get '/financial_assets/by_code/:code', to: 'financial_assets#by_code'
+  get '/financial_assets/by_codigo/:codigo', to: 'financial_assets#by_codigo'
 
   resources :events, only: [] do
     collection do

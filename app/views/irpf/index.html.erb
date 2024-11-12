@@ -94,8 +94,8 @@
             <% month = month_number.to_s.rjust(2, '0') %>
             <tr>
               <th>
-                <%= turbo_frame_tag target: 'monthly_results' do %>
-                  <%= link_to @months[month_number], monthly_results_reports_path(params[:ano], month_number) %>
+                <%= turbo_frame_tag target: 'resultados_mensais' do %>
+                  <%= link_to @months[month_number], resultados_mensais_reports_path(params[:ano], month_number) %>
                 <% end %>
               </th>
               <td class="text-end" style="background-color: #ADD8E6">
@@ -131,7 +131,7 @@
         </tbody>
       </table>
 
-      <%= turbo_frame_tag 'monthly_results' do %>
+      <%= turbo_frame_tag 'resultados_mensais' do %>
 
       <% end %>
 

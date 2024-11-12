@@ -2,12 +2,12 @@ require 'date'
 
 # Class for generic reports.
 class ReportsController < ApplicationController
-  def monthly_results
-    @results, @total = MonthlyResultsQuery.call(params: filter_params)
+  def resultados_mensais
+    @results, @total = ResultadosMensaisQuery.call(params: filter_params)
   end
 
-  def profit_loss
-    @results = ProfitLoss.call
+  def lucro_prejuizo
+    @results = LucroPrejuizo.call
   end
 
   private
