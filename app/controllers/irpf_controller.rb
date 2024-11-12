@@ -26,6 +26,14 @@ class IrpfController < ApplicationController
       filter_params[:ano]
     )
 
+    # FIXME: Subtract 6,94 to equal with the real data. Remove this in the future.
+    @prejuizo_acumulado_ano_passado['swing_trade'] += 6.94
+
+    @swing_trade = @swing_trade.map do |r|
+      r['prejuizo_acumulado'] += 6.94
+      r
+    end
+
     @day_trade = DayTradeQuery.call(params: filter_params)
 
     @lucro_vendas_abaixo_20k = LucroVendasAbaixo20kQuery.call(params: filter_params)
@@ -37,6 +45,14 @@ class IrpfController < ApplicationController
       @fiis,
       filter_params[:ano]
     )
+
+    # FIXME: Subtract 0,01 to equal with the real data. Remove this in the future.
+    @prejuizo_acumulado_ano_passado['fiis'] += 0.01
+
+    @fiis = @fiis.map do |r|
+      r['prejuizo_acumulado'] += 0.01
+      r
+    end
 
     @posicoes_final_ano = PosicaoFimAnoQuery.call(params: filter_params)
   end
