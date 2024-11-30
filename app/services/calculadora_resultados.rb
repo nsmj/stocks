@@ -1,11 +1,35 @@
 class CalculadoraResultados < ApplicationService
   def call
     sql = <<~SQL
-      SELECT o.id, 'Operacao' AS tipo, data, null AS 'fator', quantidade, preco_ativo, valor_total, compra, taxas, a.id AS ativo_id, tope.nome AS 'tipo_operacao_evento' FROM operacao o
+      SELECT
+        o.id,
+        'Operacao' AS tipo,
+        data,
+        null AS 'fator',
+        quantidade,
+        preco_ativo,
+        valor_total,
+        compra,
+        taxas,
+        a.id AS ativo_id,
+        tope.nome AS 'tipo_operacao_evento'
+      FROM operacao o
       LEFT JOIN ativo a ON o.ativo_id = a.id
       LEFT JOIN tipo_operacao tope ON o.tipo_operacao_id = tope.id
       UNION ALL
-      SELECT e.id, 'Evento', data, fator, null, valor AS 'preco_ativo', null, null, null, a.id AS ativo_id, te.nome FROM evento e
+      SELECT
+        e.id,
+        'Evento',
+        data,
+        fator,
+        null,
+        valor AS 'preco_ativo',
+        null,
+        null,
+        null,
+        a.id AS ativo_id,
+        te.nome
+      FROM evento e
       LEFT JOIN ativo a ON e.ativo_id = a.id
       LEFT JOIN tipo_evento te ON e.tipo_evento_id = te.id
       ORDER BY ativo_id, data
