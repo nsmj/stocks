@@ -75,8 +75,9 @@ class CalculadoraResultados < ApplicationService
             posicao_atual *= operacao['fator']
             preco_medio_compra = ultimo_preco_medio / operacao['fator']
           when 'Bonificação'
-            posicao_atual = posicao_anterior + operacao['fator']
-            preco_medio_compra = ((ultimo_preco_medio * posicao_anterior) + (operacao['preco_ativo'] * operacao['fator'])) / posicao_atual
+            acoes_bonificadas = (posicao_anterior * operacao['fator']) / 100
+            posicao_atual += acoes_bonificadas
+            preco_medio_compra = ((ultimo_preco_medio * posicao_anterior) + (operacao['preco_ativo'] * acoes_bonificadas)) / posicao_atual
           end
         end
 
