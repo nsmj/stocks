@@ -10,6 +10,8 @@ class Clear
 
     operacoes_entry = dados_nota.each_index.select { |i| dados_nota[i] == '1-BOVESPA' }
 
+    operacoes_entry = dados_nota.each_index.select { |i| dados_nota[i] == 'B3 RV LISTADO' } if operacoes_entry.empty?
+
     operacoes_entry.each do |posicao|
       # O que está em
       # noteData[position + 1]
@@ -87,6 +89,7 @@ class Clear
       posicao_temporaria = posicao + 1
 
       posicao_temporaria += 1 until ['1-BOVESPA',
+                                     'B3 RV LISTADO',
                                      'NOTA DE NEGOCIAÇÃO',
                                      'NOTA DE CORRETAGEM'].include? dados_nota[posicao_temporaria]
 
