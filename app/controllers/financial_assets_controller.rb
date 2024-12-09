@@ -4,11 +4,11 @@ class FinancialAssetsController < ApplicationController
   end
 
   def calculate_new_average_price
-    asset = FinancialAsset.find_by(codigo: filter_params[:codigo].upcase)
+    ativo = Ativo.find_by(codigo: filter_params[:codigo].upcase)
 
-    render json: asset.new_average_price(
+    render json: ativo.novo_preco_medio(
       filter_params[:invested_amount],
-      asset.price
+      ativo.preco
     )
   end
 
@@ -19,7 +19,7 @@ class FinancialAssetsController < ApplicationController
   private
 
   def get_by_codigo(codigo)
-    FinancialAsset.find_by(codigo: codigo.upcase)
+    Ativo.find_by(codigo: codigo.upcase)
   end
 
   def filter_params
