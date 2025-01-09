@@ -1,0 +1,36 @@
+<%= turbo_frame_tag 'resultados_mensais' do %>
+    <table style="width: 100%">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Operação</th>
+            <th>Ativo</th>
+            <th class="text-end">Quantidade</th>
+            <th class="text-end">Preço</th>
+            <th class="text-end">Taxas</th>
+            <th class="text-end">Valor Operação</th>
+            <th class="text-end">Lucro Líquido</th>
+        </tr>
+        </thead>
+        <tbody>
+            <% @results.each do |result| %>
+            <tr>
+                <td><%= result['data_operacao'] %></td>
+                <td><%= result['compra'] == 1 ? "Compra" : "Venda" %></td>
+                <td><%= result['codigo'] %></td>
+                <td class="text-end"><%= result['quantity'] %></td>
+                <td class="text-end"><%= to_currency(result['preco_ativo']) %></td>
+                <td class="text-end"><%= to_currency(result['taxas']) %></td>
+                <td class="text-end"><%= to_currency(result['valor_total']) %></td>
+                <td class="text-end"><%= to_currency(result['lucro_liquido']) %></td>
+            </tr>
+            <% end %>
+        <tr>
+            <td colSpan="7" class="text-end" style="padding: 5px">Total</td>
+            <td>
+                <%= to_currency(@total) %>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+<% end %>

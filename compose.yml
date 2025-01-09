@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - PDF_PASSWORD_1
+      - PDF_PASSWORD_2
+      - BRAPI_DEV_TOKEN

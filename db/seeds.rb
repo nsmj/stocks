@@ -7,3 +7,7 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+IO.read('db/database_seeds.sql').split(';').each do |sql|
+    ActiveRecord::Base.connection.execute(sql)
+  end
