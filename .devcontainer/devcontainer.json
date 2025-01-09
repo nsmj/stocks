@@ -37,7 +37,7 @@
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "extensions": ["Shopify.ruby-extensions-pack"]
+      "extensions": ["Shopify.ruby-extensions-pack", "alexcvzz.vscode-sqlite"]
     }
   }
 
