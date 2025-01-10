@@ -14,27 +14,27 @@ class SwingTradeQuery < ApplicationService
           SELECT
             STRFTIME('%Y', data) ano,
             STRFTIME('%m', data) mes,
-          PRINTF(\"%.2f\", SUM(CASE WHEN a.tipo_ativo_id = 1 THEN
+          PRINTF('%.2f', SUM(CASE WHEN a.tipo_ativo_id = 1 THEN
             valor_total
           ELSE
             0
           END)) AS vendas_acoes,
-          PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 1 THEN
+          PRINTF('%.2f', SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 1 THEN
                 lucro_liquido
             ELSE
                 0
             END)) AS lucro_acoes,
-            PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id IN (4, 5) THEN
+            PRINTF('%.2f', SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id IN (4, 5) THEN
                 lucro_liquido
             ELSE
                 0
             END)) AS lucro_opcoes,
-            PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 3 THEN
+            PRINTF('%.2f', SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 3 THEN
                 lucro_liquido
             ELSE
                 0
             END)) AS lucro_etf,
-            PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido < 0 THEN
+            PRINTF('%.2f', SUM(CASE WHEN lucro_liquido < 0 THEN
                 lucro_liquido
             ELSE
                 0

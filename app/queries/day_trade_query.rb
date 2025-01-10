@@ -5,7 +5,7 @@ class DayTradeQuery < ApplicationService
 
   def call
     # TODO: Tratamento de opções.
-    Operacao.find_by_sql(["
+    Operacao.find_by_sql([ "
       SELECT
         mes,
         lucro_acoes + lucro_etf + prejuizo AS valor
@@ -13,17 +13,17 @@ class DayTradeQuery < ApplicationService
       (
         SELECT
           STRFTIME('%m', data) mes,
-        PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 1 THEN
+        PRINTF('%.2f', SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 1 THEN
               lucro_liquido
           ELSE
               0
           END)) AS lucro_acoes,
-          PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 3 THEN
+          PRINTF('%.2f', SUM(CASE WHEN lucro_liquido > 0 AND a.tipo_ativo_id = 3 THEN
               lucro_liquido
           ELSE
               0
           END)) AS lucro_etf,
-          PRINTF(\"%.2f\", SUM(CASE WHEN lucro_liquido < 0 THEN
+          PRINTF('%.2f', SUM(CASE WHEN lucro_liquido < 0 THEN
               lucro_liquido
           ELSE
               0
@@ -39,6 +39,6 @@ class DayTradeQuery < ApplicationService
           GROUP BY mes
       )
       WHERE CAST(valor AS decimal) <> 0
-      ", { ano: @params[:ano].to_i }])
+      ", { ano: @params[:ano].to_i } ])
   end
 end
