@@ -10,13 +10,14 @@ RSpec.describe 'Clear' do
       expect(nota_corretagem.data).to eq(Time.strptime('02/12/2020', '%d/%m/%Y'))
     end
 
-    p = proc do
+    it 'deve extrair os dados das operações' do
       nota_corretagem = NotaCorretagem.new(Clear.new)
       nota_corretagem.extrai_dados_arquivo('files_test/BrokerNotes/Clear/20201202.pdf')
-      let(:operacoes) { nota_corretagem.operacoes }
-    end
 
-    include_examples 'verifica_operacao', 0, 1, 14, 14.53, 203.42, 0.06, &p
+      operacao = nota_corretagem.operacoes.first
+
+      testa_operacao(operacao, 1, 14, 14.53, 203.42, 0.06)
+    end
 
     context 'Extracao de IRRF' do
       let(:irrf_teste) { nota_corretagem.irrfs.first }
