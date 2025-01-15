@@ -28,6 +28,11 @@ class IrpfController < ApplicationController
 
     @day_trade = DayTradeQuery.call(params: filter_params)
 
+    @day_trade, @prejuizo_acumulado_ano_passado["day_trade"] = CalculadoraPrejuizoAcumulado.call(
+      @day_trade,
+      filter_params[:ano]
+    )
+
     @lucro_vendas_abaixo_20k = LucroVendasAbaixo20kQuery.call(params: filter_params)
 
     @irrf = IrrfQuery.call(params: filter_params)
