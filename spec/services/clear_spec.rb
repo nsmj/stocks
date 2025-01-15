@@ -10,13 +10,20 @@ RSpec.describe 'Clear' do
       expect(nota_corretagem.data).to eq(Time.strptime('02/12/2020', '%d/%m/%Y'))
     end
 
-    it 'deve extrair os dados das operações' do
-      nota_corretagem = NotaCorretagem.new(Clear.new)
+    it 'deve extrair os dados das operações comuns' do
       nota_corretagem.extrai_dados_arquivo('files_test/BrokerNotes/Clear/20201202.pdf')
 
       operacao = nota_corretagem.operacoes.first
 
       testa_operacao(operacao, 1, 14, 14.53, 203.42, 0.06)
+    end
+
+    it 'deve extrair os dados do Day Trade' do
+      nota_corretagem.extrai_dados_arquivo('files_test/BrokerNotes/Clear/20210715.pdf')
+
+      operacao = nota_corretagem.operacoes.first
+
+      testa_operacao(operacao, 1, 100, 31.68, 3168, 0.73)
     end
 
     context 'Extracao de IRRF' do
