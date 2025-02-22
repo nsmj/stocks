@@ -1,22 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Stocks.Data;
-using Stocks.Extraction;
-using Stocks.Models;
+﻿using Stocks.Extraction;
 
 namespace Stocks.Tests;
 
-public class ClearTest
+public class ClearTest : BaseTest
 {
-    private IConfigurationRoot Configuration { get; }
-    private BancoContext Db { get; }
-    private NotaNegociacao NotaCorretagem { get; }
-
     public ClearTest()
-    {
-        Configuration = Utils.GetConfiguration();
-        Db = Utils.GetDbContext();
-        NotaCorretagem = new(new Clear(), Configuration);
-    }
+        : base(new Clear()) { }
 
     [Fact]
     public async Task ExtrairDataNotaCorretagem()
