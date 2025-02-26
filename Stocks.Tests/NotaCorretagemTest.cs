@@ -16,71 +16,15 @@ public class NotaCorretagemTest
         Db = Utils.GetDbContext();
     }
 
-    public static IEnumerable<
-        TheoryDataRow<Corretora, string, string>
-    > DadosExtrairDataNotaCorretagem =
-    [
-        new(new Clear(), "files_test/NotasCorretagem/Clear/20201202.pdf", "02/12/2020"),
-        new(
-            new Nuinvest(),
-            "files_test/NotasCorretagem/Nuinvest/20191104_Invoice_19267.pdf",
-            "04/11/2019"
-        ),
-    ];
-
-    public static IEnumerable<
-        TheoryDataRow<Corretora, string, int, int, decimal, decimal, decimal>
-    > DadosExtrairDadosNotaCorretagem =
-    [
-        new(
-            new Clear(),
-            "files_test/NotasCorretagem/Clear/20201202.pdf",
-            1,
-            14,
-            14.53m,
-            203.42m,
-            0.06m
-        ), // Operações comuns.
-        new(
-            new Clear(),
-            "files_test/NotasCorretagem/Clear/20210715.pdf",
-            1,
-            100,
-            31.68m,
-            3168,
-            0.73m
-        ), // Day trade.
-    ];
-
-    public static IEnumerable<
-        TheoryDataRow<Corretora, string, decimal, string, string>
-    > DadosExtrairIrrfNotaCorretagem =
-    [
-        new(
-            new Clear(),
-            "files_test/NotasCorretagem/Clear/20210706.pdf",
-            0.23m,
-            "06/07/2021",
-            "Swing Trade"
-        ), // Swing trade.
-        new(
-            new Clear(),
-            "files_test/NotasCorretagem/Clear/20210728.pdf",
-            1.26m,
-            "28/07/2021",
-            "Day Trade"
-        ), // Day Trade.
-        new(
-            new Clear(),
-            "files_test/NotasCorretagem/Clear/20210201.pdf",
-            0.07m,
-            "01/02/2021",
-            "FII"
-        ), // FII.
-    ];
-
     [Theory]
-    [MemberData(nameof(DadosExtrairDataNotaCorretagem))]
+    [MemberData(
+        nameof(ClearDadosTeste.DadosExtrairDataNotaCorretagem),
+        MemberType = typeof(ClearDadosTeste)
+    )]
+    [MemberData(
+        nameof(NuinvestDadosTeste.DadosExtrairDataNotaCorretagem),
+        MemberType = typeof(NuinvestDadosTeste)
+    )]
     public async Task ExtrairDataNotaCorretagem(Corretora corretora, string filePath, string data)
     {
         NotaCorretagem = new(corretora, Configuration);
@@ -91,7 +35,14 @@ public class NotaCorretagemTest
     }
 
     [Theory]
-    [MemberData(nameof(DadosExtrairDadosNotaCorretagem))]
+    [MemberData(
+        nameof(ClearDadosTeste.DadosExtrairDadosNotaCorretagem),
+        MemberType = typeof(ClearDadosTeste)
+    )]
+    [MemberData(
+        nameof(NuinvestDadosTeste.DadosExtrairDadosNotaCorretagem),
+        MemberType = typeof(NuinvestDadosTeste)
+    )]
     public async Task ExtrairDadosNotaCorretagem(
         Corretora corretora,
         string filePath,
@@ -99,14 +50,15 @@ public class NotaCorretagemTest
         int quantidade,
         decimal precoAtivo,
         decimal valorTotal,
-        decimal taxas
+        decimal taxas,
+        int indiceOperacao
     )
     {
         NotaCorretagem = new(corretora, Configuration);
 
         await NotaCorretagem.ExtraiDadosDoArquivo(Db, filePath);
 
-        var operacao = NotaCorretagem.Operacoes.First();
+        var operacao = NotaCorretagem.Operacoes[indiceOperacao];
 
         // TODO: Verificar se dá de converter o campo Compra pra BOOL.
         Assert.Equal(compra, operacao.Compra);
@@ -117,7 +69,10 @@ public class NotaCorretagemTest
     }
 
     [Theory]
-    [MemberData(nameof(DadosExtrairIrrfNotaCorretagem))]
+    [MemberData(
+        nameof(ClearDadosTeste.DadosExtrairIrrfNotaCorretagem),
+        MemberType = typeof(ClearDadosTeste)
+    )]
     public async Task ExtrairIrrfNotaCorretagem(
         Corretora corretora,
         string filePath,
