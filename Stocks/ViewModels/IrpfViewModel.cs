@@ -6,6 +6,8 @@ namespace Stocks.ViewModels
     {
         public string? AnoFiltrado { get; set; }
         public decimal LucroVendasAbaixo20k { get; set; }
-        public Dictionary<string, IrpfRow>? SwingTradeRows { get; set; }
+        public Dictionary<int, IrpfRow>? SwingTradeRows { get; set; }
+        public Dictionary<int, IrpfRow>? DayTradeRows { get; set; }
+        public Dictionary<int, IrpfRow>? FiiRows { get; set; }
     }
 }

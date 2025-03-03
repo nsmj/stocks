@@ -24,8 +24,12 @@ public class IrpfController : Controller
             irpfViewModel.AnoFiltrado = ano;
             irpfViewModel.LucroVendasAbaixo20k =
                 await LucroVendasAbaixo20kQueries.LucroVendasAbaixo20kQuery(_db, ano);
-            irpfViewModel.SwingTradeRows = IrpfRowsBuilder.BuildSwingTradeRows(
+            irpfViewModel.SwingTradeRows = IrpfRowsBuilder.BuildIrpfRowsBo(
                 SwingTradeBoQueries.SwingTradeQuery(_db),
+                ano
+            );
+            irpfViewModel.DayTradeRows = IrpfRowsBuilder.BuildIrpfRowsBo(
+                DayTradeBoQueries.DayTradeQuery(_db),
                 ano
             );
         }

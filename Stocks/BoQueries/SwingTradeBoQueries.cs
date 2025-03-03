@@ -1,20 +1,14 @@
 using Microsoft.EntityFrameworkCore;
+using Stocks.Bo;
 using Stocks.Data;
 
 namespace Stocks.BoQueries;
 
-public class SwingTradeResult
-{
-    public string? Ano { get; set; }
-    public string? Mes { get; set; }
-    public decimal Valor { get; set; }
-}
-
 public class SwingTradeBoQueries
 {
-    public static IQueryable<SwingTradeResult> SwingTradeQuery(BancoContext db)
+    public static IQueryable<ResultadoOperacaoMesBo> SwingTradeQuery(BancoContext db)
     {
-        var result = db.Database.SqlQuery<SwingTradeResult>(
+        return db.Database.SqlQuery<ResultadoOperacaoMesBo>(
             $@"
                 SELECT
                     ano,
@@ -66,7 +60,5 @@ public class SwingTradeBoQueries
                     WHERE CAST(valor AS decimal) <> 0
                 "
         );
-
-        return result;
     }
 }

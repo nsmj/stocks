@@ -1,3 +1,4 @@
+@using Stocks.BoQueries
 @model Stocks.ViewModels.IrpfViewModel
 
 <form asp-controller="Irpf" asp-action="Index" method="get">
@@ -19,6 +20,7 @@
       <tr>
         <th />
         <th class='text-start' scope='col' colspan="4">
+    using Stocks.BoQueries;
           Operações Comuns
         </th>
         <th class='text-start' scope='col' colspan="4">
@@ -89,13 +91,14 @@
 
         </td>
       </tr>
-
+      @for (int i = 1; i <= 12; i++)
+      {
         <tr>
           <th>
 
           </th>
           <td class="text-end" style="background-color: #ADD8E6">
-
+            @Model.SwingTradeRows?[i].Total
           </td>
           <td style="background-color: #ADD8E6" />
           <td class="text-end" style="background-color: #ADD8E6">
@@ -123,7 +126,7 @@
 
           </td>
         </tr>
-
+      }
     </tbody>
   </table>
   </div>
