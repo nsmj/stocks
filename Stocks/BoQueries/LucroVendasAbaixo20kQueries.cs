@@ -1,4 +1,3 @@
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 
@@ -41,8 +40,8 @@ public class LucroVendasAbaixo20kQueries
             HAVING valor_vendas < 20000
             )"
             )
-            .ToListAsync();
+            .SingleAsync();
 
-        return result.First().Valor;
+        return result.Valor;
     }
 }
