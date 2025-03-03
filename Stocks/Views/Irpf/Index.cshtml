@@ -1,0 +1,130 @@
+@model Stocks.ViewModels.IrpfViewModel
+
+<form asp-controller="Irpf" asp-action="Index" method="get">
+  <input type="search" class="form-control" name="ano"
+  value="@Model.AnoFiltrado" />
+  <input type="submit" value="Pesquisa" class="btn btn-primary" />
+</form>
+
+@if (@Model.AnoFiltrado != null) {
+  <section style="text-align: right">
+    <b>
+      Lucro com vendas abaixo de 20 mil reais:
+    </b>
+    @Model.LucroVendasAbaixo20k
+  </section>
+  <div class='table-responsive'>
+  <table class='table'>
+    <thead>
+      <tr>
+        <th />
+        <th class='text-start' scope='col' colspan="4">
+          Operações Comuns
+        </th>
+        <th class='text-start' scope='col' colspan="4">
+          Day Trade
+        </th>
+        <th class='text-start' scope='col' colspan="4">
+          FIIs
+        </th>
+      </tr>
+      <tr>
+        <th />
+        <th class='text-end' scope='col'>
+          Total
+        </th>
+        <th class='text-end' scope='col'>
+          Imposto Pago
+        </th>
+        <th class='text-end' scope='col'>
+          IRRF
+        </th>
+        <th class='text-end' scope='col'>
+          Prejuízo Acumulado
+        </th>
+        <th class='text-end' scope='col'>
+          Total
+        </th>
+        <th class='text-end' scope='col'>
+          Imposto Pago
+        </th>
+        <th class='text-end' scope='col'>
+          IRRF
+        </th>
+        <th class='text-end' scope='col'>
+          Prejuízo Acumulado
+        </th>
+        <th class='text-end' scope='col'>
+          Total
+        </th>
+        <th class='text-end' scope='col'>
+          Imposto Pago
+        </th>
+        <th class='text-end' scope='col'>
+          IRRF
+        </th>
+        <th class='text-end' scope='col'>
+          Prejuízo Acumulado
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th colspan="4" class="text-end">
+          Prejuízo acumulado no ano anterior
+        </th>
+        <td class="text-end">
+
+        </td>
+        <th colspan="3" class="text-end">
+          Prejuízo acumulado no ano anterior
+        </th>
+        <td class="text-end">
+
+        </td>
+        <th colspan="3" class="text-end">
+          Prejuízo acumulado no ano anterior
+        </th>
+        <td class="text-end">
+
+        </td>
+      </tr>
+
+        <tr>
+          <th>
+
+          </th>
+          <td class="text-end" style="background-color: #ADD8E6">
+
+          </td>
+          <td style="background-color: #ADD8E6" />
+          <td class="text-end" style="background-color: #ADD8E6">
+
+          </td>
+          <td class="text-end" style="background-color: #ADD8E6" >
+
+          </td>
+          <td class="text-end">
+
+          </td>
+          <td />
+          <td />
+          <td class="text-end">
+
+          </td>
+          <td class="text-end" style="background-color: #F9E79F">
+
+          </td>
+          <td style="background-color: #F9E79F" />
+          <td class="text-end" style="background-color: #F9E79F">
+
+          </td>
+          <td class="text-end" style="background-color: #F9E79F">
+
+          </td>
+        </tr>
+
+    </tbody>
+  </table>
+  </div>
+}
