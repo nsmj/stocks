@@ -12,11 +12,10 @@ public class SwingTradeResult
 
 public class SwingTradeBoQueries
 {
-    public static async Task<List<SwingTradeResult>> SwingTradeQuery(BancoContext db)
+    public static IQueryable<SwingTradeResult> SwingTradeQuery(BancoContext db)
     {
-        var result = await db
-            .Database.SqlQuery<SwingTradeResult>(
-                $@"
+        var result = db.Database.SqlQuery<SwingTradeResult>(
+            $@"
                 SELECT
                     ano,
                     mes,
@@ -66,8 +65,7 @@ public class SwingTradeBoQueries
                     )
                     WHERE CAST(valor AS decimal) <> 0
                 "
-            )
-            .ToListAsync();
+        );
 
         return result;
     }

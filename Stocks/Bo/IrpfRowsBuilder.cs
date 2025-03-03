@@ -5,7 +5,7 @@ namespace Stocks.Bo;
 public class IrpfRowsBuilder
 {
     public static Dictionary<string, IrpfRow> BuildSwingTradeRows(
-        List<SwingTradeResult> swingTradeResults,
+        IQueryable<SwingTradeResult> swingTradeResults,
         string ano
     )
     {

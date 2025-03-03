@@ -25,7 +25,7 @@ public class IrpfController : Controller
             irpfViewModel.LucroVendasAbaixo20k =
                 await LucroVendasAbaixo20kQueries.LucroVendasAbaixo20kQuery(_db, ano);
             irpfViewModel.SwingTradeRows = IrpfRowsBuilder.BuildSwingTradeRows(
-                await SwingTradeBoQueries.SwingTradeQuery(_db),
+                SwingTradeBoQueries.SwingTradeQuery(_db),
                 ano
             );
         }
