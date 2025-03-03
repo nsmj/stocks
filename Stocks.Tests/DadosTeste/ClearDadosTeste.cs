@@ -1,6 +1,6 @@
 using Stocks.Extraction;
 
-namespace Stocks.Tests;
+namespace Stocks.Tests.DadosTeste;
 
 public class ClearDadosTeste
 {

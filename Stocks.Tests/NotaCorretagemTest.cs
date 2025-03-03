@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Stocks.Data;
 using Stocks.Extraction;
+using Stocks.Tests.DadosTeste;
 
 namespace Stocks.Tests;
 

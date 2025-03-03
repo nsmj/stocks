@@ -5,97 +5,97 @@ namespace Stocks.Tests;
 
 public class SwingTradeTest
 {
+    private readonly List<SwingTradeResult> swingTradeResults =
+    [
+        new SwingTradeResult
+        {
+            Ano = "2022",
+            Mes = "01",
+            Valor = -0.77m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2022",
+            Mes = "02",
+            Valor = -7.41m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2022",
+            Mes = "05",
+            Valor = -0.04m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2022",
+            Mes = "11",
+            Valor = -11.69m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "01",
+            Valor = -10.38m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "02",
+            Valor = -0.36m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "04",
+            Valor = -11.88m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "05",
+            Valor = -46.65m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "06",
+            Valor = -13.74m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "08",
+            Valor = -526.88m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "09",
+            Valor = -98.11m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "10",
+            Valor = -45.0m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "11",
+            Valor = 54.23m,
+        },
+        new SwingTradeResult
+        {
+            Ano = "2023",
+            Mes = "12",
+            Valor = -13.34m,
+        },
+    ];
+
     [Fact]
     public void BuildSwingTradeRows()
     {
-        List<SwingTradeResult> swingTradeResults =
-        [
-            new SwingTradeResult
-            {
-                Ano = "2022",
-                Mes = "01",
-                Valor = -0.77m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2022",
-                Mes = "02",
-                Valor = -7.41m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2022",
-                Mes = "05",
-                Valor = -0.04m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2022",
-                Mes = "11",
-                Valor = -11.69m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "01",
-                Valor = -10.38m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "02",
-                Valor = -0.36m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "04",
-                Valor = -11.88m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "05",
-                Valor = -46.65m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "06",
-                Valor = -13.74m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "08",
-                Valor = -526.88m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "09",
-                Valor = -98.11m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "10",
-                Valor = -45.0m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "11",
-                Valor = 54.23m,
-            },
-            new SwingTradeResult
-            {
-                Ano = "2023",
-                Mes = "12",
-                Valor = -13.34m,
-            },
-        ];
-
         var irpfRows = IrpfRowsBuilder.BuildSwingTradeRows(swingTradeResults, "2022");
 
         Assert.Equal(4, irpfRows.Count);
