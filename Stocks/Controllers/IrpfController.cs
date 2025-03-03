@@ -32,6 +32,9 @@ public class IrpfController : Controller
                 DayTradeBoQueries.DayTradeQuery(_db),
                 ano
             );
+
+            var irrfResults = await IrrfBo.IrrfQuery(_db, ano);
+            IrrfBo.InjectIrrfValues(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
         }
 
         return View(irpfViewModel);
