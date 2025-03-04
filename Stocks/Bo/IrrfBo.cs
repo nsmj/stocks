@@ -14,7 +14,7 @@ public class IrrfResult
 
 public class IrrfBo
 {
-    public static async Task<List<IrrfResult>> IrrfQuery(BancoContext db, string ano)
+    public async Task<List<IrrfResult>> IrrfQuery(BancoContext db, string ano)
     {
         var result = db.Database.SqlQuery<IrrfResult>(
             $@"
@@ -28,8 +28,8 @@ public class IrrfBo
         return await result.ToListAsync();
     }
 
-    public static void InjetarValoresIrrf(
-        Dictionary<int, IrpfRow> irpfRows,
+    public void InjetarValoresIrrf(
+        Dictionary<int, IrpfRowBo> irpfRows,
         List<IrrfResult> irrfResults,
         string nomeTipoOperacao
     )

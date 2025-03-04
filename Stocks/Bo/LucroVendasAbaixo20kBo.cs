@@ -1,16 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 
-namespace Stocks.BoQueries;
+namespace Stocks.Bo;
 
 public class LucroVendasAbaixo20kResult
 {
     public decimal Valor { get; set; }
 }
 
-public class LucroVendasAbaixo20kQueries
+public class LucroVendasAbaixo20kBo
 {
-    public static async Task<decimal> LucroVendasAbaixo20kQuery(BancoContext db, string ano)
+    public async Task<decimal> LucroVendasAbaixo20kQuery(BancoContext db, string ano)
     {
         var anoInicio = $"{ano}-01-01";
         var anoFim = $"{ano}-12-31";

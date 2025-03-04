@@ -4,9 +4,9 @@ namespace Stocks.Bo;
 
 public class CalculadoraPrejuizoAcumuladoBo
 {
-    public static decimal InjetarPrejuizoAcumulado(
+    public decimal InjetarPrejuizoAcumulado(
         List<ResultadoOperacaoMesBo> resultadoOperacoes,
-        Dictionary<int, IrpfRow> irpfRows,
+        Dictionary<int, IrpfRowBo> irpfRows,
         string ano
     )
     {

@@ -95,7 +95,9 @@ public class SwingTradeTest
     [Fact]
     public void BuildIrpfRows()
     {
-        var irpfRows = IrpfRowsBuilder.BuildIrpfRowsBo(ResultadosOperacaoMes, "2022");
+        IrpfRowsBuilder irpfRowsBuilder = new();
+
+        var irpfRows = irpfRowsBuilder.BuildIrpfRowsBo(ResultadosOperacaoMes, "2022");
 
         Assert.Equal(12, irpfRows.Count);
         Assert.Equal(-0.77m, irpfRows[1].Total);
@@ -103,7 +105,7 @@ public class SwingTradeTest
         Assert.Equal(-0.04m, irpfRows[5].Total);
         Assert.Equal(-11.69m, irpfRows[11].Total);
 
-        irpfRows = IrpfRowsBuilder.BuildIrpfRowsBo(ResultadosOperacaoMes, "2023");
+        irpfRows = irpfRowsBuilder.BuildIrpfRowsBo(ResultadosOperacaoMes, "2023");
 
         Assert.Equal(12, irpfRows.Count);
         Assert.Equal(-10.38m, irpfRows[1].Total);

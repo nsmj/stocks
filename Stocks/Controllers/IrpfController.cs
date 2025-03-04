@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Stocks.Bo;
 using Stocks.BoQueries;
 using Stocks.Data;
+using Stocks.Interfaces;
+using Stocks.Models.TiposOperacao;
 using Stocks.ViewModels;
 
 namespace Stocks.Controllers;
@@ -15,27 +17,35 @@ public class IrpfController : Controller
         _db = db;
     }
 
-    public async Task<IActionResult> Index(string ano)
+    public async Task<IActionResult> Index(
+        [FromKeyedServices("SwingTrade")] IOperacaoListable swingTradeObj,
+        [FromKeyedServices("DayTrade")] IOperacaoListable dayTradeObj,
+        LucroVendasAbaixo20kBo lucroVendasAbaixo20kBo,
+        IrrfBo irrfBo,
+        IrpfRowsBuilder irpfRowsBuilder,
+        CalculadoraPrejuizoAcumuladoBo calculadoraPrejuizoAcumuladoBo,
+        string ano
+    )
     {
         IrpfViewModel irpfViewModel = new();
 
         if (ano != null)
         {
-            var dadosSwingTrade = await SwingTradeBoQueries.SwingTradeQuery(_db);
-            var dadosDayTrade = await DayTradeBoQueries.DayTradeQuery(_db);
+            var dadosSwingTrade = await swingTradeObj.ResultadoOperacaoMesQuery(_db);
+            var dadosDayTrade = await dayTradeObj.ResultadoOperacaoMesQuery(_db);
 
             irpfViewModel.AnoFiltrado = ano;
             irpfViewModel.LucroVendasAbaixo20k =
-                await LucroVendasAbaixo20kQueries.LucroVendasAbaixo20kQuery(_db, ano);
-            irpfViewModel.SwingTradeRows = IrpfRowsBuilder.BuildIrpfRowsBo(dadosSwingTrade, ano);
-            irpfViewModel.DayTradeRows = IrpfRowsBuilder.BuildIrpfRowsBo(dadosDayTrade, ano);
+                await lucroVendasAbaixo20kBo.LucroVendasAbaixo20kQuery(_db, ano);
+            irpfViewModel.SwingTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosSwingTrade, ano);
+            irpfViewModel.DayTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosDayTrade, ano);
 
-            var irrfResults = await IrrfBo.IrrfQuery(_db, ano);
-            IrrfBo.InjetarValoresIrrf(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
-            IrrfBo.InjetarValoresIrrf(irpfViewModel.DayTradeRows, irrfResults, "Day Trade");
+            var irrfResults = await irrfBo.IrrfQuery(_db, ano);
+            irrfBo.InjetarValoresIrrf(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
+            irrfBo.InjetarValoresIrrf(irpfViewModel.DayTradeRows, irrfResults, "Day Trade");
 
             irpfViewModel.PrejuizoAcumuladoAnoAnoAnteiorSwingTrade =
-                CalculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
+                calculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
                     dadosSwingTrade,
                     irpfViewModel.SwingTradeRows,
                     ano

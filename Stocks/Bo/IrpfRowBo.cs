@@ -1,6 +1,6 @@
 namespace Stocks.BoQueries
 {
-    public class IrpfRow
+    public class IrpfRowBo
     {
         public decimal Total { get; set; }
         public decimal ImpostoPago { get; set; }

@@ -4,18 +4,18 @@ namespace Stocks.Bo;
 
 public class IrpfRowsBuilder
 {
-    public static Dictionary<int, IrpfRow> BuildIrpfRowsBo(
+    public Dictionary<int, IrpfRowBo> BuildIrpfRowsBo(
         List<ResultadoOperacaoMesBo> results,
         string ano
     )
     {
-        Dictionary<int, IrpfRow> irpfRows = [];
+        Dictionary<int, IrpfRowBo> irpfRows = [];
 
         foreach (var row in results)
         {
             if (row.Ano == int.Parse(ano))
             {
-                irpfRows[row.Mes] = new IrpfRow
+                irpfRows[row.Mes] = new IrpfRowBo
                 {
                     Total = row.Valor,
                     ImpostoPago = 0,
@@ -30,7 +30,7 @@ public class IrpfRowsBuilder
         {
             if (!irpfRows.ContainsKey(i))
             {
-                irpfRows[i] = new IrpfRow
+                irpfRows[i] = new IrpfRowBo
                 {
                     Total = 0,
                     ImpostoPago = 0,

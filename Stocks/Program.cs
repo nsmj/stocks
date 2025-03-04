@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Stocks.Bo;
 using Stocks.Data;
+using Stocks.Interfaces;
+using Stocks.Models.TiposOperacao;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<BancoContext>(options =>
     options.UseSqlite("Data Source=Data/Banco.db")
 );
+
+builder.Services.AddScoped<LucroVendasAbaixo20kBo>();
+builder.Services.AddScoped<IrrfBo>();
+builder.Services.AddScoped<IrpfRowsBuilder>();
+builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoBo>();
+
+builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
+builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("DayTrade");
 
 var app = builder.Build();
 

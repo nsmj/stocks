@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Bo;
 using Stocks.Data;
+using Stocks.Interfaces;
 
-namespace Stocks.BoQueries;
+namespace Stocks.Models.TiposOperacao;
 
-public class DayTradeBoQueries
+public class DayTrade : TipoOperacao, IOperacaoListable
 {
-    public static async Task<List<ResultadoOperacaoMesBo>> DayTradeQuery(BancoContext db)
+    public async Task<List<ResultadoOperacaoMesBo>> ResultadoOperacaoMesQuery(BancoContext db)
     {
         return await db
             .Database.SqlQuery<ResultadoOperacaoMesBo>(
