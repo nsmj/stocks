@@ -21,20 +21,25 @@ public class IrpfController : Controller
 
         if (ano != null)
         {
+            var dadosSwingTrade = await SwingTradeBoQueries.SwingTradeQuery(_db);
+            var dadosDayTrade = await DayTradeBoQueries.DayTradeQuery(_db);
+
             irpfViewModel.AnoFiltrado = ano;
             irpfViewModel.LucroVendasAbaixo20k =
                 await LucroVendasAbaixo20kQueries.LucroVendasAbaixo20kQuery(_db, ano);
-            irpfViewModel.SwingTradeRows = IrpfRowsBuilder.BuildIrpfRowsBo(
-                SwingTradeBoQueries.SwingTradeQuery(_db),
-                ano
-            );
-            irpfViewModel.DayTradeRows = IrpfRowsBuilder.BuildIrpfRowsBo(
-                DayTradeBoQueries.DayTradeQuery(_db),
-                ano
-            );
+            irpfViewModel.SwingTradeRows = IrpfRowsBuilder.BuildIrpfRowsBo(dadosSwingTrade, ano);
+            irpfViewModel.DayTradeRows = IrpfRowsBuilder.BuildIrpfRowsBo(dadosDayTrade, ano);
 
             var irrfResults = await IrrfBo.IrrfQuery(_db, ano);
-            IrrfBo.InjectIrrfValues(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
+            IrrfBo.InjetarValoresIrrf(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
+            IrrfBo.InjetarValoresIrrf(irpfViewModel.DayTradeRows, irrfResults, "Day Trade");
+
+            irpfViewModel.PrejuizoAcumuladoAnoAnoAnteiorSwingTrade =
+                CalculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
+                    dadosSwingTrade,
+                    irpfViewModel.SwingTradeRows,
+                    ano
+                );
         }
 
         return View(irpfViewModel);

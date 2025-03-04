@@ -5,7 +5,7 @@ namespace Stocks.Bo;
 public class IrpfRowsBuilder
 {
     public static Dictionary<int, IrpfRow> BuildIrpfRowsBo(
-        IQueryable<ResultadoOperacaoMesBo> results,
+        List<ResultadoOperacaoMesBo> results,
         string ano
     )
     {
@@ -13,7 +13,7 @@ public class IrpfRowsBuilder
 
         foreach (var row in results)
         {
-            if (row.Ano == ano)
+            if (row.Ano == int.Parse(ano))
             {
                 irpfRows[row.Mes] = new IrpfRow
                 {

@@ -6,10 +6,11 @@ namespace Stocks.BoQueries;
 
 public class SwingTradeBoQueries
 {
-    public static IQueryable<ResultadoOperacaoMesBo> SwingTradeQuery(BancoContext db)
+    public static async Task<List<ResultadoOperacaoMesBo>> SwingTradeQuery(BancoContext db)
     {
-        return db.Database.SqlQuery<ResultadoOperacaoMesBo>(
-            $@"
+        return await db
+            .Database.SqlQuery<ResultadoOperacaoMesBo>(
+                $@"
                 SELECT
                     ano,
                     mes,
@@ -59,6 +60,7 @@ public class SwingTradeBoQueries
                     )
                     WHERE CAST(valor AS decimal) <> 0
                 "
-        );
+            )
+            .ToListAsync();
     }
 }

@@ -6,10 +6,11 @@ namespace Stocks.BoQueries;
 
 public class DayTradeBoQueries
 {
-    public static IQueryable<ResultadoOperacaoMesBo> DayTradeQuery(BancoContext db)
+    public static async Task<List<ResultadoOperacaoMesBo>> DayTradeQuery(BancoContext db)
     {
-        return db.Database.SqlQuery<ResultadoOperacaoMesBo>(
-            $@"
+        return await db
+            .Database.SqlQuery<ResultadoOperacaoMesBo>(
+                $@"
                 SELECT
                     ano,
                     mes,
@@ -47,6 +48,7 @@ public class DayTradeBoQueries
                 )
                 WHERE CAST(valor AS decimal) <> 0
             "
-        );
+            )
+            .ToListAsync();
     }
 }

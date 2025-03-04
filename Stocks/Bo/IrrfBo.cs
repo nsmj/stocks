@@ -28,7 +28,7 @@ public class IrrfBo
         return await result.ToListAsync();
     }
 
-    public static void InjectIrrfValues(
+    public static void InjetarValoresIrrf(
         Dictionary<int, IrpfRow> irpfRows,
         List<IrrfResult> irrfResults,
         string nomeTipoOperacao
