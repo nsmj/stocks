@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 using Stocks.Models;

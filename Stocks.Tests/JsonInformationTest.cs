@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Stocks.Data;
 using Stocks.Extraction;
 

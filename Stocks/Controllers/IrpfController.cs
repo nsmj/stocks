@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Stocks.Bo;
-using Stocks.BoQueries;
 using Stocks.Data;
 using Stocks.Interfaces;
-using Stocks.Models.TiposOperacao;
 using Stocks.ViewModels;
 
 namespace Stocks.Controllers;

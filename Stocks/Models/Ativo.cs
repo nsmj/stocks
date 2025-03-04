@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Stocks.Models;
 
 public partial class Ativo
