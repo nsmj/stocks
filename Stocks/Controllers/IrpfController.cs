@@ -42,10 +42,17 @@ public class IrpfController : Controller
             irrfBo.InjetarValoresIrrf(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
             irrfBo.InjetarValoresIrrf(irpfViewModel.DayTradeRows, irrfResults, "Day Trade");
 
-            irpfViewModel.PrejuizoAcumuladoAnoAnoAnteiorSwingTrade =
+            irpfViewModel.PrejuizoAcumuladoAnoAnoAnteriorSwingTrade =
                 calculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
                     dadosSwingTrade,
                     irpfViewModel.SwingTradeRows,
+                    ano
+                );
+
+            irpfViewModel.PrejuizoAcumuladoAnoAnteriorDayTrade =
+                calculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
+                    dadosDayTrade,
+                    irpfViewModel.DayTradeRows,
                     ano
                 );
         }

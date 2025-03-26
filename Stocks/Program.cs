@@ -19,7 +19,7 @@ builder.Services.AddScoped<IrpfRowsBuilder>();
 builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoBo>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
-builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("DayTrade");
+builder.Services.AddKeyedScoped<IOperacaoListable, DayTrade>("DayTrade");
 
 var app = builder.Build();
 
