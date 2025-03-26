@@ -88,7 +88,7 @@
           Prejuízo acumulado no ano anterior
         </th>
         <td class="text-end">
-
+          @Model.PrejuizoAcumuladoAnoAnteriorFii
         </td>
       </tr>
       @for (int i = 1; i <= 12; i++)
@@ -111,19 +111,21 @@
             @Model.DayTradeRows?[i].Total
           </td>
           <td />
-          <td />
+          <td>
+            @Model.DayTradeRows?[i].Irrf
+          </td>
           <td class="text-end">
             @Model.DayTradeRows?[i].PrejuizoAcumulado
           </td>
           <td class="text-end" style="background-color: #F9E79F">
-
+            @Model.FiiRows?[i].Total
           </td>
           <td style="background-color: #F9E79F" />
           <td class="text-end" style="background-color: #F9E79F">
-
+            @Model.FiiRows?[i].Irrf
           </td>
           <td class="text-end" style="background-color: #F9E79F">
-
+            @Model.FiiRows?[i].PrejuizoAcumulado
           </td>
         </tr>
       }

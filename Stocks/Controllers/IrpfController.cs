@@ -18,6 +18,7 @@ public class IrpfController : Controller
     public async Task<IActionResult> Index(
         [FromKeyedServices("SwingTrade")] IOperacaoListable swingTradeObj,
         [FromKeyedServices("DayTrade")] IOperacaoListable dayTradeObj,
+        [FromKeyedServices("Fii")] IOperacaoListable fiiObj,
         LucroVendasAbaixo20kBo lucroVendasAbaixo20kBo,
         IrrfBo irrfBo,
         IrpfRowsBuilder irpfRowsBuilder,
@@ -31,16 +32,19 @@ public class IrpfController : Controller
         {
             var dadosSwingTrade = await swingTradeObj.ResultadoOperacaoMesQuery(_db);
             var dadosDayTrade = await dayTradeObj.ResultadoOperacaoMesQuery(_db);
+            var dadosFii = await fiiObj.ResultadoOperacaoMesQuery(_db);
 
             irpfViewModel.AnoFiltrado = ano;
             irpfViewModel.LucroVendasAbaixo20k =
                 await lucroVendasAbaixo20kBo.LucroVendasAbaixo20kQuery(_db, ano);
             irpfViewModel.SwingTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosSwingTrade, ano);
             irpfViewModel.DayTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosDayTrade, ano);
+            irpfViewModel.FiiRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosFii, ano);
 
             var irrfResults = await irrfBo.IrrfQuery(_db, ano);
             irrfBo.InjetarValoresIrrf(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
             irrfBo.InjetarValoresIrrf(irpfViewModel.DayTradeRows, irrfResults, "Day Trade");
+            irrfBo.InjetarValoresIrrf(irpfViewModel.FiiRows, irrfResults, "FII");
 
             irpfViewModel.PrejuizoAcumuladoAnoAnoAnteriorSwingTrade =
                 calculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
@@ -53,6 +57,13 @@ public class IrpfController : Controller
                 calculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
                     dadosDayTrade,
                     irpfViewModel.DayTradeRows,
+                    ano
+                );
+
+            irpfViewModel.PrejuizoAcumuladoAnoAnteriorFii =
+                calculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
+                    dadosFii,
+                    irpfViewModel.FiiRows,
                     ano
                 );
         }

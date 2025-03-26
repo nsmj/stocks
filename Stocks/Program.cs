@@ -20,6 +20,7 @@ builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoBo>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
 builder.Services.AddKeyedScoped<IOperacaoListable, DayTrade>("DayTrade");
+builder.Services.AddKeyedScoped<IOperacaoListable, Fii>("Fii");
 
 var app = builder.Build();
 
