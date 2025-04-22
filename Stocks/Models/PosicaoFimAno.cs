@@ -8,6 +8,8 @@ public partial class PosicaoFimAno
 
     public decimal PrecoMedio { get; set; }
 
+    public decimal CustoTotal { get; set; }
+
     public int Posicao { get; set; }
 
     public int AtivoId { get; set; }

@@ -2,12 +2,12 @@
 @model Stocks.ViewModels.IrpfViewModel
 
 <form asp-controller="Irpf" asp-action="Index" method="get">
-  <input type="search" class="form-control" name="ano"
-  value="@Model.AnoFiltrado" />
+  <input type="search" class="form-control" name="ano" value="@Model.AnoFiltrado" />
   <input type="submit" value="Pesquisa" class="btn btn-primary" />
 </form>
 
-@if (@Model.AnoFiltrado != null) {
+@if (@Model.AnoFiltrado != null)
+{
   <section style="text-align: right">
     <b>
       Lucro com vendas abaixo de 20 mil reais:
@@ -15,121 +15,145 @@
     @Model.LucroVendasAbaixo20k
   </section>
   <div class='table-responsive'>
-  <table class='table'>
-    <thead>
-      <tr>
-        <th />
-        <th class='text-start' scope='col' colspan="4">
-    using Stocks.BoQueries;
-          Operações Comuns
-        </th>
-        <th class='text-start' scope='col' colspan="4">
-          Day Trade
-        </th>
-        <th class='text-start' scope='col' colspan="4">
-          FIIs
-        </th>
-      </tr>
-      <tr>
-        <th />
-        <th class='text-end' scope='col'>
-          Total
-        </th>
-        <th class='text-end' scope='col'>
-          Imposto Pago
-        </th>
-        <th class='text-end' scope='col'>
-          IRRF
-        </th>
-        <th class='text-end' scope='col'>
-          Prejuízo Acumulado
-        </th>
-        <th class='text-end' scope='col'>
-          Total
-        </th>
-        <th class='text-end' scope='col'>
-          Imposto Pago
-        </th>
-        <th class='text-end' scope='col'>
-          IRRF
-        </th>
-        <th class='text-end' scope='col'>
-          Prejuízo Acumulado
-        </th>
-        <th class='text-end' scope='col'>
-          Total
-        </th>
-        <th class='text-end' scope='col'>
-          Imposto Pago
-        </th>
-        <th class='text-end' scope='col'>
-          IRRF
-        </th>
-        <th class='text-end' scope='col'>
-          Prejuízo Acumulado
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th colspan="4" class="text-end">
-          Prejuízo acumulado no ano anterior
-        </th>
-        <td class="text-end">
-          @Model.PrejuizoAcumuladoAnoAnoAnteriorSwingTrade
-        </td>
-        <th colspan="3" class="text-end">
-          Prejuízo acumulado no ano anterior
-        </th>
-        <td class="text-end">
-          @Model.PrejuizoAcumuladoAnoAnteriorDayTrade
-        </td>
-        <th colspan="3" class="text-end">
-          Prejuízo acumulado no ano anterior
-        </th>
-        <td class="text-end">
-          @Model.PrejuizoAcumuladoAnoAnteriorFii
-        </td>
-      </tr>
-      @for (int i = 1; i <= 12; i++)
-      {
+    <table class='table'>
+      <thead>
         <tr>
-          <th>
-
+          <th />
+          <th class='text-start' scope='col' colspan="4">
+            using Stocks.BoQueries;
+            Operações Comuns
           </th>
-          <td class="text-end" style="background-color: #ADD8E6">
-            @Model.SwingTradeRows?[i].Total
-          </td>
-          <td style="background-color: #ADD8E6" />
-          <td class="text-end" style="background-color: #ADD8E6">
-            @Model.SwingTradeRows?[i].Irrf
-          </td>
-          <td class="text-end" style="background-color: #ADD8E6" >
-            @Model.SwingTradeRows?[i].PrejuizoAcumulado
-          </td>
+          <th class='text-start' scope='col' colspan="4">
+            Day Trade
+          </th>
+          <th class='text-start' scope='col' colspan="4">
+            FIIs
+          </th>
+        </tr>
+        <tr>
+          <th />
+          <th class='text-end' scope='col'>
+            Total
+          </th>
+          <th class='text-end' scope='col'>
+            Imposto Pago
+          </th>
+          <th class='text-end' scope='col'>
+            IRRF
+          </th>
+          <th class='text-end' scope='col'>
+            Prejuízo Acumulado
+          </th>
+          <th class='text-end' scope='col'>
+            Total
+          </th>
+          <th class='text-end' scope='col'>
+            Imposto Pago
+          </th>
+          <th class='text-end' scope='col'>
+            IRRF
+          </th>
+          <th class='text-end' scope='col'>
+            Prejuízo Acumulado
+          </th>
+          <th class='text-end' scope='col'>
+            Total
+          </th>
+          <th class='text-end' scope='col'>
+            Imposto Pago
+          </th>
+          <th class='text-end' scope='col'>
+            IRRF
+          </th>
+          <th class='text-end' scope='col'>
+            Prejuízo Acumulado
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th colspan="4" class="text-end">
+            Prejuízo acumulado no ano anterior
+          </th>
           <td class="text-end">
-            @Model.DayTradeRows?[i].Total
+            @Model.PrejuizoAcumuladoAnoAnoAnteriorSwingTrade
           </td>
-          <td />
-          <td>
-            @Model.DayTradeRows?[i].Irrf
-          </td>
+          <th colspan="3" class="text-end">
+            Prejuízo acumulado no ano anterior
+          </th>
           <td class="text-end">
-            @Model.DayTradeRows?[i].PrejuizoAcumulado
+            @Model.PrejuizoAcumuladoAnoAnteriorDayTrade
           </td>
-          <td class="text-end" style="background-color: #F9E79F">
-            @Model.FiiRows?[i].Total
-          </td>
-          <td style="background-color: #F9E79F" />
-          <td class="text-end" style="background-color: #F9E79F">
-            @Model.FiiRows?[i].Irrf
-          </td>
-          <td class="text-end" style="background-color: #F9E79F">
-            @Model.FiiRows?[i].PrejuizoAcumulado
+          <th colspan="3" class="text-end">
+            Prejuízo acumulado no ano anterior
+          </th>
+          <td class="text-end">
+            @Model.PrejuizoAcumuladoAnoAnteriorFii
           </td>
         </tr>
-      }
-    </tbody>
-  </table>
+        @for (int i = 1; i <= 12; i++)
+        {
+          <tr>
+            <th>
+
+            </th>
+            <td class="text-end" style="background-color: #ADD8E6">
+              @Model.SwingTradeRows?[i].Total
+            </td>
+            <td style="background-color: #ADD8E6" />
+            <td class="text-end" style="background-color: #ADD8E6">
+              @Model.SwingTradeRows?[i].Irrf
+            </td>
+            <td class="text-end" style="background-color: #ADD8E6">
+              @Model.SwingTradeRows?[i].PrejuizoAcumulado
+            </td>
+            <td class="text-end">
+              @Model.DayTradeRows?[i].Total
+            </td>
+            <td />
+            <td>
+              @Model.DayTradeRows?[i].Irrf
+            </td>
+            <td class="text-end">
+              @Model.DayTradeRows?[i].PrejuizoAcumulado
+            </td>
+            <td class="text-end" style="background-color: #F9E79F">
+              @Model.FiiRows?[i].Total
+            </td>
+            <td style="background-color: #F9E79F" />
+            <td class="text-end" style="background-color: #F9E79F">
+              @Model.FiiRows?[i].Irrf
+            </td>
+            <td class="text-end" style="background-color: #F9E79F">
+              @Model.FiiRows?[i].PrejuizoAcumulado
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <table class='table'>
+      <thead>
+        <tr>
+          <th colspan="3">Posições Ano Anterior</th>
+        </tr>
+        <tr>
+          <th scope='col'>Código</th>
+          <th scope='col'>Texto</th>
+        </tr>
+      </thead>
+      @* <tbody>
+        <% @posicoes_final_ano.each do |posicao_final_ano| %>
+          <tr>
+            <td>
+              <%= posicao_final_ano['codigo'] %>
+            </td>
+            <td data-action="click->irpf#copiar" data-irpf-target="eyp_text" class='text-start'>
+              <%= posicao_final_ano['texto'] %>
+            </td>
+          </tr>
+          <% end %>
+      </tbody> *@
+    </table>
   </div>
 }

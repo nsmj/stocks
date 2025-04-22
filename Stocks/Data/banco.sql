@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS "posicao_fim_ano" (
 	"id"	integer,
 	"ano"	integer NOT NULL,
 	"preco_medio"	DECIMAL(10, 5) NOT NULL,
+	"custo_total" DECIMAL(10, 5) NOT NULL,
 	"posicao"	integer NOT NULL,
 	"ativo_id"	integer NOT NULL,
 	CONSTRAINT "fk_posicao_fim_ano_ativo" FOREIGN KEY("ativo_id") REFERENCES "ativo"("id"),
