@@ -279,11 +279,9 @@ namespace Stocks.Extraction
                     ativo.Posicao = posicaoAtual;
                     ativo.PrecoMedio = ultimoPMCompra;
                 }
-
-                await db.SaveChangesAsync();
             }
 
-            //transaction.Commit();
+            await db.SaveChangesAsync();
         }
     }
 
