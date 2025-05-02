@@ -24,11 +24,11 @@ public class PosicaoFimAnoBo
                     SELECT
                         ativo.codigo,
                         ativo.cnpj,
-                        ativo.nome AS nome_ativo,
+                        ativo.nome AS NomeAtivo,
                         posicao_fim_ano.posicao,
-                        ROUND(posicao_fim_ano.preco_medio, 2) AS preco_medio,
-                        ROUND(posicao_fim_ano.custo_total, 2) AS custo_total,
-                        tipo_ativo.nome AS tipo_ativo
+                        ROUND(posicao_fim_ano.preco_medio, 2) AS PrecoMedio,
+                        ROUND(posicao_fim_ano.custo_total, 2) AS CustoTotal,
+                        tipo_ativo.nome AS TipoAtivo
                     FROM
                         posicao_fim_ano
                     LEFT JOIN ativo ON posicao_fim_ano.ativo_id = ativo.id

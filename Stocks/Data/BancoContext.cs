@@ -163,7 +163,10 @@ public partial class BancoContext : DbContext
                 .Property(e => e.PrecoMedio)
                 .HasColumnType("DECIMAL(10, 5)")
                 .HasColumnName("preco_medio");
-
+            entity
+                .Property(e => e.CustoTotal)
+                .HasColumnType("DECIMAL(10, 5)")
+                .HasColumnName("custo_total");
             entity
                 .HasOne(d => d.Ativo)
                 .WithMany(p => p.PosicoesFimAno)

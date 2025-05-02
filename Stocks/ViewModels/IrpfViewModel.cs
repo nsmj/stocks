@@ -1,3 +1,4 @@
+using Stocks.Bo;
 using Stocks.BoQueries;
 
 namespace Stocks.ViewModels
@@ -12,5 +13,6 @@ namespace Stocks.ViewModels
         public decimal? PrejuizoAcumuladoAnoAnteriorDayTrade { get; set; }
         public Dictionary<int, IrpfRowBo>? FiiRows { get; set; }
         public decimal? PrejuizoAcumuladoAnoAnteriorFii { get; set; }
+        public List<PosicaoFimAnoResult>? PosicoesFimAno { get; set; }
     }
 }

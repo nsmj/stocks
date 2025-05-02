@@ -17,6 +17,7 @@ builder.Services.AddScoped<LucroVendasAbaixo20kBo>();
 builder.Services.AddScoped<IrrfBo>();
 builder.Services.AddScoped<IrpfRowsBuilder>();
 builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoBo>();
+builder.Services.AddScoped<PosicaoFimAnoBo>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
 builder.Services.AddKeyedScoped<IOperacaoListable, DayTrade>("DayTrade");

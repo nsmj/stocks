@@ -6,14 +6,9 @@ using Stocks.ViewModels;
 
 namespace Stocks.Controllers;
 
-public class IrpfController : Controller
+public class IrpfController(BancoContext db) : Controller
 {
-    private BancoContext _db;
-
-    public IrpfController(BancoContext db)
-    {
-        _db = db;
-    }
+    private BancoContext _db = db;
 
     public async Task<IActionResult> Index(
         [FromKeyedServices("SwingTrade")] IOperacaoListable swingTradeObj,
@@ -21,6 +16,7 @@ public class IrpfController : Controller
         [FromKeyedServices("Fii")] IOperacaoListable fiiObj,
         LucroVendasAbaixo20kBo lucroVendasAbaixo20kBo,
         IrrfBo irrfBo,
+        PosicaoFimAnoBo posicaoFimAnoBo,
         IrpfRowsBuilder irpfRowsBuilder,
         CalculadoraPrejuizoAcumuladoBo calculadoraPrejuizoAcumuladoBo,
         string ano
@@ -66,6 +62,9 @@ public class IrpfController : Controller
                     irpfViewModel.FiiRows,
                     ano
                 );
+
+            var PosicoesFimAno = await posicaoFimAnoBo.PosicaoFimAnoQuery(_db, ano);
+            irpfViewModel.PosicoesFimAno = [.. PosicoesFimAno];
         }
 
         return View(irpfViewModel);
