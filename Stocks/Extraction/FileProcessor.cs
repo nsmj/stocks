@@ -278,6 +278,8 @@ namespace Stocks.Extraction
                 {
                     ativo.Posicao = posicaoAtual;
                     ativo.PrecoMedio = ultimoPMCompra;
+
+                    db.Ativos.Update(ativo);
                 }
             }
 
