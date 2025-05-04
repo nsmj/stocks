@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
+using Stocks.Models;
+using Stocks.ViewModels;
 
 namespace Stocks.Bo;
 
@@ -16,7 +18,42 @@ public class PosicaoFimAnoResult
 
 public class PosicaoFimAnoBo
 {
-    public async Task<List<PosicaoFimAnoResult>> PosicaoFimAnoQuery(BancoContext db, string ano)
+    public async Task<IEnumerable<PosicaoFimAnoViewModel>> PosicaoFimAnoQuery(
+        BancoContext db,
+        string ano
+    )
+    {
+        var resultados = await PosicaoFimAnoResults(db, ano);
+
+        ICollection<PosicaoFimAnoViewModel> posicoesFimAno = [];
+
+        foreach (var resultado in resultados)
+        {
+            PosicaoFimAnoViewModel posicaoFimAno = new() { Codigo = resultado.Codigo };
+
+            switch (resultado.TipoAtivo)
+            {
+                case "Ação":
+                    posicaoFimAno.Texto =
+                        $"{resultado.Posicao} AÇÕES DA {resultado.NomeAtivo} CÓDIGO DE NEGOCIAÇÃO B3: {resultado.Codigo}. CNPJ {resultado.Cnpj}. PREÇO MÉDIO DE R$ {resultado.PrecoMedio} POR AÇÃO. CUSTO TOTAL DE R$ {resultado.CustoTotal}.";
+                    break;
+                case "FII":
+                    posicaoFimAno.Texto =
+                        $"{resultado.Posicao} COTAS DO FII {resultado.NomeAtivo} CÓDIGO DE NEGOCIAÇÃO B3: {resultado.Codigo}. CNPJ {resultado.Cnpj}. PREÇO MÉDIO DE R$ {resultado.PrecoMedio} POR COTA. CUSTO TOTAL DE R$ {resultado.CustoTotal}.";
+                    break;
+                case "ETF":
+                    posicaoFimAno.Texto =
+                        $"{resultado.Posicao} COTAS DO ETF {resultado.NomeAtivo} CÓDIGO DE NEGOCIAÇÃO B3: {resultado.Codigo}. CNPJ {resultado.Cnpj}. PREÇO MÉDIO DE R$ {resultado.PrecoMedio} POR COTA. CUSTO TOTAL DE R$ {resultado.CustoTotal}.";
+                    break;
+            }
+
+            posicoesFimAno.Add(posicaoFimAno);
+        }
+
+        return posicoesFimAno;
+    }
+
+    private async Task<List<PosicaoFimAnoResult>> PosicaoFimAnoResults(BancoContext db, string ano)
     {
         return await db
             .Database.SqlQuery<PosicaoFimAnoResult>(

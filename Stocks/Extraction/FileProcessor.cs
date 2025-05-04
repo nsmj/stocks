@@ -298,7 +298,10 @@ namespace Stocks.Extraction
 
             foreach (var posicao in posicoesFimAno.Values)
             {
-                db.PosicoesFimAno.Add(posicao);
+                if (posicao.Posicao > 0)
+                {
+                    db.PosicoesFimAno.Add(posicao);
+                }
             }
 
             await db.SaveChangesAsync();

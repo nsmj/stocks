@@ -132,28 +132,32 @@
       </tbody>
     </table>
 
-    <table class='table'>
-      <thead>
-        <tr>
-          <th colspan="3">Posições Ano Anterior</th>
-        </tr>
-        <tr>
-          <th scope='col'>Código</th>
-          <th scope='col'>Texto</th>
-        </tr>
-      </thead>
-      @* <tbody>
-        <% @posicoes_final_ano.each do |posicao_final_ano| %>
+    @if (@Model.PosicoesFimAno != null && Model.PosicoesFimAno.Count() > 0)
+    {
+      <table class='table'>
+        <thead>
           <tr>
-            <td>
-              <%= posicao_final_ano['codigo'] %>
-            </td>
-            <td data-action="click->irpf#copiar" data-irpf-target="eyp_text" class='text-start'>
-              <%= posicao_final_ano['texto'] %>
-            </td>
+            <th colspan="3">Posições Ano Anterior</th>
           </tr>
-          <% end %>
-      </tbody> *@
-    </table>
+          <tr>
+            <th scope='col'>Código</th>
+            <th scope='col'>Texto</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var item in Model.PosicoesFimAno)
+          {
+            <tr>
+              <td class="text-end">
+                @item.Codigo
+              </td>
+              <td class="text-start">
+                @item.Texto
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
   </div>
 }
