@@ -188,6 +188,7 @@ namespace Stocks.Extraction
             decimal precoMedio = 0M;
             decimal precoMedioVenda = 0M;
             decimal lucroLiquido = 0M;
+            Dictionary<string, PosicaoFimAno> posicoesFimAno = [];
 
             foreach (var eventoOperacao in eventosOperacoes)
             {
@@ -272,6 +273,18 @@ namespace Stocks.Extraction
 
                 ultimoPMCompra = precoMedio;
 
+                var PosicaoFimAno = new PosicaoFimAno()
+                {
+                    Ano = Convert.ToInt32(eventoOperacao.Data?[0..4]),
+                    PrecoMedio = ultimoPMCompra,
+                    Posicao = posicaoAtual,
+                    CustoTotal = ultimoPMCompra * posicaoAtual,
+                    AtivoId = eventoOperacao.AtivoId,
+                };
+
+                var hashAnoAtivo = $"{PosicaoFimAno.Ano}_{eventoOperacao.AtivoId}";
+                posicoesFimAno[hashAnoAtivo] = PosicaoFimAno;
+
                 var ativo = db.Ativos.Find(eventoOperacao.AtivoId);
 
                 if (ativo != null)
@@ -281,6 +294,11 @@ namespace Stocks.Extraction
 
                     db.Ativos.Update(ativo);
                 }
+            }
+
+            foreach (var posicao in posicoesFimAno.Values)
+            {
+                db.PosicoesFimAno.Add(posicao);
             }
 
             await db.SaveChangesAsync();
