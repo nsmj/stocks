@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
@@ -18,13 +19,72 @@ namespace Stocks.Extraction
             //await SaveData(chObjects);
         }
  */
-        public async void ImportarNotasCorretagem(BancoContext db, IConfiguration configuration)
+
+        public async Task ProcessarArquivos(
+            BancoContext db,
+            IConfiguration configuration,
+            IFormFile arquivo
+        )
         {
-            string[] files = Directory.GetFiles(
-                Path.Join("Arquivos", "NotasCorretagem"),
-                "*",
-                SearchOption.AllDirectories
+            DbConnection.Reset();
+
+            string caminhoUpload =
+                configuration["CaminhoUpload"]
+                ?? throw new ArgumentNullException(
+                    "CaminhoUpload",
+                    "Configuration value for 'CaminhoUpload' cannot be null."
+                );
+
+            string caminhoArquivo = await UploadArquivo(arquivo, caminhoUpload);
+            string pastaExtracao = "ArquivosExtracao";
+
+            if (
+                Path.GetExtension(caminhoArquivo).Equals(".zip", StringComparison.OrdinalIgnoreCase)
+            )
+            {
+                ZipFile.ExtractToDirectory(
+                    caminhoArquivo,
+                    Path.Combine(caminhoUpload, pastaExtracao)
+                );
+            }
+
+            ImportarNotasCorretagem(
+                db,
+                configuration,
+                Path.Combine(caminhoUpload, pastaExtracao, "NotasCorretagem")
             );
+
+            ImportarArquivosJson(db, Path.Combine(caminhoUpload, pastaExtracao, "Json"));
+
+            CalcularResultados(db);
+
+            File.Delete(caminhoArquivo);
+            Directory.Delete(Path.Combine(caminhoUpload, pastaExtracao), true);
+        }
+
+        public async Task<string> UploadArquivo(IFormFile arquivo, string caminhoDestino)
+        {
+            if (arquivo == null || arquivo.Length == 0)
+            {
+                throw new ArgumentException("Arquivo inválido.");
+            }
+
+            // FIXME: Mudar o arquivo.FileName para outra coisa.
+            string caminhoArquivo = Path.Combine(caminhoDestino, arquivo.FileName);
+
+            using var stream = new FileStream(caminhoArquivo, FileMode.Create);
+            await arquivo.CopyToAsync(stream);
+
+            return caminhoArquivo;
+        }
+
+        public async void ImportarNotasCorretagem(
+            BancoContext db,
+            IConfiguration configuration,
+            string caminhoArquivos
+        )
+        {
+            string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
 
             List<Operacao> operacoes = [];
             List<Irrf> irrfs = [];
@@ -32,8 +92,7 @@ namespace Stocks.Extraction
             foreach (var file in files)
             {
                 Regex rgx = new(
-                    Path.Combine("Arquivos", "NotasCorretagem", "(.*)", "(.*)")
-                        .Replace("\\", "\\\\")
+                    Path.Combine(caminhoArquivos, "(.*)", "(.*)").Replace("\\", "\\\\")
                 );
                 Match matchObj = rgx.Match(file);
                 var strategy = matchObj.Groups[1].ToString();
@@ -55,13 +114,9 @@ namespace Stocks.Extraction
             await db.SaveChangesAsync();
         }
 
-        public async void ImportarArquivosJson(BancoContext db)
+        public async void ImportarArquivosJson(BancoContext db, string caminhoArquivos)
         {
-            string[] files = Directory.GetFiles(
-                Path.Join("Arquivos", "Json"),
-                "*",
-                SearchOption.AllDirectories
-            );
+            string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
 
             foreach (var file in files)
             {

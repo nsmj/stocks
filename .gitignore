@@ -483,8 +483,9 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-appsettings*
+appsettings.json
 Arquivos
+ArquivosUpload
 Txt
 mutool.exe
 files_test

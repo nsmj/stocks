@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Bo;
 using Stocks.Data;
+using Stocks.Extraction;
 using Stocks.Interfaces;
 using Stocks.Models.TiposOperacao;
 
@@ -18,6 +19,7 @@ builder.Services.AddScoped<IrrfBo>();
 builder.Services.AddScoped<IrpfRowsBuilder>();
 builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoBo>();
 builder.Services.AddScoped<PosicaoFimAnoBo>();
+builder.Services.AddScoped<FileProcessor>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
 builder.Services.AddKeyedScoped<IOperacaoListable, DayTrade>("DayTrade");
