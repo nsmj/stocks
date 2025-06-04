@@ -18,15 +18,19 @@ namespace Stocks.Extraction
 
         public static Corretora Factory(string nomeCorretora)
         {
-            switch (nomeCorretora)
+            Corretora? objCorretora = nomeCorretora switch
             {
-                case "Nuinvest":
-                    return new Nuinvest();
-                case "Clear":
-                    return new Clear();
-                default:
-                    return null; // FIXME: Tirar esse NULL
+                "Nuinvest" => new Nuinvest(),
+                "Clear" => new Clear(),
+                _ => null,
+            };
+
+            if (objCorretora == null)
+            {
+                throw new ArgumentException($"Corretora {nomeCorretora} não implementada.");
             }
+
+            return objCorretora;
         }
 
         public static int[] FindAllIndex<T>(T[] array, Predicate<T> match)

@@ -144,10 +144,7 @@ namespace Stocks.Extraction
 
                         if (irrfValor > 0)
                         {
-                            Irrf irrf = new();
-
-                            irrf.Data = this.Data;
-                            irrf.Valor = irrfValor;
+                            Irrf irrf = new() { Data = Data, Valor = irrfValor };
 
                             if (valorBase == BaseIrrfOperacoesComuns)
                             {
@@ -180,18 +177,19 @@ namespace Stocks.Extraction
 
                     if (irrfValor > 0)
                     {
-                        Irrf irrf = new();
-
-                        irrf.Valor = irrfValor;
-                        irrf.Data = this.Data;
-                        irrf.TipoOperacao = db.TiposOperacao.Single(t => t.Nome == "Day Trade");
+                        Irrf irrf = new()
+                        {
+                            Valor = irrfValor,
+                            Data = this.Data,
+                            TipoOperacao = db.TiposOperacao.Single(t => t.Nome == "Day Trade"),
+                        };
 
                         irrfs.Add(irrf);
                     }
                 }
             }
 
-            return irrfs.ToArray();
+            return [.. irrfs];
         }
 
         private void CalcularBaseIrrf()
@@ -223,7 +221,7 @@ namespace Stocks.Extraction
         {
             decimal totalOperacoes = Operacoes.Sum(o => o.ValorTotal.GetValueOrDefault());
 
-            for (int i = 0; i < Operacoes.Count(); i++)
+            for (int i = 0; i < Operacoes.Count; i++)
             {
                 decimal percentualOperacao =
                     Operacoes[i].ValorTotal.GetValueOrDefault() / totalOperacoes;
