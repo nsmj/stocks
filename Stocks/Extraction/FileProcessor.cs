@@ -8,18 +8,6 @@ namespace Stocks.Extraction
 {
     public class FileProcessor
     {
-        /* public static async Task ProcessFiles()
-        {
-            DbConnection.Reset();
-
-            var chObjects = Channel.CreateUnbounded<IStorable[]>();
-
-            _ = Task.Run(() => ImportFiles(chObjects));
-
-            //await SaveData(chObjects);
-        }
- */
-
         public async Task ProcessarArquivos(
             BancoContext db,
             IConfiguration configuration,
@@ -131,71 +119,6 @@ namespace Stocks.Extraction
 
             await db.SaveChangesAsync();
         }
-
-        /*private static async Task SaveData(Channel<IStorable[]> chObjects)
-        {
-            using SqliteConnection conn = DbConnection.Get();
-            conn.Open();
-
-            using var transaction = conn.BeginTransaction();
-
-            await foreach (IStorable[] results in chObjects.Reader.ReadAllAsync())
-            {
-                foreach (IStorable o in results)
-                {
-                    if (o is not null)
-                    {
-                        SqliteCommand cmd = conn.CreateCommand();
-
-                        o.PrepareSqliteCommand(ref cmd);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-            }
-
-            transaction.Commit();
-        }*/
-
-        /* private static void ImportFiles(Channel<IStorable[]> chObjects)
-        {
-            string[] files = Directory.GetFiles("Arquivos", "*", SearchOption.AllDirectories);
-            var tasks = new List<Task>();
-
-            foreach (var file in files)
-            {
-                // FIXME: Melhorar isso.
-                if (file == "Arquivos\\.gitkeep")
-                {
-                    continue;
-                }
-
-                var t = Task.Run(() =>
-                {
-                    Regex rgx = new(@"Arquivos\\(.*)\\(.*)");
-
-                    Match matchObj = rgx.Match(file);
-                    var strategy = matchObj.Groups[1].ToString();
-
-                    var extractor = IExtractor.Factory(strategy);
-
-                    if (extractor is null)
-                    {
-                        return;
-                    }
-
-                    var results = extractor.ExtractFileData(file);
-
-                    chObjects.Writer.WriteAsync(results);
-
-                });
-
-                tasks.Add(t);
-            }
-
-            Task.WaitAll(tasks.ToArray());
-
-            chObjects.Writer.Complete();
-        } */
 
         public static async void CalcularResultados(BancoContext db)
         {
@@ -362,28 +285,6 @@ namespace Stocks.Extraction
             await db.SaveChangesAsync();
         }
     }
-
-    /*public interface IExtractor
-    {
-        IStorable[] ExtractFileData(string path);
-
-        static IExtractor Factory(string nome)
-        {
-            switch (nome)
-            {
-                case "Nuinvest":
-                    return new NotaNegociacao() { Corretora = new Nuinvest() };
-                case "Clear":
-                    return new NotaNegociacao() { Corretora = new Clear() };
-                case "JsonInformation":
-                    return new JsonInformation();
-                case "B3Report":
-                    return new B3Report();
-                default:
-                    throw new Exception("Strategy not defined");
-            }
-        }
-    }*/
 
     /// <summary>
     /// Objetos que podem ser inseridos no banco de dados.

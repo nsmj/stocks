@@ -6,42 +6,35 @@ using Stocks.Models;
 
 namespace Stocks.Extraction
 {
-    public class NotaNegociacao
+    public class NotaNegociacao(Corretora corretora, IConfiguration configuration)
     {
         public List<Operacao> Operacoes { get; set; }
         public Irrf[] Irrfs { get; set; }
         public DateTime Data { get; set; }
         public decimal TotalTaxas { get; set; }
         public decimal TotalNota { get; set; }
-        private Corretora _corretora { get; set; }
-        private IConfiguration _configuration { get; set; }
+
         public decimal BaseIrrfOperacoesComuns { get; set; }
         public decimal BaseIrrfDayTrade { get; set; }
 
         public decimal BaseIrrfFIIs { get; set; }
-
-        public NotaNegociacao(Corretora corretora, IConfiguration configuration)
-        {
-            _corretora = corretora;
-            _configuration = configuration;
-        }
 
         public async Task<(List<Operacao>, List<Irrf>)> ExtraiDadosDoArquivo(
             BancoContext db,
             string path
         )
         {
-            var dadosNota = ExtractPdfData(path, _configuration["PDF_PASSWORD_1"]);
+            var dadosNota = ExtractPdfData(path, configuration["PDF_PASSWORD_1"]);
 
             if (dadosNota.Length == 0)
             {
-                dadosNota = ExtractPdfData(path, _configuration["PDF_PASSWORD_2"]);
+                dadosNota = ExtractPdfData(path, configuration["PDF_PASSWORD_2"]);
             }
 
-            this.Data = _corretora.ExtrairDataNotaCorretagem(dadosNota);
+            this.Data = corretora.ExtrairDataNotaCorretagem(dadosNota);
 
-            Operacoes = await _corretora.ExtrairOperacoesNotaCorretagem(db, dadosNota);
-            TotalTaxas = _corretora.ExtrairTaxasNotaCorretagem(dadosNota);
+            Operacoes = await corretora.ExtrairOperacoesNotaCorretagem(db, dadosNota);
+            TotalTaxas = corretora.ExtrairTaxasNotaCorretagem(dadosNota);
             RatearTaxas();
 
             Irrfs = await ExtrairIrrf(db, dadosNota);
@@ -124,8 +117,8 @@ namespace Stocks.Extraction
 
             CalcularBaseIrrf();
 
-            Regex regexIrrf = _corretora.ExpressaoIrrf();
-            Regex regexIrrfDayTrade = _corretora.ExpressaoIrrfDayTrade();
+            Regex regexIrrf = corretora.ExpressaoIrrf();
+            Regex regexIrrfDayTrade = corretora.ExpressaoIrrfDayTrade();
 
             for (int i = 0; i < dadosNota.Length; i++)
             {
@@ -139,7 +132,7 @@ namespace Stocks.Extraction
                     if (valorBase > 0)
                     {
                         decimal irrfValor = Convert.ToDecimal(
-                            dadosNota[i + _corretora.AjustePosicaoIrrf()]
+                            dadosNota[i + corretora.AjustePosicaoIrrf()]
                         );
 
                         if (irrfValor > 0)
