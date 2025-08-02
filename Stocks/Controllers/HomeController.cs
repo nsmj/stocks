@@ -6,16 +6,8 @@ using Stocks.Models;
 
 namespace Stocks.Controllers;
 
-public class HomeController(
-    ILogger<HomeController> logger,
-    BancoContext db,
-    IConfiguration configuration
-) : Controller
+public class HomeController : Controller
 {
-    private readonly IConfiguration _configuration = configuration;
-    private readonly ILogger<HomeController> _logger = logger;
-    private BancoContext _db = db;
-
     public IActionResult Index()
     {
         return View();

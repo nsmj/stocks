@@ -74,9 +74,6 @@ namespace Stocks.Extraction
         {
             string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
 
-            List<Operacao> operacoes = [];
-            List<Irrf> irrfs = [];
-
             foreach (var file in files)
             {
                 Regex rgx = new(
@@ -164,8 +161,8 @@ namespace Stocks.Extraction
             int posicaoAnterior = 0;
             int posicaoAtual = 0;
             decimal precoMedio = 0M;
-            decimal precoMedioVenda = 0M;
-            decimal lucroLiquido = 0M;
+            decimal precoMedioVenda;
+            decimal lucroLiquido;
             Dictionary<string, PosicaoFimAno> posicoesFimAno = [];
 
             foreach (var eventoOperacao in eventosOperacoes)
@@ -284,13 +281,5 @@ namespace Stocks.Extraction
 
             await db.SaveChangesAsync();
         }
-    }
-
-    /// <summary>
-    /// Objetos que podem ser inseridos no banco de dados.
-    /// </summary>
-    public interface IStorable
-    {
-        public int Id { get; set; }
     }
 }

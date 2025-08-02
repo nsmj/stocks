@@ -5,7 +5,7 @@ using Stocks.Extraction;
 
 namespace Stocks.Models;
 
-public partial class Evento : IStorable
+public partial class Evento
 {
     public int Id { get; set; }
 
