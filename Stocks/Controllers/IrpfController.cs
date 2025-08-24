@@ -6,8 +6,25 @@ using Stocks.ViewModels;
 
 namespace Stocks.Controllers;
 
+/// <summary>
+/// Controller responsável por gerenciar as operações relacionadas ao IRPF.
+/// </summary>
+/// <param name="db"></param>
 public class IrpfController(BancoContext db) : Controller
 {
+    /// <summary>
+    /// Exibe a página de IRPF com os dados filtrados por ano.
+    /// </summary>
+    /// <param name="swingTradeObj"></param>
+    /// <param name="dayTradeObj"></param>
+    /// <param name="fiiObj"></param>
+    /// <param name="lucroVendasAbaixo20kBo"></param>
+    /// <param name="irrfBo"></param>
+    /// <param name="posicaoFimAnoBo"></param>
+    /// <param name="irpfRowsBuilder"></param>
+    /// <param name="calculadoraPrejuizoAcumuladoBo"></param>
+    /// <param name="ano"></param>
+    /// <returns></returns>
     public async Task<IActionResult> Index(
         [FromKeyedServices("SwingTrade")] IOperacaoListable swingTradeObj,
         [FromKeyedServices("DayTrade")] IOperacaoListable dayTradeObj,

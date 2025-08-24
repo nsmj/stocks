@@ -5,6 +5,10 @@ using Stocks.Extraction;
 
 namespace Stocks.Models;
 
+/// <summary>
+/// Representa um evento financeiro associado a um ativo.
+/// Um evento pode ser um desdobramento, grupamento, bonificação, etc.
+/// </summary>
 public partial class Evento
 {
     public int Id { get; set; }
@@ -32,6 +36,10 @@ public partial class Evento
     [NotMapped]
     public string DataEvento { get; set; }
 
+    /// <summary>
+    /// Completa os campos necessários da entidade Evento.
+    /// </summary>
+    /// <param name="db"></param>
     public async void CompletarCampos(BancoContext db)
     {
         Data = DateTime.Parse(DataEvento);

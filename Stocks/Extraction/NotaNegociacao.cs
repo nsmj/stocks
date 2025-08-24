@@ -6,6 +6,11 @@ using Stocks.Models;
 
 namespace Stocks.Extraction
 {
+    /// <summary>
+    /// Classe responsável por extrair dados de notas de negociação.
+    /// </summary>
+    /// <param name="corretora"></param>
+    /// <param name="configuration"></param>
     public class NotaNegociacao(Corretora corretora, IConfiguration configuration)
     {
         public List<Operacao> Operacoes { get; set; }
@@ -19,6 +24,12 @@ namespace Stocks.Extraction
 
         public decimal BaseIrrfFIIs { get; set; }
 
+        /// <summary>
+        /// Extrai os dados do arquivo PDF da nota de negociação e retorna as operações e IRRFs.
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public async Task<(List<Operacao>, List<Irrf>)> ExtraiDadosDoArquivo(
             BancoContext db,
             string path
@@ -63,6 +74,14 @@ namespace Stocks.Extraction
             return (operacoes, irrfs);
         }
 
+        /// <summary>
+        /// Extrai os dados do PDF da nota de negociação.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="senhaArquivo"></param>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="PlatformNotSupportedException"></exception>
         private string[] ExtractPdfData(string path, string senhaArquivo)
         {
             string mutoolPath;
@@ -111,6 +130,12 @@ namespace Stocks.Extraction
             return dadosNota;
         }
 
+        /// <summary>
+        /// Extrai os dados de IRRF da nota de negociação.
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="dadosNota"></param>
+        /// <returns></returns>
         private async Task<Irrf[]> ExtrairIrrf(BancoContext db, string[] dadosNota)
         {
             List<Irrf> irrfs = [];
@@ -185,6 +210,9 @@ namespace Stocks.Extraction
             return [.. irrfs];
         }
 
+        /// <summary>
+        /// Calcula a base de IRRF para operações comuns, day trade e FIIs.
+        /// </summary>
         private void CalcularBaseIrrf()
         {
             if (Operacoes is not null)
@@ -210,6 +238,9 @@ namespace Stocks.Extraction
             }
         }
 
+        /// <summary>
+        /// Rateia as taxas entre as operações.
+        /// </summary>
         private void RatearTaxas()
         {
             decimal totalOperacoes = Operacoes.Sum(o => o.ValorTotal.GetValueOrDefault());

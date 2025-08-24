@@ -6,8 +6,19 @@ using Stocks.Models;
 
 namespace Stocks.Extraction
 {
+    /// <summary>
+    /// Classe responsável pro processar as notas de corretagem e outros arquivos financeiros.
+    /// </summary>
     public class FileProcessor
     {
+        /// <summary>
+        /// Processa os arquivos de notas de corretagem e outros arquivos financeiros.
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="configuration"></param>
+        /// <param name="arquivo"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public async Task ProcessarArquivos(
             BancoContext db,
             IConfiguration configuration,
@@ -50,6 +61,13 @@ namespace Stocks.Extraction
             Directory.Delete(Path.Combine(caminhoUpload, pastaExtracao), true);
         }
 
+        /// <summary>
+        /// Faz o upload do arquivo para o caminho especificado.
+        /// </summary>
+        /// <param name="arquivo"></param>
+        /// <param name="caminhoDestino"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public async Task<string> UploadArquivo(IFormFile arquivo, string caminhoDestino)
         {
             if (arquivo == null || arquivo.Length == 0)
@@ -66,6 +84,12 @@ namespace Stocks.Extraction
             return caminhoArquivo;
         }
 
+        /// <summary>
+        /// Importa as notas de corretagem.
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="configuration"></param>
+        /// <param name="caminhoArquivos"></param>
         public async void ImportarNotasCorretagem(
             BancoContext db,
             IConfiguration configuration,
@@ -99,6 +123,11 @@ namespace Stocks.Extraction
             await db.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Importa os arquivos JSON contendo operações e eventos.
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="caminhoArquivos"></param>
         public async void ImportarArquivosJson(BancoContext db, string caminhoArquivos)
         {
             string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
@@ -117,6 +146,10 @@ namespace Stocks.Extraction
             await db.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Calcula os resultados das operações e eventos, atualizando o lucro líquido das operações.
+        /// </summary>
+        /// <param name="db"></param>
         public static async void CalcularResultados(BancoContext db)
         {
             var eventosOperacoes = db.Database.SqlQuery<DadosCalculoResultado>(

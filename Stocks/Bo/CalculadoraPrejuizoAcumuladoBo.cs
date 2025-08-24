@@ -2,8 +2,18 @@ using Stocks.BoQueries;
 
 namespace Stocks.Bo;
 
+/// <summary>
+/// Calculadora de prejuízo acumulado para operações financeiras.
+/// </summary>
 public class CalculadoraPrejuizoAcumuladoBo
 {
+    /// <summary>
+    /// Injeta o prejuízo acumulado nas operações financeiras para o ano especificado.
+    /// </summary>
+    /// <param name="resultadoOperacoes"></param>
+    /// <param name="irpfRows"></param>
+    /// <param name="ano"></param>
+    /// <returns></returns>
     public decimal InjetarPrejuizoAcumulado(
         List<ResultadoOperacaoMesBo> resultadoOperacoes,
         Dictionary<int, IrpfRowBo> irpfRows,

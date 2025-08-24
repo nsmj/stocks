@@ -3,13 +3,25 @@ using Stocks.Data;
 
 namespace Stocks.Bo;
 
+/// <summary>
+/// Resultado da consulta de lucro de vendas abaixo de 20 mil reais.
+/// </summary>
 public class LucroVendasAbaixo20kResult
 {
     public decimal Valor { get; set; }
 }
 
+/// <summary>
+/// Calcula o total de lucro de vendas abaixo de 20 mil reais em um ano específico.
+/// </summary>
 public class LucroVendasAbaixo20kBo
 {
+    /// <summary>
+    /// Calcula o total de lucro de vendas abaixo de 20 mil reais em um ano específico.
+    /// </summary>
+    /// <param name="db"></param>
+    /// <param name="ano"></param>
+    /// <returns></returns>
     public async Task<decimal> LucroVendasAbaixo20kQuery(BancoContext db, string ano)
     {
         var anoInicio = $"{ano}-01-01";

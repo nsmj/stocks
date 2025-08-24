@@ -4,6 +4,13 @@ using Stocks.Extraction;
 
 namespace Stocks.Controllers;
 
+/// <summary>
+/// Controller responsável por gerenciar o upload e processamento de arquivos financeiros.
+/// </summary>
+/// <param name="logger"></param>
+/// <param name="db"></param>
+/// <param name="configuration"></param>
+/// <param name="fileProcessor"></param>
 public class ArquivosController(
     ILogger<ArquivosController> logger,
     BancoContext db,
@@ -11,11 +18,20 @@ public class ArquivosController(
     FileProcessor fileProcessor
 ) : Controller
 {
+    /// <summary>
+    /// Exibe a página de importação de arquivos.
+    /// </summary>
+    /// <returns></returns>
     public IActionResult Importar()
     {
         return View();
     }
 
+    /// <summary>
+    /// Processa o arquivo enviado pelo usuário.
+    /// </summary>
+    /// <param name="arquivo"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<IActionResult> Importar(IFormFile arquivo)
     {

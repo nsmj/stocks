@@ -5,6 +5,10 @@ using Stocks.Extraction;
 
 namespace Stocks.Models;
 
+/// <summary>
+/// Representa uma operação financeira associada a um ativo.
+/// Uma operação pode ser uma compra, venda, etc.
+/// </summary>
 public partial class Operacao
 {
     public int Id { get; set; }
@@ -40,6 +44,10 @@ public partial class Operacao
     [NotMapped]
     public string DataOperacao { get; set; }
 
+    /// <summary>
+    /// Completa os campos necessários da entidade Operacao.
+    /// </summary>
+    /// <param name="db"></param>
     public async void CompletarCampos(BancoContext db)
     {
         Data = DateTime.Parse(DataOperacao);
