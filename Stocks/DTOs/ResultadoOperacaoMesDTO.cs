@@ -1,6 +1,6 @@
-namespace Stocks.Bo;
+namespace Stocks.DTOs;
 
-public class ResultadoOperacaoMesBo
+public class ResultadoOperacaoMesDTO
 {
     public int Ano { get; set; }
     public int Mes { get; set; }

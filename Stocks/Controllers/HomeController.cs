@@ -1,7 +1,5 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Stocks.Data;
-using Stocks.Extraction;
 using Stocks.Models;
 
 namespace Stocks.Controllers;

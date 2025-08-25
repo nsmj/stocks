@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
-using Stocks.Models;
 using Stocks.ViewModels;
 
 namespace Stocks.Bo;

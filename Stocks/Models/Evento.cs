@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
-using Stocks.Extraction;
 
 namespace Stocks.Models;
 

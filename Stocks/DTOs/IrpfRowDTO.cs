@@ -1,6 +1,6 @@
-namespace Stocks.BoQueries;
+namespace Stocks.DTOs;
 
-public class IrpfRowBo
+public class IrpfRowDTO
 {
     public decimal Total { get; set; }
     public decimal ImpostoPago { get; set; }

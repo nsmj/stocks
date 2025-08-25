@@ -1,21 +1,21 @@
-using Stocks.BoQueries;
+using Stocks.DTOs;
 
 namespace Stocks.Bo;
 
 public class IrpfRowsBuilder
 {
-    public Dictionary<int, IrpfRowBo> BuildIrpfRowsBo(
-        List<ResultadoOperacaoMesBo> results,
+    public Dictionary<int, IrpfRowDTO> BuildIrpfRowsBo(
+        List<ResultadoOperacaoMesDTO> results,
         string ano
     )
     {
-        Dictionary<int, IrpfRowBo> irpfRows = [];
+        Dictionary<int, IrpfRowDTO> irpfRows = [];
 
         foreach (var row in results)
         {
             if (row.Ano == int.Parse(ano))
             {
-                irpfRows[row.Mes] = new IrpfRowBo
+                irpfRows[row.Mes] = new IrpfRowDTO
                 {
                     Total = row.Valor,
                     ImpostoPago = 0,
@@ -30,7 +30,7 @@ public class IrpfRowsBuilder
         {
             if (!irpfRows.ContainsKey(i))
             {
-                irpfRows[i] = new IrpfRowBo
+                irpfRows[i] = new IrpfRowDTO
                 {
                     Total = 0,
                     ImpostoPago = 0,

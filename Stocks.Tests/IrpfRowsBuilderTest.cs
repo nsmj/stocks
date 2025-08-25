@@ -1,90 +1,91 @@
 using Stocks.Bo;
+using Stocks.DTOs;
 
 namespace Stocks.Tests;
 
 public class SwingTradeTest
 {
-    private readonly List<ResultadoOperacaoMesBo> ResultadosOperacaoMes =
+    private readonly List<ResultadoOperacaoMesDTO> ResultadosOperacaoMes =
     [
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2022,
             Mes = 1,
             Valor = -0.77m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2022,
             Mes = 2,
             Valor = -7.41m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2022,
             Mes = 5,
             Valor = -0.04m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2022,
             Mes = 11,
             Valor = -11.69m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 1,
             Valor = -10.38m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 2,
             Valor = -0.36m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 4,
             Valor = -11.88m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 5,
             Valor = -46.65m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 6,
             Valor = -13.74m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 8,
             Valor = -526.88m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 9,
             Valor = -98.11m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 10,
             Valor = -45.0m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 11,
             Valor = 54.23m,
         },
-        new ResultadoOperacaoMesBo
+        new ResultadoOperacaoMesDTO
         {
             Ano = 2023,
             Mes = 12,

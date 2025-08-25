@@ -1,4 +1,4 @@
-using Stocks.BoQueries;
+using Stocks.DTOs;
 
 namespace Stocks.Bo;
 
@@ -15,8 +15,8 @@ public class CalculadoraPrejuizoAcumuladoBo
     /// <param name="ano"></param>
     /// <returns></returns>
     public decimal InjetarPrejuizoAcumulado(
-        List<ResultadoOperacaoMesBo> resultadoOperacoes,
-        Dictionary<int, IrpfRowBo> irpfRows,
+        List<ResultadoOperacaoMesDTO> resultadoOperacoes,
+        Dictionary<int, IrpfRowDTO> irpfRows,
         string ano
     )
     {

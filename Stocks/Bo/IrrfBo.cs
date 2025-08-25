@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Stocks.BoQueries;
 using Stocks.Data;
+using Stocks.DTOs;
 
 namespace Stocks.Bo;
 
@@ -28,7 +28,7 @@ public class IrrfBo
     }
 
     public void InjetarValoresIrrf(
-        Dictionary<int, IrpfRowBo> irpfRows,
+        Dictionary<int, IrpfRowDTO> irpfRows,
         List<IrrfResult> irrfResults,
         string nomeTipoOperacao
     )
