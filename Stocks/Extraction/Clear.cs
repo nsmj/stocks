@@ -35,11 +35,11 @@ namespace Stocks.Extraction
         {
             List<Operacao> operacoes = [];
 
-            var entradasOperacoes = Corretora.FindAllIndex(dadosNota, x => x == "1-BOVESPA");
+            var entradasOperacoes = FindAllIndex(dadosNota, x => x == "1-BOVESPA");
 
             if (!entradasOperacoes.Any())
             {
-                entradasOperacoes = Corretora.FindAllIndex(dadosNota, x => x == "B3 RV LISTADO");
+                entradasOperacoes = FindAllIndex(dadosNota, x => x == "B3 RV LISTADO");
             }
 
             foreach (var posicao in entradasOperacoes)
