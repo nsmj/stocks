@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Stocks.Bo;
 using Stocks.Data;
 using Stocks.Models;
 
@@ -16,12 +17,14 @@ namespace Stocks.Extraction
         /// </summary>
         /// <param name="db"></param>
         /// <param name="configuration"></param>
+        /// <param name="posicaoFimAnoBo"></param>
         /// <param name="arquivo"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         public async Task ProcessarArquivos(
             BancoContext db,
             IConfiguration configuration,
+            PosicaoFimAnoBo posicaoFimAnoBo,
             IFormFile arquivo
         )
         {
@@ -55,7 +58,7 @@ namespace Stocks.Extraction
 
             ImportarArquivosJson(db, Path.Combine(caminhoUpload, pastaExtracao, "Json"));
 
-            CalcularResultados(db);
+            await CalcularResultados(db);
 
             File.Delete(caminhoArquivo);
             Directory.Delete(Path.Combine(caminhoUpload, pastaExtracao), true);
@@ -146,12 +149,35 @@ namespace Stocks.Extraction
             await db.SaveChangesAsync();
         }
 
+        public static async Task CalcularResultados(BancoContext db)
+        {
+            var primeiroAnoTransacoes = await db.Operacoes.MinAsync(op => op.Data.Year);
+
+            int anoFinal = DateTime.Now.Year;
+
+            // Busca uma lista dos ativos que possuem operações
+            var listaAtivos = await db.Operacoes.Select(op => op.AtivoId).Distinct().ToListAsync();
+
+            for (int anoAtual = primeiroAnoTransacoes; anoAtual <= anoFinal; anoAtual++)
+            {
+                foreach (var ativoId in listaAtivos)
+                {
+                    CalcularResultadosAtivoAno(db, anoAtual, ativoId);
+                }
+            }
+        }
+
         /// <summary>
         /// Calcula os resultados das operações e eventos, atualizando o lucro líquido das operações.
         /// </summary>
         /// <param name="db"></param>
-        public static async void CalcularResultados(BancoContext db)
+        /// <param name="ano"></param>
+        /// <param name="ativoId"></param>
+        public static async void CalcularResultadosAtivoAno(BancoContext db, int ano, int ativoId)
         {
+            var anoInicio = $"{ano}-01-01";
+            var anoFim = $"{ano}-12-31";
+
             var eventosOperacoes = db.Database.SqlQuery<DadosCalculoResultado>(
                 @$"
                         SELECT
@@ -169,6 +195,7 @@ namespace Stocks.Extraction
                         FROM operacao o
                         LEFT JOIN ativo a ON o.ativo_id = a.id
                         LEFT JOIN tipo_operacao top ON o.tipo_operacao_id = top.id
+                        WHERE o.ativo_id = {ativoId} AND o.data BETWEEN {anoInicio} AND {anoFim}
                         UNION ALL
                         SELECT
                             e.id AS Id,
@@ -185,29 +212,26 @@ namespace Stocks.Extraction
                         FROM evento e
                         LEFT JOIN ativo a ON e.ativo_id = a.id
                         LEFT JOIN tipo_evento te ON e.tipo_evento_id = te.id
+                        WHERE e.ativo_id = {ativoId} AND e.data BETWEEN {anoInicio} AND {anoFim}
                         ORDER BY AtivoId, Data
                     "
             );
 
-            long ativoAnterior = 0;
-            decimal ultimoPMCompra = 0M;
-            int posicaoAnterior = 0;
+            var ultimaPosicaoFimAno = await db
+                .PosicoesFimAno.Where(p => p.AtivoId == ativoId && p.Ano == ano - 1)
+                .FirstOrDefaultAsync();
+
+            decimal precoMedio = ultimaPosicaoFimAno != null ? ultimaPosicaoFimAno.PrecoMedio : 0;
+            decimal ultimoPMCompra = precoMedio;
+            int posicaoAnterior = ultimaPosicaoFimAno != null ? ultimaPosicaoFimAno.Posicao : 0;
             int posicaoAtual = 0;
-            decimal precoMedio = 0M;
+
             decimal precoMedioVenda;
             decimal lucroLiquido;
             Dictionary<string, PosicaoFimAno> posicoesFimAno = [];
 
-            foreach (var eventoOperacao in eventosOperacoes)
+            await foreach (var eventoOperacao in eventosOperacoes.AsAsyncEnumerable())
             {
-                if (eventoOperacao.AtivoId != ativoAnterior)
-                {
-                    ultimoPMCompra = 0;
-                    posicaoAnterior = 0;
-                    posicaoAtual = 0;
-                    ativoAnterior = eventoOperacao.AtivoId;
-                }
-
                 if (eventoOperacao.Tipo == "Operacao")
                 {
                     //var taxas = eventoOperacao.Taxas == null ? 0.0 : eventoOperacao.Taxas;
@@ -280,20 +304,27 @@ namespace Stocks.Extraction
                 posicaoAnterior = posicaoAtual;
 
                 ultimoPMCompra = precoMedio;
+            }
 
-                var PosicaoFimAno = new PosicaoFimAno()
+            if (eventosOperacoes.Any())
+            {
+                // Só insere uma posição no final do ano caso não tenha zerado a posição durante o ano
+                if (posicaoAtual > 0)
                 {
-                    Ano = Convert.ToInt32(eventoOperacao.Data?[0..4]),
-                    PrecoMedio = ultimoPMCompra,
-                    Posicao = posicaoAtual,
-                    CustoTotal = ultimoPMCompra * posicaoAtual,
-                    AtivoId = eventoOperacao.AtivoId,
-                };
+                    PosicaoFimAno posicaoFimAno = new()
+                    {
+                        AtivoId = ativoId,
+                        Ano = ano,
+                        Posicao = posicaoAtual,
+                        PrecoMedio = ultimoPMCompra,
+                        CustoTotal = ultimoPMCompra * posicaoAtual,
+                    };
 
-                var hashAnoAtivo = $"{PosicaoFimAno.Ano}_{eventoOperacao.AtivoId}";
-                posicoesFimAno[hashAnoAtivo] = PosicaoFimAno;
+                    db.PosicoesFimAno.Add(posicaoFimAno);
+                }
 
-                var ativo = db.Ativos.Find(eventoOperacao.AtivoId);
+                // Atualiza a posição e preço médio do ativo
+                var ativo = db.Ativos.Find(ativoId);
 
                 if (ativo != null)
                 {
@@ -303,12 +334,21 @@ namespace Stocks.Extraction
                     db.Ativos.Update(ativo);
                 }
             }
-
-            foreach (var posicao in posicoesFimAno.Values)
+            else
             {
-                if (posicao.Posicao > 0)
+                // Se não houver operações ou eventos no ano, mantém a posição do ano anterior (se houver)
+                if (ultimaPosicaoFimAno != null && ultimaPosicaoFimAno.Posicao > 0)
                 {
-                    db.PosicoesFimAno.Add(posicao);
+                    PosicaoFimAno novaPosicao = new()
+                    {
+                        AtivoId = ativoId,
+                        Ano = ano,
+                        Posicao = ultimaPosicaoFimAno.Posicao,
+                        PrecoMedio = ultimaPosicaoFimAno.PrecoMedio,
+                        CustoTotal = ultimaPosicaoFimAno.CustoTotal,
+                    };
+
+                    db.PosicoesFimAno.Add(novaPosicao);
                 }
             }
 

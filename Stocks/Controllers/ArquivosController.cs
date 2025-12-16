@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Stocks.Bo;
 using Stocks.Data;
 using Stocks.Extraction;
 
@@ -15,6 +16,7 @@ public class ArquivosController(
     ILogger<ArquivosController> logger,
     BancoContext db,
     IConfiguration configuration,
+    PosicaoFimAnoBo posicaoFimAnoBo,
     FileProcessor fileProcessor
 ) : Controller
 {
@@ -42,7 +44,7 @@ public class ArquivosController(
 
         try
         {
-            await fileProcessor.ProcessarArquivos(db, configuration, arquivo);
+            await fileProcessor.ProcessarArquivos(db, configuration, posicaoFimAnoBo, arquivo);
 
             return RedirectToAction("Index", "Home");
         }
