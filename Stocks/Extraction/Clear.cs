@@ -37,7 +37,7 @@ namespace Stocks.Extraction
 
             var entradasOperacoes = FindAllIndex(dadosNota, x => x == "1-BOVESPA");
 
-            if (!entradasOperacoes.Any())
+            if (entradasOperacoes.Length == 0)
             {
                 entradasOperacoes = FindAllIndex(dadosNota, x => x == "B3 RV LISTADO");
             }

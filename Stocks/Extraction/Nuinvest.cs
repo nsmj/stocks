@@ -53,7 +53,7 @@ namespace Stocks.Extraction
                 // Remove the "F" at the end of the asset name, if any.
                 if (codigoAtivo[codigoAtivo.Length - 1] == 'F')
                 {
-                    codigoAtivo = codigoAtivo.Substring(0, codigoAtivo.Length - 1);
+                    codigoAtivo = codigoAtivo[..^1];
                 }
 
                 operacao.Ativo = await db

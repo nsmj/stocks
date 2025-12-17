@@ -111,7 +111,7 @@ namespace Stocks.Extraction
                 throw new PlatformNotSupportedException("Sistema operacional não suportado.");
             }
 
-            using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
+            using (System.Diagnostics.Process pProcess = new())
             {
                 pProcess.StartInfo.FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                     ? mutoolPath

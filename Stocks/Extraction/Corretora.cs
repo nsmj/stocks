@@ -87,10 +87,12 @@ namespace Stocks.Extraction
         {
             // TODO: Ver se é possível usar LINQ para simplificar isso.
             // TODO: Entender essa bagaça.
-            return array
-                .Select((value, index) => match(value) ? index : -1)
-                .Where(index => index != -1)
-                .ToArray();
+            return
+            [
+                .. array
+                    .Select((value, index) => match(value) ? index : -1)
+                    .Where(index => index != -1),
+            ];
         }
     }
 }
