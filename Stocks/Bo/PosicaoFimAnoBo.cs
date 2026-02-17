@@ -5,16 +5,25 @@ using Stocks.ViewModels;
 
 namespace Stocks.Bo;
 
-public class PosicaoFimAnoResult
-{
-    public string Codigo { get; set; }
-    public string Cnpj { get; set; }
-    public string NomeAtivo { get; set; }
-    public decimal Posicao { get; set; }
-    public decimal PrecoMedio { get; set; }
-    public decimal CustoTotal { get; set; }
-    public string TipoAtivo { get; set; }
-}
+/// <summary>
+/// Resultado da consulta de posição de fim de ano.
+/// </summary>
+/// <param name="Codigo">Código do ativo.</param>
+/// <param name="Cnpj">CNPJ do ativo.</param>
+/// <param name="NomeAtivo">Nome do ativo.</param>
+/// <param name="Posicao">Posição em quantidade.</param>
+/// <param name="PrecoMedio">Preço médio.</param>
+/// <param name="CustoTotal">Custo total.</param>
+/// <param name="TipoAtivo">Tipo do ativo.</param>
+public record PosicaoFimAnoResult(
+    string Codigo,
+    string Cnpj,
+    string NomeAtivo,
+    decimal Posicao,
+    decimal PrecoMedio,
+    decimal CustoTotal,
+    string TipoAtivo
+);
 
 public class PosicaoFimAnoBo
 {
