@@ -7,90 +7,20 @@ public class SwingTradeTest
 {
     private readonly List<ResultadoOperacaoMesDTO> ResultadosOperacaoMes =
     [
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2022,
-            Mes = 1,
-            Valor = -0.77m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2022,
-            Mes = 2,
-            Valor = -7.41m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2022,
-            Mes = 5,
-            Valor = -0.04m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2022,
-            Mes = 11,
-            Valor = -11.69m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 1,
-            Valor = -10.38m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 2,
-            Valor = -0.36m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 4,
-            Valor = -11.88m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 5,
-            Valor = -46.65m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 6,
-            Valor = -13.74m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 8,
-            Valor = -526.88m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 9,
-            Valor = -98.11m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 10,
-            Valor = -45.0m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 11,
-            Valor = 54.23m,
-        },
-        new ResultadoOperacaoMesDTO
-        {
-            Ano = 2023,
-            Mes = 12,
-            Valor = -13.34m,
-        },
+        new ResultadoOperacaoMesDTO(2022, 1, -0.77m),
+        new ResultadoOperacaoMesDTO(2022, 2, -7.41m),
+        new ResultadoOperacaoMesDTO(2022, 5, -0.04m),
+        new ResultadoOperacaoMesDTO(2022, 11, -11.69m),
+        new ResultadoOperacaoMesDTO(2023, 1, -10.38m),
+        new ResultadoOperacaoMesDTO(2023, 2, -0.36m),
+        new ResultadoOperacaoMesDTO(2023, 4, -11.88m),
+        new ResultadoOperacaoMesDTO(2023, 5, -46.65m),
+        new ResultadoOperacaoMesDTO(2023, 6, -13.74m),
+        new ResultadoOperacaoMesDTO(2023, 8, -526.88m),
+        new ResultadoOperacaoMesDTO(2023, 9, -98.11m),
+        new ResultadoOperacaoMesDTO(2023, 10, -45.0m),
+        new ResultadoOperacaoMesDTO(2023, 11, 54.23m),
+        new ResultadoOperacaoMesDTO(2023, 12, -13.34m),
     ];
 
     [Fact]
