@@ -178,7 +178,7 @@ namespace Stocks.Extraction
             var anoInicio = $"{ano}-01-01";
             var anoFim = $"{ano}-12-31";
 
-            var eventosOperacoes = db.Database.SqlQuery<DadosCalculoResultado>(
+            var eventosOperacoes = db.Database.SqlQuery<DadosCalculoResultadoDTO>(
                 @$"
                         SELECT
                             o.id AS Id,
