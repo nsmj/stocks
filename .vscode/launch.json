@@ -9,7 +9,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/Stocks/bin/Debug/net9.0/Stocks.dll",
+      "program": "${workspaceFolder}/Stocks/bin/Debug/net10.0/Stocks.dll",
       "args": [],
       "cwd": "${workspaceFolder}/Stocks",
       "stopAtEntry": false,
