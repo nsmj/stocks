@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Bo;
 using Stocks.Data;
+using Stocks.DTOs;
 using Stocks.Models;
 
 namespace Stocks.Extraction

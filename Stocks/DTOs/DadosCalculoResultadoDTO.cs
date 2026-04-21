@@ -1,4 +1,4 @@
-namespace Stocks.Models;
+namespace Stocks.DTOs;
 
 /// <summary>
 /// Represents calculation result data for stock operations.
