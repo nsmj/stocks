@@ -59,22 +59,13 @@ namespace Stocks.Extraction
         /// <param name="nomeCorretora"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static Corretora Factory(string nomeCorretora)
-        {
-            Corretora? objCorretora = nomeCorretora switch
+        public static Corretora Factory(string nomeCorretora) =>
+            nomeCorretora switch
             {
                 "Nuinvest" => new Nuinvest(),
                 "Clear" => new Clear(),
-                _ => null,
+                _ => throw new ArgumentException($"Corretora {nomeCorretora} não implementada."),
             };
-
-            if (objCorretora == null)
-            {
-                throw new ArgumentException($"Corretora {nomeCorretora} não implementada.");
-            }
-
-            return objCorretora;
-        }
 
         /// <summary>
         /// Encontra todos os índices de um array que correspondem a um critério específico.
