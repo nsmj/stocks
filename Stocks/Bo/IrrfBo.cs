@@ -11,9 +11,9 @@ public class IrrfResult
     public string? NomeTipoOperacao { get; set; }
 }
 
-public class IrrfBo
+public class IrrfBo(BancoContext db)
 {
-    public async Task<List<IrrfResult>> IrrfQuery(BancoContext db, string ano)
+    public async Task<List<IrrfResult>> IrrfQuery(string ano)
     {
         var result = db.Database.SqlQuery<IrrfResult>(
             $@"

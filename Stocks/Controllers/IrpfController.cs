@@ -9,8 +9,7 @@ namespace Stocks.Controllers;
 /// <summary>
 /// Controller responsável por gerenciar as operações relacionadas ao IRPF.
 /// </summary>
-/// <param name="db"></param>
-public class IrpfController(BancoContext db) : Controller
+public class IrpfController : Controller
 {
     /// <summary>
     /// Exibe a página de IRPF com os dados filtrados por ano.
@@ -29,11 +28,11 @@ public class IrpfController(BancoContext db) : Controller
         [FromKeyedServices("SwingTrade")] IOperacaoListable swingTradeObj,
         [FromKeyedServices("DayTrade")] IOperacaoListable dayTradeObj,
         [FromKeyedServices("Fii")] IOperacaoListable fiiObj,
-        LucroVendasAbaixo20kBo lucroVendasAbaixo20kBo,
-        IrrfBo irrfBo,
-        PosicaoFimAnoBo posicaoFimAnoBo,
-        IrpfRowsBuilder irpfRowsBuilder,
-        CalculadoraPrejuizoAcumuladoBo calculadoraPrejuizoAcumuladoBo,
+        [FromServices] LucroVendasAbaixo20kBo lucroVendasAbaixo20kBo,
+        [FromServices] IrrfBo irrfBo,
+        [FromServices] PosicaoFimAnoBo posicaoFimAnoBo,
+        [FromServices] IrpfRowsBuilder irpfRowsBuilder,
+        [FromServices] CalculadoraPrejuizoAcumuladoBo calculadoraPrejuizoAcumuladoBo,
         string ano
     )
     {
@@ -41,18 +40,18 @@ public class IrpfController(BancoContext db) : Controller
 
         if (ano is not null)
         {
-            var dadosSwingTrade = await swingTradeObj.ResultadoOperacaoMesQuery(db);
-            var dadosDayTrade = await dayTradeObj.ResultadoOperacaoMesQuery(db);
-            var dadosFii = await fiiObj.ResultadoOperacaoMesQuery(db);
+            var dadosSwingTrade = await swingTradeObj.ResultadoOperacaoMesQuery();
+            var dadosDayTrade = await dayTradeObj.ResultadoOperacaoMesQuery();
+            var dadosFii = await fiiObj.ResultadoOperacaoMesQuery();
 
             irpfViewModel.AnoFiltrado = ano;
             irpfViewModel.LucroVendasAbaixo20k =
-                await lucroVendasAbaixo20kBo.LucroVendasAbaixo20kQuery(db, ano);
+                await lucroVendasAbaixo20kBo.LucroVendasAbaixo20kQuery(ano);
             irpfViewModel.SwingTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosSwingTrade, ano);
             irpfViewModel.DayTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosDayTrade, ano);
             irpfViewModel.FiiRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosFii, ano);
 
-            var irrfResults = await irrfBo.IrrfQuery(db, ano);
+            var irrfResults = await irrfBo.IrrfQuery(ano);
             irrfBo.InjetarValoresIrrf(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
             irrfBo.InjetarValoresIrrf(irpfViewModel.DayTradeRows, irrfResults, "Day Trade");
             irrfBo.InjetarValoresIrrf(irpfViewModel.FiiRows, irrfResults, "FII");
@@ -78,7 +77,7 @@ public class IrpfController(BancoContext db) : Controller
                     ano
                 );
 
-            var PosicoesFimAno = await posicaoFimAnoBo.PosicaoFimAnoQuery(db, ano);
+            var PosicoesFimAno = await posicaoFimAnoBo.PosicaoFimAnoQuery(ano);
             irpfViewModel.PosicoesFimAno = [.. PosicoesFimAno];
         }
 

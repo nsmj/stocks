@@ -9,13 +9,10 @@ namespace Stocks.Controllers;
 /// Controller responsável por gerenciar o upload e processamento de arquivos financeiros.
 /// </summary>
 /// <param name="logger"></param>
-/// <param name="db"></param>
-/// <param name="configuration"></param>
+/// <param name="posicaoFimAnoBo"></param>
 /// <param name="fileProcessor"></param>
 public class ArquivosController(
     ILogger<ArquivosController> logger,
-    BancoContext db,
-    IConfiguration configuration,
     PosicaoFimAnoBo posicaoFimAnoBo,
     FileProcessor fileProcessor
 ) : Controller
@@ -44,7 +41,7 @@ public class ArquivosController(
 
         try
         {
-            await fileProcessor.ProcessarArquivos(db, configuration, posicaoFimAnoBo, arquivo);
+            await fileProcessor.ProcessarArquivos(posicaoFimAnoBo, arquivo);
 
             return RedirectToAction("Index", "Home");
         }

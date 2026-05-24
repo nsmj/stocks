@@ -5,9 +5,9 @@ using Stocks.Interfaces;
 
 namespace Stocks.Models.TiposOperacao;
 
-public class Fii : TipoOperacao, IOperacaoListable
+public class Fii(BancoContext db) : TipoOperacao, IOperacaoListable
 {
-    public async Task<List<ResultadoOperacaoMesDTO>> ResultadoOperacaoMesQuery(BancoContext db)
+    public async Task<List<ResultadoOperacaoMesDTO>> ResultadoOperacaoMesQuery()
     {
         return await db
             .Database.SqlQuery<ResultadoOperacaoMesDTO>(

@@ -14,7 +14,7 @@ public class LucroVendasAbaixo20kResult
 /// <summary>
 /// Calcula o total de lucro de vendas abaixo de 20 mil reais em um ano específico.
 /// </summary>
-public class LucroVendasAbaixo20kBo
+public class LucroVendasAbaixo20kBo(BancoContext db)
 {
     /// <summary>
     /// Calcula o total de lucro de vendas abaixo de 20 mil reais em um ano específico.
@@ -22,7 +22,7 @@ public class LucroVendasAbaixo20kBo
     /// <param name="db"></param>
     /// <param name="ano"></param>
     /// <returns></returns>
-    public async Task<decimal> LucroVendasAbaixo20kQuery(BancoContext db, string ano)
+    public async Task<decimal> LucroVendasAbaixo20kQuery(string ano)
     {
         var anoInicio = $"{ano}-01-01";
         var anoFim = $"{ano}-12-31";

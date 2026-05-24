@@ -11,23 +11,16 @@ namespace Stocks.Extraction
     /// <summary>
     /// Classe responsável pro processar as notas de corretagem e outros arquivos financeiros.
     /// </summary>
-    public class FileProcessor
+    public class FileProcessor(BancoContext db, IConfiguration configuration)
     {
         /// <summary>
         /// Processa os arquivos de notas de corretagem e outros arquivos financeiros.
         /// </summary>
-        /// <param name="db"></param>
-        /// <param name="configuration"></param>
         /// <param name="posicaoFimAnoBo"></param>
         /// <param name="arquivo"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task ProcessarArquivos(
-            BancoContext db,
-            IConfiguration configuration,
-            PosicaoFimAnoBo posicaoFimAnoBo,
-            IFormFile arquivo
-        )
+        public async Task ProcessarArquivos(PosicaoFimAnoBo posicaoFimAnoBo, IFormFile arquivo)
         {
             DbConnection.Reset();
 
@@ -51,15 +44,11 @@ namespace Stocks.Extraction
                 );
             }
 
-            ImportarNotasCorretagem(
-                db,
-                configuration,
-                Path.Combine(caminhoUpload, pastaExtracao, "NotasCorretagem")
-            );
+            ImportarNotasCorretagem(Path.Combine(caminhoUpload, pastaExtracao, "NotasCorretagem"));
 
-            ImportarArquivosJson(db, Path.Combine(caminhoUpload, pastaExtracao, "Json"));
+            ImportarArquivosJson(Path.Combine(caminhoUpload, pastaExtracao, "Json"));
 
-            await CalcularResultados(db);
+            await CalcularResultados();
 
             File.Delete(caminhoArquivo);
             Directory.Delete(Path.Combine(caminhoUpload, pastaExtracao), true);
@@ -91,14 +80,8 @@ namespace Stocks.Extraction
         /// <summary>
         /// Importa as notas de corretagem.
         /// </summary>
-        /// <param name="db"></param>
-        /// <param name="configuration"></param>
         /// <param name="caminhoArquivos"></param>
-        public async void ImportarNotasCorretagem(
-            BancoContext db,
-            IConfiguration configuration,
-            string caminhoArquivos
-        )
+        public async void ImportarNotasCorretagem(string caminhoArquivos)
         {
             string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
 
@@ -130,9 +113,8 @@ namespace Stocks.Extraction
         /// <summary>
         /// Importa os arquivos JSON contendo operações e eventos.
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="caminhoArquivos"></param>
-        public async void ImportarArquivosJson(BancoContext db, string caminhoArquivos)
+        public async void ImportarArquivosJson(string caminhoArquivos)
         {
             string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
 
@@ -150,7 +132,7 @@ namespace Stocks.Extraction
             await db.SaveChangesAsync();
         }
 
-        public static async Task CalcularResultados(BancoContext db)
+        public async Task CalcularResultados()
         {
             var primeiroAnoTransacoes = await db.Operacoes.MinAsync(op => op.Data.Year);
 
@@ -163,7 +145,7 @@ namespace Stocks.Extraction
             {
                 foreach (var ativoId in listaAtivos)
                 {
-                    CalcularResultadosAtivoAno(db, anoAtual, ativoId);
+                    CalcularResultadosAtivoAno(anoAtual, ativoId);
                 }
             }
         }
@@ -171,10 +153,9 @@ namespace Stocks.Extraction
         /// <summary>
         /// Calcula os resultados das operações e eventos, atualizando o lucro líquido das operações.
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="ano"></param>
         /// <param name="ativoId"></param>
-        public static async void CalcularResultadosAtivoAno(BancoContext db, int ano, int ativoId)
+        public async void CalcularResultadosAtivoAno(int ano, int ativoId)
         {
             var anoInicio = $"{ano}-01-01";
             var anoFim = $"{ano}-12-31";
