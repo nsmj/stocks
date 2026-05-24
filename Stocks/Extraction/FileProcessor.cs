@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Bo;
 using Stocks.Data;
@@ -11,7 +12,10 @@ namespace Stocks.Extraction
     /// <summary>
     /// Classe responsável pro processar as notas de corretagem e outros arquivos financeiros.
     /// </summary>
-    public class FileProcessor(BancoContext db, IConfiguration configuration)
+    public class FileProcessor(
+        [FromServices] BancoContext db,
+        [FromServices] IConfiguration configuration
+    )
     {
         /// <summary>
         /// Processa os arquivos de notas de corretagem e outros arquivos financeiros.
@@ -20,7 +24,7 @@ namespace Stocks.Extraction
         /// <param name="arquivo"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task ProcessarArquivos(PosicaoFimAnoBo posicaoFimAnoBo, IFormFile arquivo)
+        public async Task ProcessarArquivos(IFormFile arquivo)
         {
             DbConnection.Reset();
 
@@ -95,10 +99,9 @@ namespace Stocks.Extraction
 
                 var corretora = Corretora.Factory(strategy);
 
-                NotaNegociacao notaNegociacao = new(corretora, configuration);
+                NotaNegociacao notaNegociacao = new(corretora, configuration, db);
 
                 var (operacoesInserir, irrfsInserir) = await notaNegociacao.ExtraiDadosDoArquivo(
-                    db,
                     file
                 );
 
@@ -120,9 +123,9 @@ namespace Stocks.Extraction
 
             foreach (var file in files)
             {
-                JsonInformation jsonInformation = new();
+                JsonInformation jsonInformation = new(db);
 
-                var (operacoes, eventos) = jsonInformation.ExtrairDadosArquivo(db, file);
+                var (operacoes, eventos) = jsonInformation.ExtrairDadosArquivo(file);
 
                 await db.Operacoes.AddRangeAsync(operacoes);
 

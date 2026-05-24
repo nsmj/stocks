@@ -16,9 +16,9 @@ public class JsonInformationTest
     [Fact]
     public void ExtrairEventosArquivoJson()
     {
-        var arquivoJson = new JsonInformation();
+        var arquivoJson = new JsonInformation(Db);
 
-        var (_, eventos) = arquivoJson.ExtrairDadosArquivo(Db, "files_test/Json/20200605.json");
+        var (_, eventos) = arquivoJson.ExtrairDadosArquivo("files_test/Json/20200605.json");
 
         var evento = eventos.First();
 
@@ -31,9 +31,9 @@ public class JsonInformationTest
     [Fact]
     public void ExtrairOperacoesArquivoJson()
     {
-        var arquivoJson = new JsonInformation();
+        var arquivoJson = new JsonInformation(Db);
 
-        var (operacoes, _) = arquivoJson.ExtrairDadosArquivo(Db, "files_test/Json/20200403.json");
+        var (operacoes, _) = arquivoJson.ExtrairDadosArquivo("files_test/Json/20200403.json");
 
         var operacao = operacoes.First();
 

@@ -4,14 +4,19 @@ using Stocks.Models;
 
 namespace Stocks.Extraction;
 
-public class JsonInformation
+public class JsonInformation(BancoContext db)
 {
+    //private readonly BancoContext db;
+
     public IList<Evento> Eventos { get; set; } = [];
     public IList<Operacao> Operacoes { get; set; } = [];
 
-    public (List<Operacao>, List<Evento>) ExtrairDadosArquivo(BancoContext db, string path)
+    //public JsonInformation(BancoContext db) => this.db = db;
+
+    public (List<Operacao>, List<Evento>) ExtrairDadosArquivo(string path)
     {
-        var jf = JsonSerializer.Deserialize<JsonInformation>(File.ReadAllText(path));
+        var json = File.ReadAllText(path);
+        var jf = JsonSerializer.Deserialize<JsonInformationDto>(json);
 
         List<Operacao> operacoes = [];
         List<Evento> eventos = [];
@@ -38,6 +43,12 @@ public class JsonInformation
         }
 
         return (operacoes, eventos);
+    }
+
+    private record JsonInformationDto
+    {
+        public IList<Evento> Eventos { get; init; } = [];
+        public IList<Operacao> Operacoes { get; init; } = [];
     }
 }
 

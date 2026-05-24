@@ -28,9 +28,9 @@ public class NotaCorretagemTest
     )]
     public async Task ExtrairDataNotaCorretagem(Corretora corretora, string filePath, string data)
     {
-        NotaCorretagem = new(corretora, Configuration);
+        NotaCorretagem = new(corretora, Configuration, Db);
 
-        await NotaCorretagem.ExtraiDadosDoArquivo(Db, filePath);
+        await NotaCorretagem.ExtraiDadosDoArquivo(filePath);
 
         Assert.Equal(data, NotaCorretagem.Data.ToString("dd/MM/yyyy"));
     }
@@ -55,9 +55,9 @@ public class NotaCorretagemTest
         int indiceOperacao
     )
     {
-        NotaCorretagem = new(corretora, Configuration);
+        NotaCorretagem = new(corretora, Configuration, Db);
 
-        await NotaCorretagem.ExtraiDadosDoArquivo(Db, filePath);
+        await NotaCorretagem.ExtraiDadosDoArquivo(filePath);
 
         var operacao = NotaCorretagem.Operacoes[indiceOperacao];
 
@@ -82,9 +82,9 @@ public class NotaCorretagemTest
         string tipoOperacao
     )
     {
-        NotaCorretagem = new NotaNegociacao(corretora, Configuration);
+        NotaCorretagem = new NotaNegociacao(corretora, Configuration, Db);
 
-        await NotaCorretagem.ExtraiDadosDoArquivo(Db, filePath);
+        await NotaCorretagem.ExtraiDadosDoArquivo(filePath);
 
         var irrf = NotaCorretagem.Irrfs.First();
 

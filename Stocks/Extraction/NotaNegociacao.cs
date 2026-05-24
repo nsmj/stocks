@@ -11,7 +11,8 @@ namespace Stocks.Extraction
     /// </summary>
     /// <param name="corretora"></param>
     /// <param name="configuration"></param>
-    public class NotaNegociacao(Corretora corretora, IConfiguration configuration)
+    /// <param name="db"></param>
+    public class NotaNegociacao(Corretora corretora, IConfiguration configuration, BancoContext db)
     {
         public List<Operacao> Operacoes { get; set; }
         public Irrf[] Irrfs { get; set; }
@@ -27,13 +28,9 @@ namespace Stocks.Extraction
         /// <summary>
         /// Extrai os dados do arquivo PDF da nota de negociação e retorna as operações e IRRFs.
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<(List<Operacao>, List<Irrf>)> ExtraiDadosDoArquivo(
-            BancoContext db,
-            string path
-        )
+        public async Task<(List<Operacao>, List<Irrf>)> ExtraiDadosDoArquivo(string path)
         {
             var dadosNota = ExtractPdfData(path, configuration["PDF_PASSWORD_1"]);
 
@@ -48,7 +45,7 @@ namespace Stocks.Extraction
             TotalTaxas = corretora.ExtrairTaxasNotaCorretagem(dadosNota);
             RatearTaxas();
 
-            Irrfs = await ExtrairIrrf(db, dadosNota);
+            Irrfs = await ExtrairIrrf(dadosNota);
 
             List<Operacao> operacoes = [];
             List<Irrf> irrfs = [];
@@ -133,10 +130,9 @@ namespace Stocks.Extraction
         /// <summary>
         /// Extrai os dados de IRRF da nota de negociação.
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="dadosNota"></param>
         /// <returns></returns>
-        private async Task<Irrf[]> ExtrairIrrf(BancoContext db, string[] dadosNota)
+        private async Task<Irrf[]> ExtrairIrrf(string[] dadosNota)
         {
             List<Irrf> irrfs = [];
 

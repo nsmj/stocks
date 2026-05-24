@@ -41,7 +41,7 @@ public class ArquivosController(
 
         try
         {
-            await fileProcessor.ProcessarArquivos(posicaoFimAnoBo, arquivo);
+            await fileProcessor.ProcessarArquivos(arquivo);
 
             return RedirectToAction("Index", "Home");
         }
