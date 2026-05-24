@@ -6,10 +6,7 @@ namespace Stocks.Bo;
 /// <summary>
 /// Resultado da consulta de lucro de vendas abaixo de 20 mil reais.
 /// </summary>
-public class LucroVendasAbaixo20kResult
-{
-    public decimal Valor { get; set; }
-}
+public record LucroVendasAbaixo20kResult(decimal Valor);
 
 /// <summary>
 /// Calcula o total de lucro de vendas abaixo de 20 mil reais em um ano específico.
