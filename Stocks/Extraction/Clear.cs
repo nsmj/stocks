@@ -193,7 +193,7 @@ namespace Stocks.Extraction
                         t.Nome == "FII"
                     );
                 }
-                else if (operacao.TipoOperacao?.Nome != "Day Trade")
+                else if (operacao.TipoOperacao is not { Nome: "Day Trade" })
                 {
                     // Caso já não tenha sido marcado como Day Trade mais acima pelas observações.
                     operacao.TipoOperacao = await db.TiposOperacao.SingleAsync(t =>

@@ -222,9 +222,9 @@ namespace Stocks.Extraction
                 .PosicoesFimAno.Where(p => p.AtivoId == ativoId && p.Ano == ano - 1)
                 .FirstOrDefaultAsync();
 
-            decimal precoMedio = ultimaPosicaoFimAno != null ? ultimaPosicaoFimAno.PrecoMedio : 0;
+            decimal precoMedio = ultimaPosicaoFimAno?.PrecoMedio ?? 0;
             decimal ultimoPMCompra = precoMedio;
-            int posicaoAnterior = ultimaPosicaoFimAno != null ? ultimaPosicaoFimAno.Posicao : 0;
+            int posicaoAnterior = ultimaPosicaoFimAno?.Posicao ?? 0;
             int posicaoAtual = 0;
 
             decimal precoMedioVenda;
@@ -267,7 +267,7 @@ namespace Stocks.Extraction
 
                         var operacao = db.Operacoes.Find(eventoOperacao.Id);
 
-                        if (operacao != null)
+                        if (operacao is not null)
                         {
                             // Atualiza o lucro líquido.
                             operacao.LucroLiquido = lucroLiquido;
@@ -327,7 +327,7 @@ namespace Stocks.Extraction
                 // Atualiza a posição e preço médio do ativo
                 var ativo = db.Ativos.Find(ativoId);
 
-                if (ativo != null)
+                if (ativo is not null)
                 {
                     ativo.Posicao = posicaoAtual;
                     ativo.PrecoMedio = ultimoPMCompra;
@@ -338,7 +338,7 @@ namespace Stocks.Extraction
             else
             {
                 // Se não houver operações ou eventos no ano, mantém a posição do ano anterior (se houver)
-                if (ultimaPosicaoFimAno != null && ultimaPosicaoFimAno.Posicao > 0)
+                if (ultimaPosicaoFimAno is { Posicao: > 0 })
                 {
                     PosicaoFimAno novaPosicao = new()
                     {

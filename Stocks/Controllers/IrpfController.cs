@@ -39,7 +39,7 @@ public class IrpfController(BancoContext db) : Controller
     {
         IrpfViewModel irpfViewModel = new();
 
-        if (ano != null)
+        if (ano is not null)
         {
             var dadosSwingTrade = await swingTradeObj.ResultadoOperacaoMesQuery(db);
             var dadosDayTrade = await dayTradeObj.ResultadoOperacaoMesQuery(db);

@@ -6,7 +6,7 @@
   <input type="submit" value="Pesquisa" class="btn btn-primary" />
 </form>
 
-@if (@Model.AnoFiltrado != null)
+@if (@Model.AnoFiltrado is not null)
 {
   <section style="text-align: right">
     <b>
@@ -132,7 +132,7 @@
       </tbody>
     </table>
 
-    @if (@Model.PosicoesFimAno != null && Model.PosicoesFimAno.Count() > 0)
+    @if (Model.PosicoesFimAno?.Any() == true)
     {
       <table class='table'>
         <thead>

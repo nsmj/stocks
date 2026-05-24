@@ -16,7 +16,7 @@ public class JsonInformation
         List<Operacao> operacoes = [];
         List<Evento> eventos = [];
 
-        if (jf != null)
+        if (jf is not null)
         {
             if (jf.Eventos is not null)
             {
