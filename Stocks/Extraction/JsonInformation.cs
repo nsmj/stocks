@@ -7,9 +7,6 @@ namespace Stocks.Extraction;
 
 public class JsonInformation(BancoContext db)
 {
-    public IList<Evento> Eventos { get; set; } = [];
-    public IList<Operacao> Operacoes { get; set; } = [];
-
     public async Task<DadosArquivoJsonDto> ExtrairDadosArquivo(string path)
     {
         var json = File.ReadAllText(path);
