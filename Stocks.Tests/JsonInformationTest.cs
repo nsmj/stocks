@@ -14,11 +14,13 @@ public class JsonInformationTest
     }
 
     [Fact]
-    public void ExtrairEventosArquivoJson()
+    public async Task ExtrairEventosArquivoJson()
     {
         var arquivoJson = new JsonInformation(Db);
 
-        var (_, eventos) = arquivoJson.ExtrairDadosArquivo("files_test/Json/20200605.json");
+        var eventos = (
+            await arquivoJson.ExtrairDadosArquivo("files_test/Json/20200605.json")
+        ).Eventos;
 
         var evento = eventos.First();
 
@@ -29,11 +31,13 @@ public class JsonInformationTest
     }
 
     [Fact]
-    public void ExtrairOperacoesArquivoJson()
+    public async Task ExtrairOperacoesArquivoJson()
     {
         var arquivoJson = new JsonInformation(Db);
 
-        var (operacoes, _) = arquivoJson.ExtrairDadosArquivo("files_test/Json/20200403.json");
+        var operacoes = (
+            await arquivoJson.ExtrairDadosArquivo("files_test/Json/20200403.json")
+        ).Operacoes;
 
         var operacao = operacoes.First();
 

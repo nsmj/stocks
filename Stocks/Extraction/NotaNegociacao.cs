@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
+using Stocks.DTOs;
 using Stocks.Models;
 
 namespace Stocks.Extraction
@@ -30,7 +31,7 @@ namespace Stocks.Extraction
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<(List<Operacao>, List<Irrf>)> ExtraiDadosDoArquivo(string path)
+        public async Task<DadosNotaNegociacaoDto> ExtraiDadosDoArquivo(string path)
         {
             var dadosNota = ExtractPdfData(path, configuration["PDF_PASSWORD_1"]);
 
@@ -68,7 +69,7 @@ namespace Stocks.Extraction
                 }
             }
 
-            return (operacoes, irrfs);
+            return new DadosNotaNegociacaoDto(operacoes, irrfs);
         }
 
         /// <summary>

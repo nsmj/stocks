@@ -1,19 +1,16 @@
 using System.Text.Json;
 using Stocks.Data;
+using Stocks.DTOs;
 using Stocks.Models;
 
 namespace Stocks.Extraction;
 
 public class JsonInformation(BancoContext db)
 {
-    //private readonly BancoContext db;
-
     public IList<Evento> Eventos { get; set; } = [];
     public IList<Operacao> Operacoes { get; set; } = [];
 
-    //public JsonInformation(BancoContext db) => this.db = db;
-
-    public (List<Operacao>, List<Evento>) ExtrairDadosArquivo(string path)
+    public async Task<DadosArquivoJsonDto> ExtrairDadosArquivo(string path)
     {
         var json = File.ReadAllText(path);
         var jf = JsonSerializer.Deserialize<JsonInformationDto>(json);
@@ -42,7 +39,7 @@ public class JsonInformation(BancoContext db)
             }
         }
 
-        return (operacoes, eventos);
+        return new DadosArquivoJsonDto(operacoes, eventos);
     }
 
     private record JsonInformationDto

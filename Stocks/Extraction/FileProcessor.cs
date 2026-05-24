@@ -48,9 +48,15 @@ namespace Stocks.Extraction
                 );
             }
 
-            ImportarNotasCorretagem(Path.Combine(caminhoUpload, pastaExtracao, "NotasCorretagem"));
+            var importarNotasCorretagemTask = ImportarNotasCorretagem(
+                Path.Combine(caminhoUpload, pastaExtracao, "NotasCorretagem")
+            );
 
-            ImportarArquivosJson(Path.Combine(caminhoUpload, pastaExtracao, "Json"));
+            var importarArquivosJsonTask = ImportarArquivosJson(
+                Path.Combine(caminhoUpload, pastaExtracao, "Json")
+            );
+
+            await Task.WhenAll(importarNotasCorretagemTask, importarArquivosJsonTask);
 
             await CalcularResultados();
 
@@ -85,9 +91,10 @@ namespace Stocks.Extraction
         /// Importa as notas de corretagem.
         /// </summary>
         /// <param name="caminhoArquivos"></param>
-        public async void ImportarNotasCorretagem(string caminhoArquivos)
+        public async Task ImportarNotasCorretagem(string caminhoArquivos)
         {
             string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
+            List<Task<DadosNotaNegociacaoDto>> retornoExtracaoDados = [];
 
             foreach (var file in files)
             {
@@ -101,13 +108,15 @@ namespace Stocks.Extraction
 
                 NotaNegociacao notaNegociacao = new(corretora, configuration, db);
 
-                var (operacoesInserir, irrfsInserir) = await notaNegociacao.ExtraiDadosDoArquivo(
-                    file
-                );
+                retornoExtracaoDados.Add(notaNegociacao.ExtraiDadosDoArquivo(file));
+            }
 
-                await db.Operacoes.AddRangeAsync(operacoesInserir);
+            var dados = await Task.WhenAll(retornoExtracaoDados);
 
-                await db.Irrfs.AddRangeAsync(irrfsInserir);
+            foreach (var dadosNota in dados)
+            {
+                await db.Operacoes.AddRangeAsync(dadosNota.Operacoes);
+                await db.Irrfs.AddRangeAsync(dadosNota.Irrfs);
             }
 
             await db.SaveChangesAsync();
@@ -117,19 +126,24 @@ namespace Stocks.Extraction
         /// Importa os arquivos JSON contendo operações e eventos.
         /// </summary>
         /// <param name="caminhoArquivos"></param>
-        public async void ImportarArquivosJson(string caminhoArquivos)
+        public async Task ImportarArquivosJson(string caminhoArquivos)
         {
             string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
+            List<Task<DadosArquivoJsonDto>> retornoExtracaoDados = [];
 
             foreach (var file in files)
             {
                 JsonInformation jsonInformation = new(db);
 
-                var (operacoes, eventos) = jsonInformation.ExtrairDadosArquivo(file);
+                retornoExtracaoDados.Add(jsonInformation.ExtrairDadosArquivo(file));
+            }
 
-                await db.Operacoes.AddRangeAsync(operacoes);
+            var dados = await Task.WhenAll(retornoExtracaoDados);
 
-                await db.Eventos.AddRangeAsync(eventos);
+            foreach (var dadosArquivoJson in dados)
+            {
+                await db.Operacoes.AddRangeAsync(dadosArquivoJson.Operacoes);
+                await db.Eventos.AddRangeAsync(dadosArquivoJson.Eventos);
             }
 
             await db.SaveChangesAsync();
