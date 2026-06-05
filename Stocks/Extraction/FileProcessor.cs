@@ -158,13 +158,17 @@ namespace Stocks.Extraction
             // Busca uma lista dos ativos que possuem operações
             var listaAtivos = await db.Operacoes.Select(op => op.AtivoId).Distinct().ToListAsync();
 
+            List<Task> tasks = [];
+
             for (int anoAtual = primeiroAnoTransacoes; anoAtual <= anoFinal; anoAtual++)
             {
                 foreach (var ativoId in listaAtivos)
                 {
-                    CalcularResultadosAtivoAno(anoAtual, ativoId);
+                    tasks.Add(CalcularResultadosAtivoAno(anoAtual, ativoId));
                 }
             }
+
+            await Task.WhenAll(tasks);
         }
 
         /// <summary>
@@ -172,7 +176,7 @@ namespace Stocks.Extraction
         /// </summary>
         /// <param name="ano"></param>
         /// <param name="ativoId"></param>
-        public async void CalcularResultadosAtivoAno(int ano, int ativoId)
+        public async Task CalcularResultadosAtivoAno(int ano, int ativoId)
         {
             var anoInicio = $"{ano}-01-01";
             var anoFim = $"{ano}-12-31";
