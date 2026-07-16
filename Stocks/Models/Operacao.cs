@@ -47,7 +47,7 @@ public partial class Operacao
     /// Completa os campos necessários da entidade Operacao.
     /// </summary>
     /// <param name="db"></param>
-    public async void CompletarCampos(BancoContext db)
+    public async void CompletarCamposAsync(BancoContext db)
     {
         Data = DateTime.Parse(DataOperacao);
 

@@ -31,7 +31,7 @@ namespace Stocks.Extraction
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<DadosNotaNegociacaoDto> ExtraiDadosDoArquivo(string path)
+        public async Task<DadosNotaNegociacaoDto> ExtraiDadosDoArquivoAsync(string path)
         {
             var dadosNota = ExtractPdfData(path, configuration["PDF_PASSWORD_1"]);
 

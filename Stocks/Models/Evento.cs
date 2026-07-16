@@ -39,7 +39,7 @@ public partial class Evento
     /// Completa os campos necessários da entidade Evento.
     /// </summary>
     /// <param name="db"></param>
-    public async void CompletarCampos(BancoContext db)
+    public async void CompletarCamposAsync(BancoContext db)
     {
         Data = DateTime.Parse(DataEvento);
 

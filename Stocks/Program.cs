@@ -14,11 +14,12 @@ builder.Services.AddDbContext<BancoContext>(options =>
     options.UseSqlite("Data Source=Data/Banco.db")
 );
 
-builder.Services.AddScoped<LucroVendasAbaixo20kBo>();
-builder.Services.AddScoped<IrrfBo>();
+builder.Services.AddScoped<LucroVendasAbaixo20kQuery>();
+builder.Services.AddScoped<IrrfQuery>();
+builder.Services.AddScoped<IrrfService>();
 builder.Services.AddScoped<IrpfRowsBuilder>();
-builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoBo>();
-builder.Services.AddScoped<PosicaoFimAnoBo>();
+builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoService>();
+builder.Services.AddScoped<PosicaoFimAnoQuery>();
 builder.Services.AddScoped<FileProcessor>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");

@@ -30,7 +30,7 @@ public class NotaCorretagemTest
     {
         NotaCorretagem = new(corretora, Configuration, Db);
 
-        await NotaCorretagem.ExtraiDadosDoArquivo(filePath);
+        await NotaCorretagem.ExtraiDadosDoArquivoAsync(filePath);
 
         Assert.Equal(data, NotaCorretagem.Data.ToString("dd/MM/yyyy"));
     }
@@ -57,7 +57,7 @@ public class NotaCorretagemTest
     {
         NotaCorretagem = new(corretora, Configuration, Db);
 
-        await NotaCorretagem.ExtraiDadosDoArquivo(filePath);
+        await NotaCorretagem.ExtraiDadosDoArquivoAsync(filePath);
 
         var operacao = NotaCorretagem.Operacoes[indiceOperacao];
 
@@ -84,7 +84,7 @@ public class NotaCorretagemTest
     {
         NotaCorretagem = new NotaNegociacao(corretora, Configuration, Db);
 
-        await NotaCorretagem.ExtraiDadosDoArquivo(filePath);
+        await NotaCorretagem.ExtraiDadosDoArquivoAsync(filePath);
 
         var irrf = NotaCorretagem.Irrfs.First();
 

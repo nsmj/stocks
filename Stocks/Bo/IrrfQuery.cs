@@ -11,9 +11,9 @@ public class IrrfResult
     public string? NomeTipoOperacao { get; set; }
 }
 
-public class IrrfBo(BancoContext db)
+public class IrrfQuery(BancoContext db)
 {
-    public async Task<List<IrrfResult>> IrrfQuery(string ano)
+    public async Task<List<IrrfResult>> ExecuteAsync(string ano)
     {
         var result = db.Database.SqlQuery<IrrfResult>(
             $@"
@@ -25,22 +25,5 @@ public class IrrfBo(BancoContext db)
         );
 
         return await result.ToListAsync();
-    }
-
-    public void InjetarValoresIrrf(
-        Dictionary<int, IrpfRowDTO> irpfRows,
-        List<IrrfResult> irrfResults,
-        string nomeTipoOperacao
-    )
-    {
-        foreach (var irrfResult in irrfResults)
-        {
-            if (irrfResult.NomeTipoOperacao != nomeTipoOperacao)
-            {
-                continue;
-            }
-
-            irpfRows[irrfResult.Mes].Irrf = irrfResult.Valor;
-        }
     }
 }

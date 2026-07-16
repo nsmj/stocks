@@ -19,7 +19,7 @@ public class JsonInformationTest
         var arquivoJson = new JsonInformation(Db);
 
         var eventos = (
-            await arquivoJson.ExtrairDadosArquivo("files_test/Json/20200605.json")
+            await arquivoJson.ExtrairDadosArquivoAsync("files_test/Json/20200605.json")
         ).Eventos;
 
         var evento = eventos.First();
@@ -36,7 +36,7 @@ public class JsonInformationTest
         var arquivoJson = new JsonInformation(Db);
 
         var operacoes = (
-            await arquivoJson.ExtrairDadosArquivo("files_test/Json/20200403.json")
+            await arquivoJson.ExtrairDadosArquivoAsync("files_test/Json/20200403.json")
         ).Operacoes;
 
         var operacao = operacoes.First();

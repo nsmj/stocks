@@ -13,7 +13,7 @@ namespace Stocks.Controllers;
 /// <param name="fileProcessor"></param>
 public class ArquivosController(
     ILogger<ArquivosController> logger,
-    PosicaoFimAnoBo posicaoFimAnoBo,
+    PosicaoFimAnoQuery posicaoFimAnoBo,
     FileProcessor fileProcessor
 ) : Controller
 {
@@ -32,7 +32,7 @@ public class ArquivosController(
     /// <param name="arquivo"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> Importar(IFormFile arquivo)
+    public async Task<IActionResult> ImportarAsync(IFormFile arquivo)
     {
         if (arquivo == null || arquivo.Length == 0)
         {
@@ -41,7 +41,7 @@ public class ArquivosController(
 
         try
         {
-            await fileProcessor.ProcessarArquivos(arquivo);
+            await fileProcessor.ProcessarArquivosAsync(arquivo);
 
             return RedirectToAction("Index", "Home");
         }

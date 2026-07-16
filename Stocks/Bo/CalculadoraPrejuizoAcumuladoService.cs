@@ -5,7 +5,7 @@ namespace Stocks.Bo;
 /// <summary>
 /// Calculadora de prejuízo acumulado para operações financeiras.
 /// </summary>
-public class CalculadoraPrejuizoAcumuladoBo
+public class CalculadoraPrejuizoAcumuladoService
 {
     /// <summary>
     /// Injeta o prejuízo acumulado nas operações financeiras para o ano especificado.

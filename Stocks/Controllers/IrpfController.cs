@@ -13,11 +13,12 @@ public class IrpfController(
     [FromKeyedServices("SwingTrade")] IOperacaoListable swingTradeObj,
     [FromKeyedServices("DayTrade")] IOperacaoListable dayTradeObj,
     [FromKeyedServices("Fii")] IOperacaoListable fiiObj,
-    LucroVendasAbaixo20kBo lucroVendasAbaixo20kBo,
-    IrrfBo irrfBo,
-    PosicaoFimAnoBo posicaoFimAnoBo,
+    LucroVendasAbaixo20kQuery lucroVendasAbaixo20kQuery,
+    IrrfQuery irrfQuery,
+    IrrfService irrfService,
+    PosicaoFimAnoQuery posicaoFimAnoQuery,
     IrpfRowsBuilder irpfRowsBuilder,
-    CalculadoraPrejuizoAcumuladoBo calculadoraPrejuizoAcumuladoBo
+    CalculadoraPrejuizoAcumuladoService calculadoraPrejuizoAcumuladoBo
 ) : Controller
 {
     /// <summary>
@@ -32,21 +33,25 @@ public class IrpfController(
 
         if (ano is not null)
         {
-            var dadosSwingTrade = await swingTradeObj.ResultadoOperacaoMesQuery();
-            var dadosDayTrade = await dayTradeObj.ResultadoOperacaoMesQuery();
-            var dadosFii = await fiiObj.ResultadoOperacaoMesQuery();
+            var dadosSwingTrade = await swingTradeObj.ResultadoOperacaoMesQueryAsync();
+            var dadosDayTrade = await dayTradeObj.ResultadoOperacaoMesQueryAsync();
+            var dadosFii = await fiiObj.ResultadoOperacaoMesQueryAsync();
 
             irpfViewModel.AnoFiltrado = ano;
-            irpfViewModel.LucroVendasAbaixo20k =
-                await lucroVendasAbaixo20kBo.LucroVendasAbaixo20kQuery(ano);
+            irpfViewModel.LucroVendasAbaixo20k = await lucroVendasAbaixo20kQuery.ExecuteAsync(ano);
             irpfViewModel.SwingTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosSwingTrade, ano);
             irpfViewModel.DayTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosDayTrade, ano);
             irpfViewModel.FiiRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosFii, ano);
 
-            var irrfResults = await irrfBo.IrrfQuery(ano);
-            irrfBo.InjetarValoresIrrf(irpfViewModel.SwingTradeRows, irrfResults, "Swing Trade");
-            irrfBo.InjetarValoresIrrf(irpfViewModel.DayTradeRows, irrfResults, "Day Trade");
-            irrfBo.InjetarValoresIrrf(irpfViewModel.FiiRows, irrfResults, "FII");
+            var irrfResults = await irrfQuery.ExecuteAsync(ano);
+
+            irrfService.InjetarValoresIrrf(
+                irpfViewModel.SwingTradeRows,
+                irrfResults,
+                "Swing Trade"
+            );
+            irrfService.InjetarValoresIrrf(irpfViewModel.DayTradeRows, irrfResults, "Day Trade");
+            irrfService.InjetarValoresIrrf(irpfViewModel.FiiRows, irrfResults, "FII");
 
             irpfViewModel.PrejuizoAcumuladoAnoAnoAnteriorSwingTrade =
                 calculadoraPrejuizoAcumuladoBo.InjetarPrejuizoAcumulado(
@@ -69,7 +74,7 @@ public class IrpfController(
                     ano
                 );
 
-            var PosicoesFimAno = await posicaoFimAnoBo.PosicaoFimAnoQuery(ano);
+            var PosicoesFimAno = await posicaoFimAnoQuery.ExecuteAsync(ano);
             irpfViewModel.PosicoesFimAno = [.. PosicoesFimAno];
         }
 

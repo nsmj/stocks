@@ -24,7 +24,7 @@ namespace Stocks.Extraction
         /// <param name="arquivo"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task ProcessarArquivos(IFormFile arquivo)
+        public async Task ProcessarArquivosAsync(IFormFile arquivo)
         {
             DbConnection.Reset();
 
@@ -35,7 +35,7 @@ namespace Stocks.Extraction
                     "Configuration value for 'CaminhoUpload' cannot be null."
                 );
 
-            string caminhoArquivo = await UploadArquivo(arquivo, caminhoUpload);
+            string caminhoArquivo = await UploadArquivoAsync(arquivo, caminhoUpload);
             string pastaExtracao = "ArquivosExtracao";
 
             if (
@@ -48,17 +48,17 @@ namespace Stocks.Extraction
                 );
             }
 
-            var importarNotasCorretagemTask = ImportarNotasCorretagem(
+            var importarNotasCorretagemTask = ImportarNotasCorretagemAsync(
                 Path.Combine(caminhoUpload, pastaExtracao, "NotasCorretagem")
             );
 
-            var importarArquivosJsonTask = ImportarArquivosJson(
+            var importarArquivosJsonTask = ImportarArquivosJsonAsync(
                 Path.Combine(caminhoUpload, pastaExtracao, "Json")
             );
 
             await Task.WhenAll(importarNotasCorretagemTask, importarArquivosJsonTask);
 
-            await CalcularResultados();
+            await CalcularResultadosAsync();
 
             File.Delete(caminhoArquivo);
             Directory.Delete(Path.Combine(caminhoUpload, pastaExtracao), true);
@@ -71,7 +71,7 @@ namespace Stocks.Extraction
         /// <param name="caminhoDestino"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async Task<string> UploadArquivo(IFormFile arquivo, string caminhoDestino)
+        public async Task<string> UploadArquivoAsync(IFormFile arquivo, string caminhoDestino)
         {
             if (arquivo == null || arquivo.Length == 0)
             {
@@ -91,7 +91,7 @@ namespace Stocks.Extraction
         /// Importa as notas de corretagem.
         /// </summary>
         /// <param name="caminhoArquivos"></param>
-        public async Task ImportarNotasCorretagem(string caminhoArquivos)
+        public async Task ImportarNotasCorretagemAsync(string caminhoArquivos)
         {
             string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
             List<Task<DadosNotaNegociacaoDto>> retornoExtracaoDados = [];
@@ -108,7 +108,7 @@ namespace Stocks.Extraction
 
                 NotaNegociacao notaNegociacao = new(corretora, configuration, db);
 
-                retornoExtracaoDados.Add(notaNegociacao.ExtraiDadosDoArquivo(file));
+                retornoExtracaoDados.Add(notaNegociacao.ExtraiDadosDoArquivoAsync(file));
             }
 
             var dados = await Task.WhenAll(retornoExtracaoDados);
@@ -126,7 +126,7 @@ namespace Stocks.Extraction
         /// Importa os arquivos JSON contendo operações e eventos.
         /// </summary>
         /// <param name="caminhoArquivos"></param>
-        public async Task ImportarArquivosJson(string caminhoArquivos)
+        public async Task ImportarArquivosJsonAsync(string caminhoArquivos)
         {
             string[] files = Directory.GetFiles(caminhoArquivos, "*", SearchOption.AllDirectories);
             List<Task<DadosArquivoJsonDto>> retornoExtracaoDados = [];
@@ -135,7 +135,7 @@ namespace Stocks.Extraction
             {
                 JsonInformation jsonInformation = new(db);
 
-                retornoExtracaoDados.Add(jsonInformation.ExtrairDadosArquivo(file));
+                retornoExtracaoDados.Add(jsonInformation.ExtrairDadosArquivoAsync(file));
             }
 
             var dados = await Task.WhenAll(retornoExtracaoDados);
@@ -149,7 +149,7 @@ namespace Stocks.Extraction
             await db.SaveChangesAsync();
         }
 
-        public async Task CalcularResultados()
+        public async Task CalcularResultadosAsync()
         {
             var primeiroAnoTransacoes = await db.Operacoes.MinAsync(op => op.Data.Year);
 
@@ -164,7 +164,7 @@ namespace Stocks.Extraction
             {
                 foreach (var ativoId in listaAtivos)
                 {
-                    tasks.Add(CalcularResultadosAtivoAno(anoAtual, ativoId));
+                    tasks.Add(CalcularResultadosAtivoAnoAsync(anoAtual, ativoId));
                 }
             }
 
@@ -176,7 +176,7 @@ namespace Stocks.Extraction
         /// </summary>
         /// <param name="ano"></param>
         /// <param name="ativoId"></param>
-        public async Task CalcularResultadosAtivoAno(int ano, int ativoId)
+        public async Task CalcularResultadosAtivoAnoAsync(int ano, int ativoId)
         {
             var anoInicio = $"{ano}-01-01";
             var anoFim = $"{ano}-12-31";

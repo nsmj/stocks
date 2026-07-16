@@ -5,5 +5,5 @@ namespace Stocks.Interfaces;
 
 public interface IOperacaoListable
 {
-    public Task<List<ResultadoOperacaoMesDTO>> ResultadoOperacaoMesQuery();
+    public Task<List<ResultadoOperacaoMesDTO>> ResultadoOperacaoMesQueryAsync();
 }

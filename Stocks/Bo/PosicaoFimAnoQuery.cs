@@ -25,11 +25,11 @@ public record PosicaoFimAnoResult(
     string TipoAtivo
 );
 
-public class PosicaoFimAnoBo(BancoContext db)
+public class PosicaoFimAnoQuery(BancoContext db)
 {
-    public async Task<IEnumerable<PosicaoFimAnoViewModel>> PosicaoFimAnoQuery(string ano)
+    public async Task<IEnumerable<PosicaoFimAnoViewModel>> ExecuteAsync(string ano)
     {
-        var resultados = await PosicaoFimAnoResults(ano);
+        var resultados = await PosicaoFimAnoResultsAsync(ano);
 
         ICollection<PosicaoFimAnoViewModel> posicoesFimAno = [];
 
@@ -59,7 +59,7 @@ public class PosicaoFimAnoBo(BancoContext db)
         return posicoesFimAno;
     }
 
-    private async Task<List<PosicaoFimAnoResult>> PosicaoFimAnoResults(string ano)
+    private async Task<List<PosicaoFimAnoResult>> PosicaoFimAnoResultsAsync(string ano)
     {
         return await db
             .Database.SqlQuery<PosicaoFimAnoResult>(

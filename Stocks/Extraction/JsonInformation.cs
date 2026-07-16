@@ -7,7 +7,7 @@ namespace Stocks.Extraction;
 
 public class JsonInformation(BancoContext db)
 {
-    public async Task<DadosArquivoJsonDto> ExtrairDadosArquivo(string path)
+    public async Task<DadosArquivoJsonDto> ExtrairDadosArquivoAsync(string path)
     {
         var json = File.ReadAllText(path);
         var jf = JsonSerializer.Deserialize<JsonInformationDto>(json);
@@ -21,7 +21,7 @@ public class JsonInformation(BancoContext db)
             {
                 foreach (Evento evento in jf.Eventos)
                 {
-                    evento.CompletarCampos(db);
+                    evento.CompletarCamposAsync(db);
                     eventos.Add(evento);
                 }
             }
@@ -30,7 +30,7 @@ public class JsonInformation(BancoContext db)
             {
                 foreach (Operacao operacao in jf.Operacoes)
                 {
-                    operacao.CompletarCampos(db);
+                    operacao.CompletarCamposAsync(db);
                     operacoes.Add(operacao);
                 }
             }

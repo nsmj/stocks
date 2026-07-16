@@ -7,7 +7,7 @@ namespace Stocks.Models.TiposOperacao;
 
 public class DayTrade(BancoContext db) : TipoOperacao, IOperacaoListable
 {
-    public async Task<List<ResultadoOperacaoMesDTO>> ResultadoOperacaoMesQuery()
+    public async Task<List<ResultadoOperacaoMesDTO>> ResultadoOperacaoMesQueryAsync()
     {
         return await db
             .Database.SqlQuery<ResultadoOperacaoMesDTO>(
