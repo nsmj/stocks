@@ -4,10 +4,7 @@ namespace Stocks.Bo;
 
 public class IrpfRowsBuilder
 {
-    public Dictionary<int, IrpfRowDTO> BuildIrpfRowsBo(
-        List<ResultadoOperacaoMesDTO> results,
-        string ano
-    )
+    public Dictionary<int, IrpfRowDTO> Build(List<ResultadoOperacaoMesDTO> results, string ano)
     {
         Dictionary<int, IrpfRowDTO> irpfRows = [];
 

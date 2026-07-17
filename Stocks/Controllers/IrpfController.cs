@@ -39,9 +39,9 @@ public class IrpfController(
 
             irpfViewModel.AnoFiltrado = ano;
             irpfViewModel.LucroVendasAbaixo20k = await lucroVendasAbaixo20kQuery.ExecuteAsync(ano);
-            irpfViewModel.SwingTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosSwingTrade, ano);
-            irpfViewModel.DayTradeRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosDayTrade, ano);
-            irpfViewModel.FiiRows = irpfRowsBuilder.BuildIrpfRowsBo(dadosFii, ano);
+            irpfViewModel.SwingTradeRows = irpfRowsBuilder.Build(dadosSwingTrade, ano);
+            irpfViewModel.DayTradeRows = irpfRowsBuilder.Build(dadosDayTrade, ano);
+            irpfViewModel.FiiRows = irpfRowsBuilder.Build(dadosFii, ano);
 
             var irrfResults = await irrfQuery.ExecuteAsync(ano);
 
