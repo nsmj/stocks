@@ -72,6 +72,7 @@ namespace Stocks.Extraction
             return new DadosNotaNegociacaoDto(operacoes, irrfs);
         }
 
+        #region Métodos privados.
         /// <summary>
         /// Extrai os dados do PDF da nota de negociação.
         /// </summary>
@@ -249,5 +250,6 @@ namespace Stocks.Extraction
                 Operacoes[i].Taxas = Math.Round(TotalTaxas * percentualOperacao, 2);
             }
         }
+        #endregion
     }
 }
