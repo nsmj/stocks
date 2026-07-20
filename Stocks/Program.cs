@@ -17,10 +17,13 @@ builder.Services.AddDbContext<BancoContext>(options =>
 builder.Services.AddScoped<LucroVendasAbaixo20kQuery>();
 builder.Services.AddScoped<IrrfQuery>();
 builder.Services.AddScoped<IrrfService>();
+builder.Services.AddScoped<PdfExtractor>();
 builder.Services.AddScoped<IrpfRowsBuilder>();
 builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoService>();
 builder.Services.AddScoped<PosicaoFimAnoQuery>();
-builder.Services.AddScoped<FileProcessor>();
+builder.Services.AddScoped<ImportarArquivosUseCase>();
+builder.Services.AddScoped<FileService>();
+builder.Services.AddScoped<CalcularResultadosService>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
 builder.Services.AddKeyedScoped<IOperacaoListable, DayTrade>("DayTrade");

@@ -14,7 +14,7 @@ namespace Stocks.Controllers;
 public class ArquivosController(
     ILogger<ArquivosController> logger,
     PosicaoFimAnoQuery posicaoFimAnoBo,
-    FileProcessor fileProcessor
+    [FromServices] ImportarArquivosUseCase importarArquivosUseCase
 ) : Controller
 {
     /// <summary>
@@ -41,7 +41,7 @@ public class ArquivosController(
 
         try
         {
-            await fileProcessor.ProcessarArquivosAsync(arquivo);
+            await importarArquivosUseCase.ExecuteAsync(arquivo);
 
             return RedirectToAction("Index", "Home");
         }

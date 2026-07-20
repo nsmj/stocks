@@ -9,12 +9,14 @@ public class NotaCorretagemTest
 {
     protected IConfigurationRoot Configuration { get; }
     protected BancoContext Db { get; }
+    protected PdfExtractor PdfExtractor { get; }
     protected NotaNegociacao? NotaCorretagem { get; set; }
 
     public NotaCorretagemTest()
     {
         Configuration = Utils.GetConfiguration();
         Db = Utils.GetDbContext();
+        PdfExtractor = new PdfExtractor();
     }
 
     [Theory]
@@ -28,7 +30,7 @@ public class NotaCorretagemTest
     )]
     public async Task ExtrairDataNotaCorretagem(Corretora corretora, string filePath, string data)
     {
-        NotaCorretagem = new(corretora, Configuration, Db);
+        NotaCorretagem = new(corretora, Configuration, Db, PdfExtractor);
 
         await NotaCorretagem.ExtraiDadosDoArquivoAsync(filePath);
 
@@ -55,7 +57,7 @@ public class NotaCorretagemTest
         int indiceOperacao
     )
     {
-        NotaCorretagem = new(corretora, Configuration, Db);
+        NotaCorretagem = new(corretora, Configuration, Db, PdfExtractor);
 
         await NotaCorretagem.ExtraiDadosDoArquivoAsync(filePath);
 
@@ -82,7 +84,7 @@ public class NotaCorretagemTest
         string tipoOperacao
     )
     {
-        NotaCorretagem = new NotaNegociacao(corretora, Configuration, Db);
+        NotaCorretagem = new NotaNegociacao(corretora, Configuration, Db, PdfExtractor);
 
         await NotaCorretagem.ExtraiDadosDoArquivoAsync(filePath);
 

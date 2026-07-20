@@ -13,7 +13,12 @@ namespace Stocks.Extraction
     /// <param name="corretora"></param>
     /// <param name="configuration"></param>
     /// <param name="db"></param>
-    public class NotaNegociacao(Corretora corretora, IConfiguration configuration, BancoContext db)
+    public class NotaNegociacao(
+        Corretora corretora,
+        IConfiguration configuration,
+        BancoContext db,
+        PdfExtractor pdfExtractor
+    )
     {
         public List<Operacao> Operacoes { get; set; }
         public Irrf[] Irrfs { get; set; }
@@ -33,11 +38,11 @@ namespace Stocks.Extraction
         /// <returns></returns>
         public async Task<DadosNotaNegociacaoDto> ExtraiDadosDoArquivoAsync(string path)
         {
-            var dadosNota = ExtractPdfData(path, configuration["PDF_PASSWORD_1"]);
+            var dadosNota = pdfExtractor.ExtrairDadosPdf(path, configuration["PDF_PASSWORD_1"]);
 
             if (dadosNota.Length == 0)
             {
-                dadosNota = ExtractPdfData(path, configuration["PDF_PASSWORD_2"]);
+                dadosNota = pdfExtractor.ExtrairDadosPdf(path, configuration["PDF_PASSWORD_2"]);
             }
 
             this.Data = corretora.ExtrairDataNotaCorretagem(dadosNota);
@@ -73,61 +78,6 @@ namespace Stocks.Extraction
         }
 
         #region Métodos privados.
-        /// <summary>
-        /// Extrai os dados do PDF da nota de negociação.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="senhaArquivo"></param>
-        /// <returns></returns>
-        /// <exception cref="FileNotFoundException"></exception>
-        /// <exception cref="PlatformNotSupportedException"></exception>
-        private string[] ExtractPdfData(string path, string senhaArquivo)
-        {
-            string mutoolPath;
-            string arguments;
-            string fileName = Path.GetFileName(path).Replace(".pdf", ".txt");
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                mutoolPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mutool.exe");
-                if (!File.Exists(mutoolPath))
-                {
-                    throw new FileNotFoundException("O arquivo mutool.exe não foi encontrado.");
-                }
-                arguments = $"convert -p {senhaArquivo} -F text -o {fileName} {path}";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                mutoolPath = "/usr/bin/mutool";
-                if (!File.Exists(mutoolPath))
-                {
-                    throw new FileNotFoundException("O arquivo mutool não foi encontrado.");
-                }
-                arguments = $"-c \"mutool convert -p {senhaArquivo} -F text -o {fileName} {path}\"";
-            }
-            else
-            {
-                throw new PlatformNotSupportedException("Sistema operacional não suportado.");
-            }
-
-            using (System.Diagnostics.Process pProcess = new())
-            {
-                pProcess.StartInfo.FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                    ? mutoolPath
-                    : "/bin/bash";
-                pProcess.StartInfo.Arguments = arguments;
-                pProcess.StartInfo.UseShellExecute = false;
-                pProcess.StartInfo.RedirectStandardOutput = true;
-                pProcess.StartInfo.RedirectStandardError = true;
-                pProcess.Start();
-                pProcess.WaitForExit();
-            }
-
-            var dadosNota = File.ReadAllLines(fileName);
-            File.Delete(fileName);
-
-            return dadosNota;
-        }
 
         /// <summary>
         /// Extrai os dados de IRRF da nota de negociação.
