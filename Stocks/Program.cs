@@ -24,7 +24,6 @@ builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoService>();
 builder.Services.AddScoped<PosicaoFimAnoQuery>();
 builder.Services.AddScoped<EstrategiaImportacaoFactory>();
 builder.Services.AddScoped<ImportarArquivosUseCase>();
-builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<CalcularResultadosService>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
