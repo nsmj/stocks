@@ -106,22 +106,22 @@ namespace Stocks.Extraction
                         .Ativos.Where(a => a.Codigo == codigo)
                         .FirstOrDefaultAsync();
 
-                    if (ativo == null)
-                    {
-                        await db.Ativos.AddAsync(
-                            new Ativo()
-                            {
-                                Codigo = codigo,
-                                Nome = codigo,
-                                DescricaoNota = codigo,
-                                TipoAtivo = tipoAtivo,
-                                TipoAcao = tipoAcao,
-                                Cnpj = "",
-                            }
-                        );
+                    // if (ativo == null)
+                    // {
+                    //     await db.Ativos.AddAsync(
+                    //         new Ativo()
+                    //         {
+                    //             Codigo = codigo,
+                    //             Nome = codigo,
+                    //             DescricaoNota = codigo,
+                    //             TipoAtivo = tipoAtivo,
+                    //             TipoAcao = tipoAcao,
+                    //             Cnpj = "",
+                    //         }
+                    //     );
 
-                        await db.SaveChangesAsync();
-                    }
+                    //     await db.SaveChangesAsync();
+                    // }
                 }
 
                 // Compra.

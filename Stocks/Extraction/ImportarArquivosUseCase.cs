@@ -1,12 +1,12 @@
 using System.IO.Compression;
 using Microsoft.AspNetCore.Mvc;
+using Stocks.Extraction.Strategies;
 using Stocks.Models;
 
 namespace Stocks.Extraction;
 
 public class ImportarArquivosUseCase(
-    [FromServices] PdfExtractor pdfExtractor,
-    [FromServices] FileService fileService,
+    [FromServices] EstrategiaImportacaoFactory estrategiaFactory,
     [FromServices] CalcularResultadosService calcularResultadosService,
     [FromServices] IConfiguration configuration
 )
@@ -24,26 +24,20 @@ public class ImportarArquivosUseCase(
 
         string caminhoArquivo = await UploadArquivoAsync(arquivo, caminhoUpload);
         string pastaExtracao = "ArquivosExtracao";
+        string caminhoExtracao = Path.Combine(caminhoUpload, pastaExtracao);
 
         if (Path.GetExtension(caminhoArquivo).Equals(".zip", StringComparison.OrdinalIgnoreCase))
         {
-            ZipFile.ExtractToDirectory(caminhoArquivo, Path.Combine(caminhoUpload, pastaExtracao));
+            ZipFile.ExtractToDirectory(caminhoArquivo, caminhoExtracao);
         }
 
-        var importarNotasCorretagemTask = fileService.ImportarNotasCorretagemAsync(
-            Path.Combine(caminhoUpload, pastaExtracao, "NotasCorretagem")
-        );
-
-        var importarArquivosJsonTask = fileService.ImportarArquivosJsonAsync(
-            Path.Combine(caminhoUpload, pastaExtracao, "Json")
-        );
-
-        await Task.WhenAll(importarNotasCorretagemTask, importarArquivosJsonTask);
+        // Detecta as pastas dentro da extração e executa as estratégias correspondentes
+        await ExecutarEstrategiasAsync(caminhoExtracao, estrategiaFactory);
 
         await calcularResultadosService.CalcularResultadosAsync();
 
         File.Delete(caminhoArquivo);
-        Directory.Delete(Path.Combine(caminhoUpload, pastaExtracao), true);
+        Directory.Delete(caminhoExtracao, true);
     }
 
     #region Métodos privados.
@@ -69,5 +63,44 @@ public class ImportarArquivosUseCase(
 
         return caminhoArquivo;
     }
+
+    /// <summary>
+    /// Detecta as pastas na extração e executa as estratégias apropriadas.
+    /// </summary>
+    private async Task ExecutarEstrategiasAsync(
+        string caminhoExtracao,
+        EstrategiaImportacaoFactory factory
+    )
+    {
+        if (!Directory.Exists(caminhoExtracao))
+        {
+            return;
+        }
+
+        // Obtém todas as pastas dentro de ArquivosExtracao
+        string[] pastas = Directory.GetDirectories(caminhoExtracao);
+        List<Task> tarefasImportacao = [];
+
+        foreach (var pastaCompleta in pastas)
+        {
+            string nomePasta = Path.GetFileName(pastaCompleta);
+
+            // Verifica se existe uma estratégia para esta pasta
+            var estrategia = factory.CriarEstrategia(nomePasta);
+
+            if (estrategia is not null && Directory.Exists(pastaCompleta))
+            {
+                // Adiciona a tarefa de importação à lista
+                tarefasImportacao.Add(estrategia.ExecutarAsync(pastaCompleta));
+            }
+        }
+
+        // Executa todas as estratégias em paralelo
+        if (tarefasImportacao.Count > 0)
+        {
+            await Task.WhenAll(tarefasImportacao);
+        }
+    }
+
     #endregion
 }
