@@ -1,17 +1,17 @@
 using System.IO.Compression;
-using Microsoft.AspNetCore.Mvc;
 using Stocks.Extraction.Strategies;
+using Stocks.Interfaces;
 using Stocks.Models;
 
 namespace Stocks.Extraction;
 
 public class ImportarArquivosUseCase(
-    [FromServices] EstrategiaImportacaoFactory estrategiaFactory,
-    [FromServices] CalcularResultadosService calcularResultadosService,
-    [FromServices] IConfiguration configuration
-)
+    EstrategiaImportacaoFactory estrategiaFactory,
+    CalcularResultadosUseCase calcularResultadosUseCase,
+    IConfiguration configuration
+) : IImportarArquivosUseCase
 {
-    public async Task ExecuteAsync(IFormFile arquivo)
+    public async Task ExecutarAsync(IFormFile arquivo)
     {
         DbConnection.Reset();
 
@@ -34,7 +34,7 @@ public class ImportarArquivosUseCase(
         // Detecta as pastas dentro da extração e executa as estratégias correspondentes
         await ExecutarEstrategiasAsync(caminhoExtracao, estrategiaFactory);
 
-        await calcularResultadosService.CalcularResultadosAsync();
+        await calcularResultadosUseCase.ExecutarAsync();
 
         File.Delete(caminhoArquivo);
         Directory.Delete(caminhoExtracao, true);

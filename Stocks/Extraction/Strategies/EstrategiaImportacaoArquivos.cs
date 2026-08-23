@@ -1,3 +1,5 @@
+using Stocks.Interfaces;
+
 namespace Stocks.Extraction.Strategies;
 
 /// <summary>

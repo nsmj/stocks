@@ -10,7 +10,7 @@ public class JsonInformation(BancoContext db)
     public async Task<DadosArquivoJsonDto> ExtrairDadosArquivoAsync(string path)
     {
         var json = File.ReadAllText(path);
-        var jf = JsonSerializer.Deserialize<JsonInformationDto>(json);
+        var jf = JsonSerializer.Deserialize<DadosArquivoJsonDto>(json);
 
         List<Operacao> operacoes = [];
         List<Evento> eventos = [];
@@ -38,40 +38,4 @@ public class JsonInformation(BancoContext db)
 
         return new DadosArquivoJsonDto(operacoes, eventos);
     }
-
-    private record JsonInformationDto
-    {
-        public IList<Evento> Eventos { get; init; } = [];
-        public IList<Operacao> Operacoes { get; init; } = [];
-    }
-}
-
-public class EventoJson
-{
-    public string CodigoAtivo { get; set; } = "";
-
-    public int Fator { get; set; } = 0;
-
-    public string DataEvento { get; set; } = "";
-
-    public string Tipo { get; set; } = "";
-
-    public decimal? Valor { get; set; }
-}
-
-public class OperacaoJson
-{
-    public string CodigoAtivo { get; set; } = "";
-
-    public string DataOperacao { get; set; } = "";
-
-    public bool Compra { get; set; }
-
-    public int Quantidade { get; set; }
-
-    public decimal PrecoAtivo { get; set; }
-
-    public decimal ValorTotal { get; set; }
-
-    public string Tipo { get; set; } = "";
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Stocks.Data;
+using Stocks.Interfaces;
 
 namespace Stocks.Extraction.Strategies;
 
@@ -7,9 +8,9 @@ namespace Stocks.Extraction.Strategies;
 /// Fábrica para criar estratégias de importação com base no tipo de pasta.
 /// </summary>
 public class EstrategiaImportacaoFactory(
-    [FromServices] BancoContext db,
-    [FromServices] IConfiguration configuration,
-    [FromServices] PdfExtractor pdfExtractor
+    BancoContext db,
+    IConfiguration configuration,
+    IPdfExtractor pdfExtractor
 )
 {
     /// <summary>

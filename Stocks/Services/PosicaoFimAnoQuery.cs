@@ -27,7 +27,7 @@ public record PosicaoFimAnoResult(
 
 public class PosicaoFimAnoQuery(BancoContext db)
 {
-    public async Task<IEnumerable<PosicaoFimAnoViewModel>> ExecuteAsync(string ano)
+    public async Task<IEnumerable<PosicaoFimAnoViewModel>> ExecutarAsync(string ano)
     {
         var resultados = await PosicaoFimAnoResultsAsync(ano);
 

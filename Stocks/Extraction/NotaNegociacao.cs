@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 using Stocks.DTOs;
+using Stocks.Interfaces;
 using Stocks.Models;
 
 namespace Stocks.Extraction
@@ -17,7 +18,7 @@ namespace Stocks.Extraction
         Corretora corretora,
         IConfiguration configuration,
         BancoContext db,
-        PdfExtractor pdfExtractor
+        IPdfExtractor pdfExtractor
     )
     {
         public List<Operacao> Operacoes { get; set; }

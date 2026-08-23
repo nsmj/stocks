@@ -13,7 +13,7 @@ public class IrrfResult
 
 public class IrrfQuery(BancoContext db)
 {
-    public async Task<List<IrrfResult>> ExecuteAsync(string ano)
+    public async Task<List<IrrfResult>> ExecutarAsync(string ano)
     {
         var result = db.Database.SqlQuery<IrrfResult>(
             $@"

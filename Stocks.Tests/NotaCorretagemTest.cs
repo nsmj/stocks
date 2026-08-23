@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Stocks.Data;
 using Stocks.Extraction;
+using Stocks.Interfaces;
 using Stocks.Tests.DadosTeste;
 
 namespace Stocks.Tests;
@@ -9,7 +10,7 @@ public class NotaCorretagemTest
 {
     protected IConfigurationRoot Configuration { get; }
     protected BancoContext Db { get; }
-    protected PdfExtractor PdfExtractor { get; }
+    protected IPdfExtractor PdfExtractor { get; }
     protected NotaNegociacao? NotaCorretagem { get; set; }
 
     public NotaCorretagemTest()

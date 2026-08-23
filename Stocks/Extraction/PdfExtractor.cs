@@ -1,8 +1,9 @@
 using System.Runtime.InteropServices;
+using Stocks.Interfaces;
 
 namespace Stocks.Extraction;
 
-public class PdfExtractor
+public class PdfExtractor : IPdfExtractor
 {
     /// <summary>
     /// Extrai os dados do PDF da nota de negociação.

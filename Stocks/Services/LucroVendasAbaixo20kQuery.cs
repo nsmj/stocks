@@ -19,7 +19,7 @@ public class LucroVendasAbaixo20kQuery(BancoContext db)
     /// <param name="db"></param>
     /// <param name="ano"></param>
     /// <returns></returns>
-    public async Task<decimal> ExecuteAsync(string ano)
+    public async Task<decimal> ExecutarAsync(string ano)
     {
         var anoInicio = $"{ano}-01-01";
         var anoFim = $"{ano}-12-31";

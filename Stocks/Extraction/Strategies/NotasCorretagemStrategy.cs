@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 using Stocks.DTOs;
+using Stocks.Interfaces;
 
 namespace Stocks.Extraction.Strategies;
 
@@ -12,7 +13,7 @@ namespace Stocks.Extraction.Strategies;
 public class NotasCorretagemStrategy(
     BancoContext db,
     IConfiguration configuration,
-    PdfExtractor pdfExtractor
+    IPdfExtractor pdfExtractor
 ) : EstrategiaImportacaoArquivos<DadosNotaNegociacaoDto>
 {
     public override string NomePasta => "NotasCorretagem";

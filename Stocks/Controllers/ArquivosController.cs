@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stocks.Bo;
 using Stocks.Data;
 using Stocks.Extraction;
+using Stocks.Interfaces;
 
 namespace Stocks.Controllers;
 
@@ -14,7 +15,7 @@ namespace Stocks.Controllers;
 public class ArquivosController(
     ILogger<ArquivosController> logger,
     PosicaoFimAnoQuery posicaoFimAnoBo,
-    [FromServices] ImportarArquivosUseCase importarArquivosUseCase
+    IImportarArquivosUseCase importarArquivosUseCase
 ) : Controller
 {
     /// <summary>
@@ -41,7 +42,7 @@ public class ArquivosController(
 
         try
         {
-            await importarArquivosUseCase.ExecuteAsync(arquivo);
+            await importarArquivosUseCase.ExecutarAsync(arquivo);
 
             return RedirectToAction("Index", "Home");
         }

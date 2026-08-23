@@ -5,6 +5,7 @@ using Stocks.Extraction;
 using Stocks.Extraction.Strategies;
 using Stocks.Interfaces;
 using Stocks.Models.TiposOperacao;
+using Stocks.UseCases;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +19,13 @@ builder.Services.AddDbContext<BancoContext>(options =>
 builder.Services.AddScoped<LucroVendasAbaixo20kQuery>();
 builder.Services.AddScoped<IrrfQuery>();
 builder.Services.AddScoped<IrrfService>();
-builder.Services.AddScoped<PdfExtractor>();
+builder.Services.AddScoped<IPdfExtractor, PdfExtractor>();
 builder.Services.AddScoped<IrpfRowsBuilder>();
-builder.Services.AddScoped<CalculadoraPrejuizoAcumuladoService>();
+builder.Services.AddScoped<ICalcularPrejuizoAcumuladoUseCase, CalcularPrejuizoAcumuladoUseCase>();
 builder.Services.AddScoped<PosicaoFimAnoQuery>();
 builder.Services.AddScoped<EstrategiaImportacaoFactory>();
-builder.Services.AddScoped<ImportarArquivosUseCase>();
-builder.Services.AddScoped<CalcularResultadosService>();
+builder.Services.AddScoped<IImportarArquivosUseCase, ImportarArquivosUseCase>();
+builder.Services.AddScoped<CalcularResultadosUseCase>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
 builder.Services.AddKeyedScoped<IOperacaoListable, DayTrade>("DayTrade");

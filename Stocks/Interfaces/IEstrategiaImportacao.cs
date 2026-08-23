@@ -1,4 +1,4 @@
-namespace Stocks.Extraction.Strategies;
+namespace Stocks.Interfaces;
 
 /// <summary>
 /// Interface que define o contrato para estratégias de importação.

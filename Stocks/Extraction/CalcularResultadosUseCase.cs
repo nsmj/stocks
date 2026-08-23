@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 using Stocks.DTOs;
@@ -6,9 +5,9 @@ using Stocks.Models;
 
 namespace Stocks.Extraction;
 
-public class CalcularResultadosService([FromServices] BancoContext db)
+public class CalcularResultadosUseCase(BancoContext db)
 {
-    public async Task CalcularResultadosAsync()
+    public async Task ExecutarAsync()
     {
         var primeiroAnoTransacoes = await db.Operacoes.MinAsync(op => op.Data.Year);
 
