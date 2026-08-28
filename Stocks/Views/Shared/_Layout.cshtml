@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
   <meta charset="utf-8" />
@@ -11,46 +11,44 @@
 </head>
 
 <body>
-  <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-      <div class="container-fluid">
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Stocks
+  <header class="app-header">
+    <nav class="navbar navbar-expand-sm navbar-dark">
+      <div class="container app-nav">
+        <a class="navbar-brand app-brand" asp-area="" asp-controller="Home" asp-action="Index">
+          <span class="app-brand-mark">S</span>
+          <span>Stocks</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-          <ul class="navbar-nav flex-grow-1">
+          <ul class="navbar-nav app-nav-links">
             <li class="nav-item">
-              <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home
-              </a>
+              <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Visão geral</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy
-              </a>
+              <a class="nav-link" asp-area="" asp-controller="Irpf" asp-action="Index">IRPF</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-dark" asp-area="" asp-controller="Irpf" asp-action="Index">IRPF
-              </a>
+              <a class="nav-link" asp-area="" asp-controller="Arquivos" asp-action="Importar">Importar arquivos</a>
             </li>
-            <li class="nav-item"></li>
-            <a class="nav-link text-dark" asp-area="" asp-controller="Arquivos" asp-action="Importar">Importar Arquivos
-            </a>
+            <li class="nav-item">
+              <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
   </header>
-  <div class="container">
-    <main role="main" class="pb-3">@RenderBody()</main>
+  <div class="app-shell">
+    <main role="main" class="container app-content">@RenderBody()</main>
   </div>
 
-  <footer class="border-top footer text-muted">
-    <div class="container">
-      &copy; 2024 - Stocks -
-      <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+  <footer class="app-footer">
+    <div class="container app-footer-content">
+      <span>&copy; @DateTime.Now.Year Stocks</span>
+      <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
     </div>
   </footer>
   <script src="~/lib/jquery/dist/jquery.min.js"></script>

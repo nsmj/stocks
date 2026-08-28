@@ -2,7 +2,25 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="page-intro">
+    <div class="page-kicker">Gestão de investimentos</div>
+    <h1 class="page-title">Clareza para acompanhar suas operações.</h1>
+    <p class="page-lead">Centralize seus arquivos de corretoras e consulte os dados que ajudam a preparar sua declaração de IRPF com mais segurança.</p>
+</section>
+
+<section class="feature-grid" aria-label="Atalhos principais">
+    <article class="feature-card">
+        <div>
+            <h2>Apure seu IRPF</h2>
+            <p>Consulte resultados mensais, imposto pago, IRRF e prejuízos acumulados por tipo de operação.</p>
+        </div>
+        <a class="feature-link" asp-controller="Irpf" asp-action="Index">Abrir relatório &rarr;</a>
+    </article>
+    <article class="feature-card">
+        <div>
+            <h2>Importe arquivos</h2>
+            <p>Adicione notas de corretagem e arquivos de investimento para manter seus dados atualizados.</p>
+        </div>
+        <a class="feature-link" asp-controller="Arquivos" asp-action="Importar">Adicionar arquivos &rarr;</a>
+    </article>
+</section>
