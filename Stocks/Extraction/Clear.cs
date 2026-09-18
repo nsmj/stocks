@@ -25,7 +25,19 @@ namespace Stocks.Extraction
         public override DateTime ExtrairDataNotaCorretagem(string[] dadosNota)
         {
             var posicaoData = Array.IndexOf(dadosNota, "Data pregão") + 2;
-            return DateTime.Parse(dadosNota[posicaoData]);
+
+            DateTime data;
+
+            try
+            {
+                data = DateTime.Parse(dadosNota[posicaoData]);
+            }
+            catch (FormatException)
+            {
+                data = DateTime.Parse(dadosNota[posicaoData - 1]);
+            }
+
+            return data;
         }
 
         public override async Task<List<Operacao>> ExtrairOperacoesNotaCorretagem(
