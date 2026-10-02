@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 using Stocks.DTOs;
+using Stocks.Interfaces;
 
 namespace Stocks.Bo;
 
@@ -11,7 +12,7 @@ public class IrrfResult
     public string? NomeTipoOperacao { get; set; }
 }
 
-public class IrrfQuery(BancoContext db)
+public class IrrfQuery(BancoContext db) : IIrrfQuery
 {
     public async Task<List<IrrfResult>> ExecutarAsync(string ano)
     {

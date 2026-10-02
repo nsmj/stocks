@@ -6,8 +6,8 @@ using Stocks.Models;
 namespace Stocks.Extraction;
 
 public class ImportarArquivosUseCase(
-    EstrategiaImportacaoFactory estrategiaFactory,
-    CalcularResultadosUseCase calcularResultadosUseCase,
+    IEstrategiaImportacaoFactory estrategiaFactory,
+    ICalcularResultadosUseCase calcularResultadosUseCase,
     IConfiguration configuration
 ) : IImportarArquivosUseCase
 {
@@ -69,7 +69,7 @@ public class ImportarArquivosUseCase(
     /// </summary>
     private async Task ExecutarEstrategiasAsync(
         string caminhoExtracao,
-        EstrategiaImportacaoFactory factory
+        IEstrategiaImportacaoFactory factory
     )
     {
         if (!Directory.Exists(caminhoExtracao))

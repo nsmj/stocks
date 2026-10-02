@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Stocks.Bo;
-using Stocks.Data;
-using Stocks.Extraction;
 using Stocks.Interfaces;
 
 namespace Stocks.Controllers;
@@ -10,11 +7,9 @@ namespace Stocks.Controllers;
 /// Controller responsável por gerenciar o upload e processamento de arquivos financeiros.
 /// </summary>
 /// <param name="logger"></param>
-/// <param name="posicaoFimAnoBo"></param>
-/// <param name="fileProcessor"></param>
+/// <param name="importarArquivosUseCase"></param>
 public class ArquivosController(
     ILogger<ArquivosController> logger,
-    PosicaoFimAnoQuery posicaoFimAnoBo,
     IImportarArquivosUseCase importarArquivosUseCase
 ) : Controller
 {

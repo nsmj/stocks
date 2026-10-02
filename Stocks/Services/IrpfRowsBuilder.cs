@@ -1,8 +1,9 @@
 using Stocks.DTOs;
+using Stocks.Interfaces;
 
 namespace Stocks.Bo;
 
-public class IrpfRowsBuilder
+public class IrpfRowsBuilder : IIrpfRowsBuilder
 {
     public Dictionary<int, IrpfRowDTO> Build(List<ResultadoOperacaoMesDTO> results, string ano)
     {

@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 using Stocks.DTOs;
+using Stocks.Interfaces;
 using Stocks.Models;
 
 namespace Stocks.Extraction;
 
-public class CalcularResultadosUseCase(BancoContext db)
+public class CalcularResultadosUseCase(BancoContext db) : ICalcularResultadosUseCase
 {
     public async Task ExecutarAsync()
     {

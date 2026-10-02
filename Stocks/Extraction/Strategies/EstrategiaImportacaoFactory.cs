@@ -11,7 +11,7 @@ public class EstrategiaImportacaoFactory(
     BancoContext db,
     IConfiguration configuration,
     IPdfExtractor pdfExtractor
-)
+) : IEstrategiaImportacaoFactory
 {
     /// <summary>
     /// Cria a estratégia apropriada com base no nome da pasta.

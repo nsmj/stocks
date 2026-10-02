@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
+using Stocks.Interfaces;
 using Stocks.Models;
 using Stocks.ViewModels;
 
@@ -25,7 +26,7 @@ public record PosicaoFimAnoResult(
     string TipoAtivo
 );
 
-public class PosicaoFimAnoQuery(BancoContext db)
+public class PosicaoFimAnoQuery(BancoContext db) : IPosicaoFimAnoQuery
 {
     public async Task<IEnumerable<PosicaoFimAnoViewModel>> ExecutarAsync(string ano)
     {

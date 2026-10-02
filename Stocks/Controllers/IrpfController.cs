@@ -13,11 +13,11 @@ public class IrpfController(
     [FromKeyedServices("SwingTrade")] IOperacaoListable swingTradeObj,
     [FromKeyedServices("DayTrade")] IOperacaoListable dayTradeObj,
     [FromKeyedServices("Fii")] IOperacaoListable fiiObj,
-    LucroVendasAbaixo20kQuery lucroVendasAbaixo20kQuery,
-    IrrfQuery irrfQuery,
-    IrrfService irrfService,
-    PosicaoFimAnoQuery posicaoFimAnoQuery,
-    IrpfRowsBuilder irpfRowsBuilder,
+    ILucroVendasAbaixo20kQuery lucroVendasAbaixo20kQuery,
+    IIrrfQuery irrfQuery,
+    IIrrfService irrfService,
+    IPosicaoFimAnoQuery posicaoFimAnoQuery,
+    IIrpfRowsBuilder irpfRowsBuilder,
     ICalcularPrejuizoAcumuladoUseCase calcularPrejuizoAcumuladoUseCase
 ) : Controller
 {

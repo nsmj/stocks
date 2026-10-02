@@ -16,16 +16,16 @@ builder.Services.AddDbContext<BancoContext>(options =>
     options.UseSqlite("Data Source=Data/Banco.db")
 );
 
-builder.Services.AddScoped<LucroVendasAbaixo20kQuery>();
-builder.Services.AddScoped<IrrfQuery>();
-builder.Services.AddScoped<IrrfService>();
+builder.Services.AddScoped<ILucroVendasAbaixo20kQuery, LucroVendasAbaixo20kQuery>();
+builder.Services.AddScoped<IIrrfQuery, IrrfQuery>();
+builder.Services.AddScoped<IIrrfService, IrrfService>();
 builder.Services.AddScoped<IPdfExtractor, PdfExtractor>();
-builder.Services.AddScoped<IrpfRowsBuilder>();
+builder.Services.AddScoped<IIrpfRowsBuilder, IrpfRowsBuilder>();
 builder.Services.AddScoped<ICalcularPrejuizoAcumuladoUseCase, CalcularPrejuizoAcumuladoUseCase>();
-builder.Services.AddScoped<PosicaoFimAnoQuery>();
-builder.Services.AddScoped<EstrategiaImportacaoFactory>();
+builder.Services.AddScoped<IPosicaoFimAnoQuery, PosicaoFimAnoQuery>();
+builder.Services.AddScoped<IEstrategiaImportacaoFactory, EstrategiaImportacaoFactory>();
 builder.Services.AddScoped<IImportarArquivosUseCase, ImportarArquivosUseCase>();
-builder.Services.AddScoped<CalcularResultadosUseCase>();
+builder.Services.AddScoped<ICalcularResultadosUseCase, CalcularResultadosUseCase>();
 
 builder.Services.AddKeyedScoped<IOperacaoListable, SwingTrade>("SwingTrade");
 builder.Services.AddKeyedScoped<IOperacaoListable, DayTrade>("DayTrade");

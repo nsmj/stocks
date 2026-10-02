@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
+using Stocks.Interfaces;
 
 namespace Stocks.Bo;
 
@@ -11,7 +12,7 @@ public record LucroVendasAbaixo20kResult(decimal Valor);
 /// <summary>
 /// Calcula o total de lucro de vendas abaixo de 20 mil reais em um ano específico.
 /// </summary>
-public class LucroVendasAbaixo20kQuery(BancoContext db)
+public class LucroVendasAbaixo20kQuery(BancoContext db) : ILucroVendasAbaixo20kQuery
 {
     /// <summary>
     /// Calcula o total de lucro de vendas abaixo de 20 mil reais em um ano específico.

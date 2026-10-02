@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Stocks.Data;
 using Stocks.DTOs;
+using Stocks.Interfaces;
 
 namespace Stocks.Bo;
 
-public class IrrfService(BancoContext db)
+public class IrrfService(BancoContext db) : IIrrfService
 {
     public void InjetarValoresIrrf(
         Dictionary<int, IrpfRowDTO> irpfRows,
