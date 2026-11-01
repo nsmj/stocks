@@ -69,7 +69,15 @@ public class NotaCorretagemTest
         Assert.Equal(quantidade, operacao.Quantidade);
         Assert.Equal(precoAtivo, operacao.PrecoAtivo);
         Assert.Equal(valorTotal, operacao.ValorTotal);
-        Assert.Equal(taxas, operacao.Taxas);
+
+        decimal totalOperacoes = NotaCorretagem.Operacoes.Sum(o =>
+            o.ValorTotal.GetValueOrDefault()
+        );
+        decimal percentualOperacao = operacao.ValorTotal.GetValueOrDefault() / totalOperacoes;
+        decimal taxaSemArredondamento = NotaCorretagem.TotalTaxas * percentualOperacao;
+
+        Assert.Equal(taxaSemArredondamento, operacao.Taxas.GetValueOrDefault());
+        Assert.Equal(taxas, decimal.Round(operacao.Taxas.GetValueOrDefault(), 2));
     }
 
     [Theory]

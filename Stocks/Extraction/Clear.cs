@@ -193,11 +193,9 @@ namespace Stocks.Extraction
 
                 operacao.Quantidade = (int)Convert.ToDouble(dadosNota[posicaoTemporaria - 5]);
                 operacao.PrecoAtivo = Convert.ToDecimal(dadosNota[posicaoTemporaria - 4]);
-                operacao.ValorTotal = Math.Round(
+                operacao.ValorTotal =
                     operacao.Quantidade.GetValueOrDefault()
-                        * operacao.PrecoAtivo.GetValueOrDefault(),
-                    2
-                );
+                    * operacao.PrecoAtivo.GetValueOrDefault();
 
                 if (operacao.Ativo.TipoAtivo.Nome == "FII")
                 {
@@ -251,12 +249,7 @@ namespace Stocks.Extraction
 
             decimal totalCustosOperacionais = Convert.ToDecimal(dadosNota[posicao]);
 
-            return Math.Abs(
-                Math.Round(
-                    taxaLiquidacao + taxaRegistro + totalBovespa + totalCustosOperacionais,
-                    2
-                )
-            );
+            return Math.Abs(taxaLiquidacao + taxaRegistro + totalBovespa + totalCustosOperacionais);
         }
     }
 }

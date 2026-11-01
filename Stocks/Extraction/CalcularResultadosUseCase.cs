@@ -227,7 +227,7 @@ public class CalcularResultadosUseCase(BancoContext db) : ICalcularResultadosUse
         public decimal RegistrarVenda(int qtd, decimal valorTotal, decimal taxas)
         {
             var precoMedioVenda = (valorTotal - taxas) / qtd;
-            var lucroLiquido = Math.Round((precoMedioVenda - PrecoMedio) * qtd, 2);
+            var lucroLiquido = (precoMedioVenda - PrecoMedio) * qtd;
             Quantidade -= qtd;
             return lucroLiquido;
         }

@@ -110,12 +110,7 @@ namespace Stocks.Extraction
             posicao = Array.IndexOf(dadosNota, "Total Corretagem/Despesas") + 2;
             decimal totalCustosOperacionais = Convert.ToDecimal(dadosNota[posicao]);
 
-            return Math.Abs(
-                Math.Round(
-                    taxaLiquidacao + taxaRegistro + totalBovespa + totalCustosOperacionais,
-                    2
-                )
-            );
+            return Math.Abs(taxaLiquidacao + taxaRegistro + totalBovespa + totalCustosOperacionais);
         }
     }
 }

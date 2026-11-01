@@ -198,7 +198,7 @@ namespace Stocks.Extraction
             {
                 decimal percentualOperacao =
                     Operacoes[i].ValorTotal.GetValueOrDefault() / totalOperacoes;
-                Operacoes[i].Taxas = Math.Round(TotalTaxas * percentualOperacao, 2);
+                Operacoes[i].Taxas = TotalTaxas * percentualOperacao;
             }
         }
         #endregion
