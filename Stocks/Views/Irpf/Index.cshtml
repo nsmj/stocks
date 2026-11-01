@@ -10,7 +10,8 @@
 <form class="filter-form" asp-controller="Irpf" asp-action="Index" method="get">
   <div class="form-group">
     <label class="form-label" for="ano">Ano de referência</label>
-    <input id="ano" type="search" class="form-control" name="ano" value="@Model.AnoFiltrado" placeholder="Ex.: 2025" inputmode="numeric" />
+    <input id="ano" type="search" class="form-control" name="ano" value="@Model.AnoFiltrado" placeholder="Ex.: 2025"
+           inputmode="numeric" />
   </div>
   <button type="submit" class="btn btn-primary">Consultar</button>
 </form>
@@ -19,7 +20,7 @@
 {
   <section class="result-highlight">
     <strong>Lucro com vendas abaixo de R$ 20 mil</strong>
-    <span class="result-highlight-value">@Model.LucroVendasAbaixo20k</span>
+    <span class="result-highlight-value">@Html.DisplayFor(model => model.LucroVendasAbaixo20k)</span>
   </section>
   <div class="table-wrap">
     <table class="table report-table">
@@ -82,19 +83,19 @@
             Prejuízo acumulado no ano anterior
           </th>
           <td class="text-end">
-            @Model.PrejuizoAcumuladoAnoAnoAnteriorSwingTrade
+            @Html.DisplayFor(model => model.PrejuizoAcumuladoAnoAnoAnteriorSwingTrade)
           </td>
           <th colspan="3" class="text-end year-summary">
             Prejuízo acumulado no ano anterior
           </th>
           <td class="text-end">
-            @Model.PrejuizoAcumuladoAnoAnteriorDayTrade
+            @Html.DisplayFor(model => model.PrejuizoAcumuladoAnoAnteriorDayTrade)
           </td>
           <th colspan="3" class="text-end year-summary">
             Prejuízo acumulado no ano anterior
           </th>
           <td class="text-end">
-            @Model.PrejuizoAcumuladoAnoAnteriorFii
+            @Html.DisplayFor(model => model.PrejuizoAcumuladoAnoAnteriorFii)
           </td>
         </tr>
         @for (int i = 1; i <= 12; i++)
@@ -102,34 +103,34 @@
           <tr>
             <th class="month-cell">@i.ToString("00")</th>
             <td class="text-end swing-cell">
-              @Model.SwingTradeRows?[i].Total
+              @Html.DisplayFor(model => model.SwingTradeRows![i].Total)
             </td>
             <td class="swing-cell" />
             <td class="text-end swing-cell">
-              @Model.SwingTradeRows?[i].Irrf
+              @Html.DisplayFor(model => model.SwingTradeRows![i].Irrf)
             </td>
             <td class="text-end swing-cell">
-              @Model.SwingTradeRows?[i].PrejuizoAcumulado
+              @Html.DisplayFor(model => model.SwingTradeRows![i].PrejuizoAcumulado)
             </td>
             <td class="text-end">
-              @Model.DayTradeRows?[i].Total
+              @Html.DisplayFor(model => model.DayTradeRows![i].Total)
             </td>
             <td />
             <td>
-              @Model.DayTradeRows?[i].Irrf
+              @Html.DisplayFor(model => model.DayTradeRows![i].Irrf)
             </td>
             <td class="text-end">
-              @Model.DayTradeRows?[i].PrejuizoAcumulado
+              @Html.DisplayFor(model => model.DayTradeRows![i].PrejuizoAcumulado)
             </td>
             <td class="text-end fii-cell">
-              @Model.FiiRows?[i].Total
+              @Html.DisplayFor(model => model.FiiRows![i].Total)
             </td>
             <td class="fii-cell" />
             <td class="text-end fii-cell">
-              @Model.FiiRows?[i].Irrf
+              @Html.DisplayFor(model => model.FiiRows![i].Irrf)
             </td>
             <td class="text-end fii-cell">
-              @Model.FiiRows?[i].PrejuizoAcumulado
+              @Html.DisplayFor(model => model.FiiRows![i].PrejuizoAcumulado)
             </td>
           </tr>
         }
