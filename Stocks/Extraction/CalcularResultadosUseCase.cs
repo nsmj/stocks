@@ -30,17 +30,44 @@ public class CalcularResultadosUseCase(BancoContext db) : ICalcularResultadosUse
         await Task.WhenAll(tasks);
     }
 
-    /// <summary>
-    /// Calcula os resultados das operações e eventos, atualizando o lucro líquido das operações.
-    /// </summary>
-    /// <param name="ano"></param>
-    /// <param name="ativoId"></param>
     private async Task CalcularResultadosAtivoAnoAsync(int ano, int ativoId)
+    {
+        var eventosOperacoes = BuscarEventosEOperacoes(ano, ativoId);
+        var posicao = await ObterPosicaoInicialAsync(ano, ativoId);
+
+        bool houveMovimentacao = false;
+        await foreach (var item in eventosOperacoes.AsAsyncEnumerable())
+        {
+            houveMovimentacao = true;
+            if (item.Tipo == "Operacao")
+            {
+                await ProcessarOperacaoAsync(item, posicao);
+            }
+            else
+            {
+                ProcessarEvento(item, posicao);
+            }
+        }
+
+        if (houveMovimentacao)
+        {
+            await RegistrarPosicaoFimAnoAsync(ano, ativoId, posicao);
+            await AtualizarAtivoAsync(ativoId, posicao);
+        }
+        else
+        {
+            await ManterPosicaoAnteriorAsync(ano, ativoId);
+        }
+
+        await db.SaveChangesAsync();
+    }
+
+    private IQueryable<DadosCalculoResultadoDTO> BuscarEventosEOperacoes(int ano, int ativoId)
     {
         var anoInicio = $"{ano}-01-01";
         var anoFim = $"{ano}-12-31";
 
-        var eventosOperacoes = db.Database.SqlQuery<DadosCalculoResultadoDTO>(
+        return db.Database.SqlQuery<DadosCalculoResultadoDTO>(
             @$"
                         SELECT
                             o.id AS Id,
@@ -78,140 +105,159 @@ public class CalcularResultadosUseCase(BancoContext db) : ICalcularResultadosUse
                         ORDER BY AtivoId, Data
                     "
         );
+    }
 
+    private async Task<PosicaoEstado> ObterPosicaoInicialAsync(int ano, int ativoId)
+    {
         var ultimaPosicaoFimAno = await db
             .PosicoesFimAno.Where(p => p.AtivoId == ativoId && p.Ano == ano - 1)
             .FirstOrDefaultAsync();
 
-        decimal precoMedio = ultimaPosicaoFimAno?.PrecoMedio ?? 0;
-        decimal ultimoPMCompra = precoMedio;
-        int posicaoAnterior = ultimaPosicaoFimAno?.Posicao ?? 0;
-        int posicaoAtual = 0;
+        return new PosicaoEstado(
+            ultimaPosicaoFimAno?.Posicao ?? 0,
+            ultimaPosicaoFimAno?.PrecoMedio ?? 0
+        );
+    }
 
-        decimal precoMedioVenda;
-        decimal lucroLiquido;
-        Dictionary<string, PosicaoFimAno> posicoesFimAno = [];
+    private async Task ProcessarOperacaoAsync(DadosCalculoResultadoDTO item, PosicaoEstado posicao)
+    {
+        var taxas = item.Taxas.GetValueOrDefault();
+        var quantidade = item.Quantidade.GetValueOrDefault();
+        var valorTotal = Convert.ToDecimal(item.ValorTotal.GetValueOrDefault());
 
-        await foreach (var eventoOperacao in eventosOperacoes.AsAsyncEnumerable())
+        if (item.Compra == 1)
         {
-            if (eventoOperacao.Tipo == "Operacao")
-            {
-                //var taxas = eventoOperacao.Taxas == null ? 0.0 : eventoOperacao.Taxas;
-                var taxas = eventoOperacao.Taxas.GetValueOrDefault();
-
-                if (eventoOperacao.Compra == 1)
-                {
-                    posicaoAtual = posicaoAnterior + eventoOperacao.Quantidade.GetValueOrDefault();
-                    precoMedio =
-                        (
-                            (ultimoPMCompra * posicaoAnterior)
-                            + Convert.ToDecimal(eventoOperacao.ValorTotal.GetValueOrDefault())
-                            + Convert.ToDecimal(taxas)
-                        ) / posicaoAtual;
-                    ultimoPMCompra = precoMedio;
-                }
-                else
-                {
-                    posicaoAtual = posicaoAnterior - eventoOperacao.Quantidade.GetValueOrDefault();
-                    precoMedioVenda =
-                        (
-                            Convert.ToDecimal(eventoOperacao.ValorTotal.GetValueOrDefault())
-                            - Convert.ToDecimal(taxas)
-                        ) / eventoOperacao.Quantidade.GetValueOrDefault();
-                    lucroLiquido = Math.Round(
-                        (precoMedioVenda - ultimoPMCompra)
-                            * eventoOperacao.Quantidade.GetValueOrDefault(),
-                        2
-                    );
-
-                    var operacao = db.Operacoes.Find(eventoOperacao.Id);
-
-                    if (operacao is not null)
-                    {
-                        // Atualiza o lucro líquido.
-                        operacao.LucroLiquido = lucroLiquido;
-                        await db.SaveChangesAsync();
-                    }
-                }
-            }
-            else if (eventoOperacao.Tipo == "Evento")
-            {
-                if (eventoOperacao.TipoOperacaoEvento == "Grupamento")
-                {
-                    posicaoAtual /= eventoOperacao.Fator.GetValueOrDefault();
-                    precoMedio = ultimoPMCompra * eventoOperacao.Fator.GetValueOrDefault();
-                }
-                else if (eventoOperacao.TipoOperacaoEvento == "Desdobramento")
-                {
-                    posicaoAtual *= eventoOperacao.Fator.GetValueOrDefault();
-                    precoMedio = ultimoPMCompra / eventoOperacao.Fator.GetValueOrDefault();
-                }
-                else if (eventoOperacao.TipoOperacaoEvento == "Bonificação")
-                {
-                    var acoesBonificadas = (posicaoAnterior * eventoOperacao.Fator) / 100;
-                    posicaoAtual += acoesBonificadas.GetValueOrDefault();
-                    precoMedio =
-                        (
-                            (ultimoPMCompra * posicaoAnterior)
-                            + (
-                                eventoOperacao.PrecoAtivo.GetValueOrDefault()
-                                * acoesBonificadas.GetValueOrDefault()
-                            )
-                        ) / posicaoAtual;
-                }
-            }
-
-            posicaoAnterior = posicaoAtual;
-
-            ultimoPMCompra = precoMedio;
-        }
-
-        if (eventosOperacoes.Any())
-        {
-            // Só insere uma posição no final do ano caso não tenha zerado a posição durante o ano
-            if (posicaoAtual > 0)
-            {
-                PosicaoFimAno posicaoFimAno = new()
-                {
-                    AtivoId = ativoId,
-                    Ano = ano,
-                    Posicao = posicaoAtual,
-                    PrecoMedio = ultimoPMCompra,
-                    CustoTotal = ultimoPMCompra * posicaoAtual,
-                };
-
-                db.PosicoesFimAno.Add(posicaoFimAno);
-            }
-
-            // Atualiza a posição e preço médio do ativo
-            var ativo = db.Ativos.Find(ativoId);
-
-            if (ativo is not null)
-            {
-                ativo.Posicao = posicaoAtual;
-                ativo.PrecoMedio = ultimoPMCompra;
-
-                db.Ativos.Update(ativo);
-            }
+            posicao.RegistrarCompra(quantidade, valorTotal, taxas);
         }
         else
         {
-            // Se não houver operações ou eventos no ano, mantém a posição do ano anterior (se houver)
-            if (ultimaPosicaoFimAno is { Posicao: > 0 })
+            var lucroLiquido = posicao.RegistrarVenda(quantidade, valorTotal, taxas);
+            var operacao = await db.Operacoes.FindAsync(item.Id);
+            if (operacao is not null)
             {
-                PosicaoFimAno novaPosicao = new()
+                operacao.LucroLiquido = lucroLiquido;
+            }
+        }
+    }
+
+    private static void ProcessarEvento(DadosCalculoResultadoDTO item, PosicaoEstado posicao)
+    {
+        var fator = item.Fator.GetValueOrDefault();
+        var precoAtivo = item.PrecoAtivo.GetValueOrDefault();
+
+        switch (item.TipoOperacaoEvento)
+        {
+            case "Grupamento":
+                posicao.AplicarGrupamento(fator);
+                break;
+            case "Desdobramento":
+                posicao.AplicarDesdobramento(fator);
+                break;
+            case "Bonificação":
+                posicao.AplicarBonificacao(fator, precoAtivo);
+                break;
+        }
+    }
+
+    private async Task RegistrarPosicaoFimAnoAsync(int ano, int ativoId, PosicaoEstado posicao)
+    {
+        if (posicao.Quantidade <= 0)
+            return;
+
+        var posicaoFimAno = new PosicaoFimAno
+        {
+            AtivoId = ativoId,
+            Ano = ano,
+            Posicao = posicao.Quantidade,
+            PrecoMedio = posicao.PrecoMedio,
+            CustoTotal = posicao.CustoTotal,
+        };
+
+        db.PosicoesFimAno.Add(posicaoFimAno);
+    }
+
+    private async Task AtualizarAtivoAsync(int ativoId, PosicaoEstado posicao)
+    {
+        var ativo = await db.Ativos.FindAsync(ativoId);
+        if (ativo is not null)
+        {
+            ativo.Posicao = posicao.Quantidade;
+            ativo.PrecoMedio = posicao.PrecoMedio;
+            db.Ativos.Update(ativo);
+        }
+    }
+
+    private async Task ManterPosicaoAnteriorAsync(int ano, int ativoId)
+    {
+        var anterior = await db
+            .PosicoesFimAno.Where(p => p.AtivoId == ativoId && p.Ano == ano - 1)
+            .FirstOrDefaultAsync();
+
+        if (anterior is { Posicao: > 0 })
+        {
+            db.PosicoesFimAno.Add(
+                new PosicaoFimAno
                 {
                     AtivoId = ativoId,
                     Ano = ano,
-                    Posicao = ultimaPosicaoFimAno.Posicao,
-                    PrecoMedio = ultimaPosicaoFimAno.PrecoMedio,
-                    CustoTotal = ultimaPosicaoFimAno.CustoTotal,
-                };
+                    Posicao = anterior.Posicao,
+                    PrecoMedio = anterior.PrecoMedio,
+                    CustoTotal = anterior.CustoTotal,
+                }
+            );
+        }
+    }
 
-                db.PosicoesFimAno.Add(novaPosicao);
+    private class PosicaoEstado(int quantidade, decimal precoMedio)
+    {
+        public int Quantidade { get; private set; } = quantidade;
+        public decimal PrecoMedio { get; private set; } = precoMedio;
+        public decimal CustoTotal => Quantidade * PrecoMedio;
+
+        public void RegistrarCompra(int qtd, decimal valorTotal, decimal taxas)
+        {
+            var novaQuantidade = Quantidade + qtd;
+            if (novaQuantidade > 0)
+            {
+                PrecoMedio = (CustoTotal + valorTotal + taxas) / novaQuantidade;
             }
+            Quantidade = novaQuantidade;
         }
 
-        await db.SaveChangesAsync();
+        public decimal RegistrarVenda(int qtd, decimal valorTotal, decimal taxas)
+        {
+            var precoMedioVenda = (valorTotal - taxas) / qtd;
+            var lucroLiquido = Math.Round((precoMedioVenda - PrecoMedio) * qtd, 2);
+            Quantidade -= qtd;
+            return lucroLiquido;
+        }
+
+        public void AplicarGrupamento(int fator)
+        {
+            if (fator == 0)
+                return;
+            Quantidade /= fator;
+            PrecoMedio *= fator;
+        }
+
+        public void AplicarDesdobramento(int fator)
+        {
+            Quantidade *= fator;
+            if (fator != 0)
+                PrecoMedio /= fator;
+        }
+
+        public void AplicarBonificacao(int fator, decimal precoAtivo)
+        {
+            // Converte para int antes para garantir que o custo e a quantidade usem o mesmo valor
+            int acoesBonificadas = (int)(Quantidade * (decimal)fator / 100);
+            var novaQuantidade = Quantidade + acoesBonificadas;
+
+            if (novaQuantidade > 0)
+            {
+                PrecoMedio = (CustoTotal + (precoAtivo * acoesBonificadas)) / novaQuantidade;
+            }
+            Quantidade = novaQuantidade;
+        }
     }
 }
