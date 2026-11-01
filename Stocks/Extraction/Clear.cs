@@ -5,23 +5,28 @@ using Stocks.Models;
 
 namespace Stocks.Extraction
 {
+    /// <inheritdoc/>
     public class Clear : Corretora
     {
+        /// <inheritdoc/>
         public override int AjustePosicaoIrrf()
         {
             return -1;
         }
 
+        /// <inheritdoc/>
         public override Regex ExpressaoIrrf()
         {
             return new Regex(@"I.R.R.F. s/ operações, base R\$(.*)");
         }
 
+        /// <inheritdoc/>
         public override Regex ExpressaoIrrfDayTrade()
         {
             return new Regex(@"IRRF Day Trade: Base R\$ (.*),(.*) Projeção R\$ (.*)");
         }
 
+        /// <inheritdoc/>
         public override DateTime ExtrairDataNotaCorretagem(string[] dadosNota)
         {
             var posicaoData = Array.IndexOf(dadosNota, "Data pregão") + 2;
@@ -40,6 +45,7 @@ namespace Stocks.Extraction
             return data;
         }
 
+        /// <inheritdoc/>
         public override async Task<List<Operacao>> ExtrairOperacoesNotaCorretagem(
             BancoContext db,
             string[] dadosNota
@@ -219,6 +225,7 @@ namespace Stocks.Extraction
             return operacoes;
         }
 
+        /// <inheritdoc/>
         public override decimal ExtrairTaxasNotaCorretagem(string[] dadosNota)
         {
             int posicao = Array.IndexOf(dadosNota, "Taxa de liquidação") - 1;

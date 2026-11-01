@@ -5,30 +5,36 @@ using Stocks.Models;
 
 namespace Stocks.Extraction
 {
+    /// <inheritdoc/>
     public class Nuinvest : Corretora
     {
+        /// <inheritdoc/>
         public override int AjustePosicaoIrrf()
         {
             return 1;
         }
 
+        /// <inheritdoc/>
         public override Regex ExpressaoIrrf()
         {
             return new Regex(@"I.R.R.F. s/ operações. Base (.*)");
         }
 
+        /// <inheritdoc/>
         public override Regex ExpressaoIrrfDayTrade()
         {
             // TODO: Fazer algo aqui quando tiver feito algum Day Trade pela Nuinvest.
             return new Regex("fjklasjjlççlsjfjasls");
         }
 
+        /// <inheritdoc/>
         public override DateTime ExtrairDataNotaCorretagem(string[] dadosNota)
         {
             var posicaoData = Array.IndexOf(dadosNota, "Data Pregão") + 1;
             return DateTime.Parse(dadosNota[posicaoData]);
         }
 
+        /// <inheritdoc/>
         public override async Task<List<Operacao>> ExtrairOperacoesNotaCorretagem(
             BancoContext db,
             string[] dadosNota
@@ -96,6 +102,7 @@ namespace Stocks.Extraction
             return operacoes;
         }
 
+        /// <inheritdoc/>
         public override decimal ExtrairTaxasNotaCorretagem(string[] dadosNota)
         {
             int posicao = Array.IndexOf(dadosNota, "Taxa de Liquidação") + 1;
